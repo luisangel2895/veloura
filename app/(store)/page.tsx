@@ -16,6 +16,7 @@ export default function HomePage() {
       promoLabel="Private client offer"
       promoCopy="Complimentary express dispatch on orders over $180 and discreet packaging across the entire mock collection."
       syncWithUrl
+      enablePagination
     />
   );
 }

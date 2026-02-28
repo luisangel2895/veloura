@@ -1,12 +1,13 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getCategories } from "@/api/catalog";
 import { FilterBar } from "@/components/store/filter-bar";
 import { ProductGrid } from "@/components/store/product-grid";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useProductsQuery } from "@/hooks/use-products-query";
 import { useSyncFiltersWithUrl } from "@/hooks/use-sync-filters-with-url";
 import { useFilterStore } from "@/store/filter-store";
@@ -20,6 +21,7 @@ interface CatalogViewProps {
   promoCopy: string;
   lockedCategory?: string;
   syncWithUrl?: boolean;
+  enablePagination?: boolean;
   seoCopy?: string;
 }
 
@@ -44,6 +46,83 @@ function FilterUrlSyncBridge() {
   return null;
 }
 
+function PaginatedCatalogGrid({
+  products,
+  loading,
+  pageSize = 9,
+}: {
+  products: Product[];
+  loading: boolean;
+  pageSize?: number;
+}) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
+  const startIndex = (currentPage - 1) * pageSize;
+  const pagedProducts = products.slice(startIndex, startIndex + pageSize);
+
+  if (loading) {
+    return <ProductGrid products={products} loading />;
+  }
+
+  return (
+    <div className="space-y-8">
+      <ProductGrid products={pagedProducts} />
+
+      {totalPages > 1 ? (
+        <div className="flex flex-col items-center gap-4 rounded-3xl border border-amber-500/10 bg-card/70 px-5 py-5">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((current) => Math.max(1, current - 1))}
+              disabled={currentPage === 1}
+              className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+            >
+              Previous
+            </Button>
+
+            {Array.from({ length: totalPages }).map((_, index) => {
+              const page = index + 1;
+
+              return (
+                <Button
+                  key={page}
+                  type="button"
+                  variant={page === currentPage ? "default" : "outline"}
+                  size="icon-sm"
+                  onClick={() => setCurrentPage(page)}
+                  className={
+                    page === currentPage
+                      ? "bg-amber-300 text-zinc-950 hover:bg-amber-200"
+                      : "border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+                  }
+                >
+                  {page}
+                </Button>
+              );
+            })}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((current) => Math.min(totalPages, current + 1))}
+              disabled={currentPage === totalPages}
+              className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function CatalogView({
   title,
   eyebrow,
@@ -52,9 +131,9 @@ export function CatalogView({
   promoCopy,
   lockedCategory,
   syncWithUrl = false,
+  enablePagination = false,
   seoCopy,
 }: CatalogViewProps) {
-
   const size = useFilterStore((s) => s.size);
   const category = useFilterStore((s) => s.category);
   const sort = useFilterStore((s) => s.sort);
@@ -82,6 +161,8 @@ export function CatalogView({
     slug: item.slug,
     name: item.name,
   }));
+  const paginationKey = `${activeCategory ?? "all"}-${size}-${sort}`;
+  const isLoading = productsQuery.isLoading || categoriesQuery.isLoading;
 
   return (
     <div className="space-y-8 pb-16">
@@ -151,10 +232,11 @@ export function CatalogView({
         }}
       />
 
-      <ProductGrid
-        products={visibleProducts}
-        loading={productsQuery.isLoading || categoriesQuery.isLoading}
-      />
+      {enablePagination ? (
+        <PaginatedCatalogGrid key={paginationKey} products={visibleProducts} loading={isLoading} />
+      ) : (
+        <ProductGrid products={visibleProducts} loading={isLoading} />
+      )}
 
       {seoCopy ? (
         <section className="rounded-3xl border border-amber-500/10 bg-card/70 p-6 sm:p-8">

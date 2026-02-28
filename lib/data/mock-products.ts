@@ -14,7 +14,7 @@ const buildImages = (seed: string) => [
   `https://placeholdpicsum.dev/photo/seed/${seed}-3/800/960.webp`,
 ];
 
-export const mockProducts: Product[] = [
+const seedProducts: Product[] = [
   {
     id: "vel-001",
     slug: "noir-essence-balconette",
@@ -268,6 +268,77 @@ export const mockProducts: Product[] = [
     featured: false,
   },
 ];
+
+const generatedProductDescriptors = [
+  "Sable Edit",
+  "Velvet Atelier",
+  "Lustre Line",
+  "Nocturne Edition",
+  "Rose Dust",
+  "Quiet Gold",
+  "Moonline",
+  "Studio Cut",
+  "Private Reserve",
+  "Silk Script",
+  "Afterglow",
+  "Contour Series",
+  "Ember Tone",
+  "Gilded Shape",
+  "Soft Focus",
+  "Lumiere",
+  "Night Bloom",
+  "Satin Form",
+  "Muse Layer",
+  "Refined Curve",
+  "Evening Veil",
+  "Opaline",
+  "Shadow Tailored",
+  "Fine Mesh",
+  "Pearl Edit",
+  "Velour Room",
+  "Ivory Studio",
+  "Drape Line",
+  "Golden Slip",
+  "Cloud Touch",
+  "Still Hour",
+  "Obscura",
+  "Muse Archive",
+  "Silken Frame",
+  "Signature Room",
+  "Contour Glow",
+  "Soft Bronze",
+  "Atelier Light",
+] as const;
+
+function toSlugSegment(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+const generatedProducts: Product[] = generatedProductDescriptors.map((descriptor, index) => {
+  const source = seedProducts[index % seedProducts.length];
+  const variantNumber = seedProducts.length + index + 1;
+  const slug = `${source.slug}-${toSlugSegment(descriptor)}`;
+  const descriptorTag = toSlugSegment(descriptor);
+
+  return {
+    ...source,
+    id: `vel-${String(variantNumber).padStart(3, "0")}`,
+    slug,
+    name: `${source.name} ${descriptor}`,
+    tagline: `${source.tagline} ${descriptor}.`,
+    priceCents: source.priceCents + ((index % 5) + 1) * 400,
+    tags: Array.from(new Set([source.tags[0], source.tags[1], descriptorTag].filter(Boolean))),
+    description: `${source.description} This variation extends the original silhouette with a limited-run styling direction curated for broader catalog depth.`,
+    details: [
+      ...source.details.slice(0, 2),
+      `Edition finish: ${descriptor} with the same core fit architecture as the original style.`,
+    ],
+    images: buildImages(slug),
+    featured: index % 4 === 0,
+  };
+});
+
+export const mockProducts: Product[] = [...seedProducts, ...generatedProducts];
 
 interface ProductFilters {
   categorySlug?: string;
