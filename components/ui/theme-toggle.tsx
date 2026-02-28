@@ -28,12 +28,12 @@ export function ThemeToggle() {
     return (
       <Button
         type="button"
-        variant="outline"
-        size="icon-sm"
+        variant="ghost"
+        size="icon"
         aria-label={copy.themeToggle}
-        className="border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground dark:border-amber-500/30 dark:text-amber-200 dark:hover:bg-amber-500/10 dark:hover:text-amber-100"
+        className="rounded-none border-0 bg-transparent px-1 shadow-none text-muted-foreground hover:bg-transparent hover:text-foreground dark:text-amber-200 dark:hover:bg-transparent dark:hover:text-amber-100"
       >
-        <span className="block size-4" aria-hidden="true" />
+        <span className="block size-5" aria-hidden="true" />
       </Button>
     );
   }
@@ -118,13 +118,13 @@ export function ThemeToggle() {
   return (
     <Button
       type="button"
-      variant="outline"
-      size="icon-sm"
+      variant="ghost"
+      size="icon"
       onClick={handleThemeToggle}
       aria-label={copy.themeToggle}
-      className="border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground dark:border-amber-500/30 dark:text-amber-200 dark:hover:bg-amber-500/10 dark:hover:text-amber-100"
+      className="rounded-none border-0 bg-transparent px-1 shadow-none text-muted-foreground hover:bg-transparent hover:text-foreground dark:text-amber-200 dark:hover:bg-transparent dark:hover:text-amber-100"
     >
-      {isDark ? <SunMedium /> : <Moon />}
+      {isDark ? <SunMedium className="size-5" /> : <Moon className="size-5" />}
     </Button>
   );
 }
