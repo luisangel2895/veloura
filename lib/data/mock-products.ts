@@ -1,0 +1,288 @@
+import type { Product, ProductVariant, Size } from "@/types/catalog";
+
+const buildVariants = (sizes: Size[]): ProductVariant[] =>
+  sizes.map((size) => ({
+    size,
+    inStock: true,
+    label: `${size} ready to ship`,
+  }));
+
+const sizes: Size[] = ["XS", "S", "M", "L", "XL"];
+
+export const mockProducts: Product[] = [
+  {
+    id: "vel-001",
+    slug: "noir-essence-balconette",
+    name: "Noir Essence Balconette",
+    tagline: "Architectural lift in satin and mesh.",
+    categorySlug: "balconette",
+    priceCents: 11200,
+    sizesAvailable: ["XS", "S", "M", "L"],
+    variants: buildVariants(["XS", "S", "M", "L"]),
+    tags: ["signature", "mesh", "evening"],
+    description:
+      "A softly structured balconette with polished satin wings, sheer contour panels and a precise line that disappears beneath tailoring.",
+    details: [
+      "Underwire support with soft cup reinforcement.",
+      "Adjustable straps and brushed hardware in soft gold.",
+      "Lightweight power mesh back for shape retention.",
+    ],
+    images: ["Atelier front", "Side contour", "Hardware close-up"],
+    palette: ["#1b1a1e", "#7e6843"],
+    featured: true,
+  },
+  {
+    id: "vel-002",
+    slug: "velvet-trace-balconette",
+    name: "Velvet Trace Balconette",
+    tagline: "A clean demi profile with velvet-soft trim.",
+    categorySlug: "balconette",
+    priceCents: 11800,
+    sizesAvailable: ["S", "M", "L", "XL"],
+    variants: buildVariants(["S", "M", "L", "XL"]),
+    tags: ["best-seller", "velvet trim", "daily luxury"],
+    description:
+      "Designed for everyday polish, this balconette balances contour support with plush edge finishing and a low, confident neckline.",
+    details: [
+      "Matte stretch satin with velvet binding.",
+      "Wide side wings for a smoother frame.",
+      "Engineered to layer under plunging silhouettes.",
+    ],
+    images: ["Editorial front", "Profile", "Fabric texture"],
+    palette: ["#2b2025", "#9b7d51"],
+    featured: true,
+  },
+  {
+    id: "vel-003",
+    slug: "lune-ivory-balconette",
+    name: "Lune Ivory Balconette",
+    tagline: "Soft ivory for understated ceremony dressing.",
+    categorySlug: "bridal",
+    priceCents: 12400,
+    sizesAvailable: ["XS", "S", "M", "L"],
+    variants: buildVariants(["XS", "S", "M", "L"]),
+    tags: ["bridal", "ivory", "ceremony"],
+    description:
+      "An ivory balconette with luminous stretch silk and restrained lace placement, created for bridal layering with modern restraint.",
+    details: [
+      "Low-profile cups that sit cleanly under satin gowns.",
+      "Breathable sheer side panels for comfort.",
+      "Discreet finish lines for a nearly invisible fit.",
+    ],
+    images: ["Ceremony front", "Lace panel", "Strap detail"],
+    palette: ["#f5ede2", "#c0a26b"],
+    featured: true,
+  },
+  {
+    id: "vel-004",
+    slug: "champagne-glow-bodysuit",
+    name: "Champagne Glow Bodysuit",
+    tagline: "Fluid shimmer and sculpted vertical seams.",
+    categorySlug: "bodysuits",
+    priceCents: 16800,
+    sizesAvailable: ["XS", "S", "M", "L"],
+    variants: buildVariants(["XS", "S", "M", "L"]),
+    tags: ["bridal", "bodysuit", "shimmer"],
+    description:
+      "A sleek bodysuit with a subtle champagne sheen, balancing light compression with elongating seam placement and a polished neckline.",
+    details: [
+      "Snap closure with smooth gusset finish.",
+      "Moderate compression through the waist.",
+      "Works as an underpinning or styled outer layer.",
+    ],
+    images: ["Front silhouette", "Back line", "Waist detail"],
+    palette: ["#dfd3c1", "#a98554"],
+    featured: true,
+  },
+  {
+    id: "vel-005",
+    slug: "obsidian-line-bodysuit",
+    name: "Obsidian Line Bodysuit",
+    tagline: "Graphic transparency with a tailored base.",
+    categorySlug: "bodysuits",
+    priceCents: 17200,
+    sizesAvailable: sizes,
+    variants: buildVariants(sizes),
+    tags: ["editorial", "sheer", "night-out"],
+    description:
+      "Panels of soft mesh intersect matte jersey to create a bodysuit that feels sharply cut, body-aware and unmistakably evening-ready.",
+    details: [
+      "Dual-layer front for support without bulk.",
+      "Invisible elastic edges keep the line minimal.",
+      "Ideal under blazers, shirting and open knits.",
+    ],
+    images: ["Studio front", "Paneling", "Back silhouette"],
+    palette: ["#111214", "#8c7042"],
+    featured: false,
+  },
+  {
+    id: "vel-006",
+    slug: "silk-vow-slip-set",
+    name: "Silk Vow Slip Set",
+    tagline: "A bridal-ready pairing for slow mornings.",
+    categorySlug: "bridal",
+    priceCents: 19600,
+    sizesAvailable: ["XS", "S", "M", "L", "XL"],
+    variants: buildVariants(["XS", "S", "M", "L", "XL"]),
+    tags: ["bridal", "giftable", "set"],
+    description:
+      "A softly draped slip-and-brief pairing with liquid handfeel and delicate trim, designed for bridal rituals and travel alike.",
+    details: [
+      "Includes matching brief in the same silk-touch finish.",
+      "Bias-inspired shape that skims instead of clings.",
+      "Packed with a soft storage pouch for gifting.",
+    ],
+    images: ["Set overview", "Slip close-up", "Packaging"],
+    palette: ["#f2e8d8", "#b99260"],
+    featured: false,
+  },
+  {
+    id: "vel-007",
+    slug: "midnight-whisper-robe",
+    name: "Midnight Whisper Robe",
+    tagline: "Longline lounge with tonal sheen.",
+    categorySlug: "lounge",
+    priceCents: 15400,
+    sizesAvailable: ["S", "M", "L", "XL"],
+    variants: buildVariants(["S", "M", "L", "XL"]),
+    tags: ["robe", "lounge", "soft sheen"],
+    description:
+      "A fluid robe with gentle volume, elevated by tonal piping and a long silhouette that brings ceremony to everyday unwinding.",
+    details: [
+      "Detachable belt with interior tie for secure wear.",
+      "Wide sleeves cut for easy layering.",
+      "Soft drape with a cool-touch finish.",
+    ],
+    images: ["Full robe", "Sleeve line", "Piping detail"],
+    palette: ["#1d2028", "#867150"],
+    featured: true,
+  },
+  {
+    id: "vel-008",
+    slug: "cashmere-hush-bralette",
+    name: "Cashmere Hush Bralette",
+    tagline: "Relaxed support for quiet indulgence.",
+    categorySlug: "lounge",
+    priceCents: 8600,
+    sizesAvailable: ["XS", "S", "M", "L"],
+    variants: buildVariants(["XS", "S", "M", "L"]),
+    tags: ["bralette", "soft-touch", "travel"],
+    description:
+      "A lounge bralette with cloud-soft stretch, subtle support and a clean shape that slips into restful routines with ease.",
+    details: [
+      "Wire-free construction with removable pads.",
+      "Wide underband for comfort through long wear.",
+      "Pairs with lounge shorts or robe layers.",
+    ],
+    images: ["Bralette front", "Band detail", "Texture"],
+    palette: ["#8f8076", "#c0a06d"],
+    featured: false,
+  },
+  {
+    id: "vel-009",
+    slug: "moon-satin-tap-short",
+    name: "Moon Satin Tap Short",
+    tagline: "Lightweight lounge built for layering.",
+    categorySlug: "lounge",
+    priceCents: 6400,
+    sizesAvailable: ["XS", "S", "M", "L", "XL"],
+    variants: buildVariants(["XS", "S", "M", "L", "XL"]),
+    tags: ["short", "set-ready", "satin"],
+    description:
+      "An easy satin tap short with a softly elasticated waist, curved hem and enough polish to feel styled even at rest.",
+    details: [
+      "Bias-cut inspired leg opening for movement.",
+      "Smooth waistband with hidden elastic.",
+      "Pairs naturally with lounge bras and robes.",
+    ],
+    images: ["Front fit", "Hem curve", "Waistband"],
+    palette: ["#d7c7bb", "#9f7c4b"],
+    featured: false,
+  },
+  {
+    id: "vel-010",
+    slug: "gilded-veil-teddy",
+    name: "Gilded Veil Teddy",
+    tagline: "A sheer bridal one-piece with luminous trim.",
+    categorySlug: "bridal",
+    priceCents: 14800,
+    sizesAvailable: ["XS", "S", "M", "L"],
+    variants: buildVariants(["XS", "S", "M", "L"]),
+    tags: ["bridal", "teddy", "giftable"],
+    description:
+      "A soft tulle teddy framed with fine satin and warm metallic accents, built to feel delicate while maintaining shape and ease.",
+    details: [
+      "Sheer body with modestly lined bust.",
+      "Soft leg curve with no harsh elastic marks.",
+      "Designed to sit smoothly under robes and slips.",
+    ],
+    images: ["Front pose", "Trim detail", "Back shape"],
+    palette: ["#f7f0e4", "#b08b57"],
+    featured: false,
+  },
+  {
+    id: "vel-011",
+    slug: "atelier-shadow-corset",
+    name: "Atelier Shadow Corset",
+    tagline: "Modern contouring with softened structure.",
+    categorySlug: "bodysuits",
+    priceCents: 18200,
+    sizesAvailable: ["XS", "S", "M", "L"],
+    variants: buildVariants(["XS", "S", "M", "L"]),
+    tags: ["corset", "structured", "occasion"],
+    description:
+      "This corset-led piece sharpens the waist through vertical boning channels and flexible support, keeping the look sculpted yet wearable.",
+    details: [
+      "Flexible boning for shape without stiffness.",
+      "Front neckline cut to layer under jackets.",
+      "Back paneling balances compression and comfort.",
+    ],
+    images: ["Corset front", "Boning detail", "Side angle"],
+    palette: ["#16161a", "#6d5937"],
+    featured: true,
+  },
+  {
+    id: "vel-012",
+    slug: "soft-flame-triangle-set",
+    name: "Soft Flame Triangle Set",
+    tagline: "Minimal coverage in a warm bronze wash.",
+    categorySlug: "balconette",
+    priceCents: 9800,
+    sizesAvailable: ["XS", "S", "M", "L", "XL"],
+    variants: buildVariants(["XS", "S", "M", "L", "XL"]),
+    tags: ["set", "minimal", "bronze"],
+    description:
+      "A pared-back set that blends silky stretch, soft hardware and a warm bronze tint for an effortless, modern intimate layer.",
+    details: [
+      "Triangle cup with refined elastic finish.",
+      "Matching brief included in the set price.",
+      "Light support suited to all-day wear.",
+    ],
+    images: ["Set front", "Hardware", "Fabric sheen"],
+    palette: ["#5f4a3d", "#b48a56"],
+    featured: false,
+  },
+];
+
+interface ProductFilters {
+  categorySlug?: string;
+  slug?: string;
+}
+
+export function getMockProducts(filters?: ProductFilters): Product[] {
+  return mockProducts.filter((product) => {
+    if (filters?.categorySlug && product.categorySlug !== filters.categorySlug) {
+      return false;
+    }
+
+    if (filters?.slug && product.slug !== filters.slug) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+export function getMockProductBySlug(slug: string): Product | undefined {
+  return mockProducts.find((product) => product.slug === slug);
+}
