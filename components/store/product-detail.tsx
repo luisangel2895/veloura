@@ -244,6 +244,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
             <Button
               type="button"
               size="lg"
+              data-testid="add-to-cart"
               onClick={() => {
                 addItem(product, selectedSize);
                 setAdded(true);

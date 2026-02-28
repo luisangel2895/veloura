@@ -45,3 +45,41 @@ STRIPE_SECRET_KEY=sk_test_...
 ```
 
 Use Stripe test card `4242 4242 4242 4242`, any future date, any CVC, and any ZIP code.
+
+## Testing
+
+Run the unit suite:
+
+```bash
+npm run test
+```
+
+Run unit tests in watch mode:
+
+```bash
+npm run test:watch
+```
+
+Run coverage:
+
+```bash
+npm run test:coverage
+```
+
+Run the critical Playwright flows:
+
+```bash
+npm run e2e
+```
+
+Run Playwright in UI mode:
+
+```bash
+npm run e2e:ui
+```
+
+If this is the first time running Playwright in the repo, install the browser once:
+
+```bash
+npx playwright install chromium
+```

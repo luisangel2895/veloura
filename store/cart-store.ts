@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { calculateCartTotals } from "@/store/cart-domain";
 import type { CartItem, Product, Size } from "@/types/catalog";
 
 interface CartStore {
@@ -23,17 +24,6 @@ const emptyCartState = {
   subtotal: 0,
 };
 
-function withTotals(items: CartItem[]) {
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0);
-
-  return {
-    items,
-    totalItems,
-    subtotal,
-  };
-}
-
 export const useCartStore = create<CartStore>()(
   persist(
     (set) => ({
@@ -46,7 +36,7 @@ export const useCartStore = create<CartStore>()(
           const existing = state.items.find((item) => item.id === id);
 
           if (existing) {
-            return withTotals(
+            return calculateCartTotals(
               state.items.map((item) =>
                 item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
               ),
@@ -65,17 +55,17 @@ export const useCartStore = create<CartStore>()(
             palette: product.palette,
           };
 
-          return withTotals([...state.items, nextItem]);
+          return calculateCartTotals([...state.items, nextItem]);
         }),
       removeItem: (id) =>
-        set((state) => withTotals(state.items.filter((item) => item.id !== id))),
+        set((state) => calculateCartTotals(state.items.filter((item) => item.id !== id))),
       updateQty: (id, qty) =>
         set((state) => {
           if (qty <= 0) {
-            return withTotals(state.items.filter((item) => item.id !== id));
+            return calculateCartTotals(state.items.filter((item) => item.id !== id));
           }
 
-          return withTotals(
+          return calculateCartTotals(
             state.items.map((item) => (item.id === id ? { ...item, quantity: qty } : item)),
           );
         }),

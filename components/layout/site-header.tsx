@@ -58,6 +58,7 @@ export function SiteHeader() {
           <ThemeToggle />
           <Link
             href="/cart"
+            data-testid="cart-button"
             className="relative inline-flex h-10 items-center justify-center px-1 text-muted-foreground transition-colors hover:text-foreground dark:text-amber-100 dark:hover:text-amber-50"
             aria-label={copy.headerCart}
           >
