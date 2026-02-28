@@ -15,7 +15,8 @@ function normalize(v: string | null) {
 
 /**
  * Keeps catalog filters aligned with the URL query string.
- * Prevents ping-pong loops (URL <-> store).
+ * Tracks a pending query string so router.replace is not re-fired while
+ * the same navigation is still in flight.
  */
 export function useSyncFiltersWithUrl() {
   const pathname = usePathname();
@@ -26,18 +27,19 @@ export function useSyncFiltersWithUrl() {
   const qs = searchParams.toString();
 
   // ✅ sin shallow: selecciona por separado
+  const setFilter = useFilterStore((s) => s.setFilter);
   const size = useFilterStore((s) => s.size);
   const category = useFilterStore((s) => s.category);
   const sort = useFilterStore((s) => s.sort);
-  const setFilter = useFilterStore((s) => s.setFilter);
 
-  // rompe el ping-pong
-  const syncingFromUrl = useRef(false);
-  const syncingToUrl = useRef(false);
+  const pendingQueryStringRef = useRef<string | null>(null);
 
   // URL -> Store
   useEffect(() => {
-    if (syncingToUrl.current) return;
+    if (pendingQueryStringRef.current === qs) {
+      pendingQueryStringRef.current = null;
+      return;
+    }
 
     const params = new URLSearchParams(qs);
 
@@ -57,19 +59,23 @@ export function useSyncFiltersWithUrl() {
     const targetCategory = nextCategoryRaw ?? "all";
     const targetSort = nextSort ?? "featured";
 
-    if (targetSize === size && targetCategory === category && targetSort === sort) return;
+    const currentState = useFilterStore.getState();
 
-    syncingFromUrl.current = true;
-    if (targetSize !== size) setFilter("size", targetSize);
-    if (targetCategory !== category) setFilter("category", targetCategory);
-    if (targetSort !== sort) setFilter("sort", targetSort);
-    syncingFromUrl.current = false;
-  }, [qs, size, category, sort, setFilter]);
+    if (
+      targetSize === currentState.size &&
+      targetCategory === currentState.category &&
+      targetSort === currentState.sort
+    ) {
+      return;
+    }
+
+    if (targetSize !== currentState.size) setFilter("size", targetSize);
+    if (targetCategory !== currentState.category) setFilter("category", targetCategory);
+    if (targetSort !== currentState.sort) setFilter("sort", targetSort);
+  }, [qs, setFilter]);
 
   // Store -> URL
   useEffect(() => {
-    if (syncingFromUrl.current) return;
-
     const params = new URLSearchParams(qs);
 
     const apply = (key: string, value: string | null) => {
@@ -82,10 +88,16 @@ export function useSyncFiltersWithUrl() {
     apply("sort", sort === "featured" ? null : sort);
 
     const nextQs = params.toString();
-    if (nextQs === qs) return;
+    if (nextQs === qs) {
+      if (pendingQueryStringRef.current === qs) {
+        pendingQueryStringRef.current = null;
+      }
+      return;
+    }
 
-    syncingToUrl.current = true;
+    if (pendingQueryStringRef.current === nextQs) return;
+
+    pendingQueryStringRef.current = nextQs;
     router.replace(nextQs ? `${pathname}?${nextQs}` : pathname, { scroll: false });
-    syncingToUrl.current = false;
   }, [size, category, sort, qs, pathname, router]);
 }

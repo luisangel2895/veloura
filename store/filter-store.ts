@@ -40,6 +40,7 @@ export const useFilterStore = create<FilterStore>()(
     {
       name: "veloura-filters",
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
       partialize: (state) => ({
         size: state.size,
         category: state.category,

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 
@@ -13,8 +14,15 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-amber-500/10 bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
         <Link href="/" className="group flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-full border border-amber-500/20 bg-amber-500/10 text-xs font-semibold tracking-[0.3em] text-amber-200">
-            V
+          <span className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-amber-500/20 bg-amber-500/10">
+            <Image
+              src="/brand/veloura-logo.png"
+              alt="Veloura logo"
+              fill
+              sizes="44px"
+              className="object-cover"
+              priority
+            />
           </span>
           <div>
             <p className="font-[family-name:var(--font-display)] text-2xl font-semibold text-foreground">

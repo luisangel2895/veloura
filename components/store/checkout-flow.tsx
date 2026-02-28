@@ -112,11 +112,23 @@ function StepMarker({ current, target }: { current: CheckoutStep; target: Checko
 
 export function CheckoutFlow() {
   const [state, dispatch] = useReducer(checkoutReducer, initialState);
+  const hasHydrated = useCart((cart) => cart.hasHydrated);
   const { items, subtotal, clearCart } = useCart((cart) => ({
     items: cart.items,
     subtotal: cart.subtotal,
     clearCart: cart.clearCart,
   }));
+
+  if (!hasHydrated) {
+    return (
+      <div className="rounded-[2rem] border border-amber-500/10 bg-card/70 px-6 py-16 text-center">
+        <h1 className="text-5xl font-semibold">Checkout</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
+          Loading the latest cart snapshot before entering checkout.
+        </p>
+      </div>
+    );
+  }
 
   if (!items.length && state.step !== "complete") {
     return (

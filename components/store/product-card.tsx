@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ProductImage } from "@/components/store/product-image";
 import { Price } from "@/components/store/price";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,12 +14,19 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.slug}`} className="group block h-full">
       <Card className="h-full overflow-hidden border-amber-500/10 bg-card/80 py-0 transition-transform duration-300 group-hover:-translate-y-1">
-        <div
-          className="relative h-72 overflow-hidden"
-          style={{
-            backgroundImage: `linear-gradient(140deg, ${product.palette[0]}, ${product.palette[1]})`,
-          }}
-        >
+        <div className="relative h-72 overflow-hidden">
+          <ProductImage
+            src={product.images[0]}
+            alt={product.name}
+            seed={product.slug}
+            sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw"
+          />
+          <div
+            className="absolute inset-0 opacity-70"
+            style={{
+              backgroundImage: `linear-gradient(180deg, transparent 20%, ${product.palette[0]} 100%)`,
+            }}
+          />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_34%)]" />
           <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/10 bg-black/15 p-4 backdrop-blur-sm">
             <p className="text-xs uppercase tracking-[0.28em] text-white/70">{product.tagline}</p>

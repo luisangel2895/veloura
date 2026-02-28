@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, ShoppingBag } from "lucide-react";
 
+import { ProductImage } from "@/components/store/product-image";
 import { Price } from "@/components/store/price";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -76,12 +77,20 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
 
       <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-4">
-          <div
-            className="relative min-h-[34rem] rounded-[2rem] border border-amber-500/10"
-            style={{
-              backgroundImage: `linear-gradient(145deg, ${product.palette[0]}, ${product.palette[1]})`,
-            }}
-          >
+          <div className="relative min-h-[34rem] overflow-hidden rounded-[2rem] border border-amber-500/10">
+            <ProductImage
+              src={product.images[0]}
+              alt={product.name}
+              seed={`${product.slug}-hero`}
+              className="absolute inset-0"
+              sizes="(min-width: 1024px) 55vw, 100vw"
+            />
+            <div
+              className="absolute inset-0 opacity-65"
+              style={{
+                backgroundImage: `linear-gradient(180deg, transparent 15%, ${product.palette[0]} 100%)`,
+              }}
+            />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_30%)]" />
             <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-black/15 p-6 backdrop-blur">
               <p className="text-[0.7rem] uppercase tracking-[0.28em] text-white/70">
@@ -95,20 +104,19 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
 
           <div className="grid gap-4 sm:grid-cols-3">
             {product.images.map((image, index) => (
-              <div
-                key={image}
-                className="rounded-3xl border border-amber-500/10 p-4"
-                style={{
-                  background:
-                    index % 2 === 0
-                      ? "linear-gradient(135deg, rgba(212,175,55,0.14), transparent)"
-                      : "linear-gradient(135deg, rgba(255,255,255,0.08), transparent)",
-                }}
-              >
-                <p className="text-[0.7rem] uppercase tracking-[0.24em] text-muted-foreground">
-                  Frame {index + 1}
-                </p>
-                <p className="mt-3 font-medium">{image}</p>
+              <div key={image} className="overflow-hidden rounded-3xl border border-amber-500/10">
+                <div className="relative h-36">
+                  <ProductImage
+                    src={image}
+                    alt={`${product.name} view ${index + 1}`}
+                    seed={`${product.slug}-${index + 1}`}
+                    sizes="(min-width: 640px) 20vw, 100vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+                  <p className="absolute bottom-3 left-3 text-[0.7rem] uppercase tracking-[0.24em] text-white/80">
+                    Frame {index + 1}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

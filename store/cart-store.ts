@@ -9,13 +9,15 @@ interface CartStore {
   items: CartItem[];
   totalItems: number;
   subtotal: number;
+  hasHydrated: boolean;
+  setHasHydrated: (value: boolean) => void;
   addItem: (product: Product, size: Size) => void;
   removeItem: (id: string) => void;
   updateQty: (id: string, qty: number) => void;
   clearCart: () => void;
 }
 
-const initialState = {
+const emptyCartState = {
   items: [],
   totalItems: 0,
   subtotal: 0,
@@ -35,7 +37,9 @@ function withTotals(items: CartItem[]) {
 export const useCartStore = create<CartStore>()(
   persist(
     (set) => ({
-      ...initialState,
+      ...emptyCartState,
+      hasHydrated: false,
+      setHasHydrated: (value) => set(() => ({ hasHydrated: value })),
       addItem: (product, size) =>
         set((state) => {
           const id = `${product.slug}-${size}`;
@@ -54,6 +58,7 @@ export const useCartStore = create<CartStore>()(
             productId: product.id,
             slug: product.slug,
             name: product.name,
+            imageUrl: product.images[0],
             size,
             priceCents: product.priceCents,
             quantity: 1,
@@ -74,11 +79,15 @@ export const useCartStore = create<CartStore>()(
             state.items.map((item) => (item.id === id ? { ...item, quantity: qty } : item)),
           );
         }),
-      clearCart: () => set(() => ({ ...initialState })),
+      clearCart: () => set((state) => ({ ...emptyCartState, hasHydrated: state.hasHydrated })),
     }),
     {
       name: "veloura-cart",
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
       partialize: (state) => ({
         items: state.items,
         totalItems: state.totalItems,

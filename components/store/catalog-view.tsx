@@ -2,7 +2,6 @@
 
 import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { shallow } from "zustand/shallow";
 
 import { getCategories } from "@/api/catalog";
 import { FilterBar } from "@/components/store/filter-bar";

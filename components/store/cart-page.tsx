@@ -2,17 +2,30 @@
 
 import Link from "next/link";
 
+import { ProductImage } from "@/components/store/product-image";
 import { Price } from "@/components/store/price";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 
 export function CartPage() {
+  const hasHydrated = useCart((state) => state.hasHydrated);
   const { items, subtotal, removeItem, updateQty } = useCart((state) => ({
     items: state.items,
     subtotal: state.subtotal,
     removeItem: state.removeItem,
     updateQty: state.updateQty,
   }));
+
+  if (!hasHydrated) {
+    return (
+      <div className="rounded-[2rem] border border-amber-500/10 bg-card/70 px-6 py-16 text-center">
+        <h1 className="text-5xl font-semibold">Cart</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
+          Restoring your saved cart from local storage.
+        </p>
+      </div>
+    );
+  }
 
   if (!items.length) {
     return (
@@ -39,12 +52,14 @@ export function CartPage() {
               key={item.id}
               className="grid gap-4 rounded-[2rem] border border-amber-500/10 bg-card/75 p-5 sm:grid-cols-[8rem_1fr_auto]"
             >
-              <div
-                className="h-32 rounded-3xl"
-                style={{
-                  backgroundImage: `linear-gradient(145deg, ${item.palette[0]}, ${item.palette[1]})`,
-                }}
-              />
+              <div className="h-32 overflow-hidden rounded-3xl">
+                <ProductImage
+                  src={item.imageUrl}
+                  alt={item.name}
+                  seed={item.slug}
+                  sizes="128px"
+                />
+              </div>
               <div className="space-y-3">
                 <div>
                   <p className="font-[family-name:var(--font-display)] text-3xl font-semibold">

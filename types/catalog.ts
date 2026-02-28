@@ -50,6 +50,7 @@ export interface CartItem {
   productId: string;
   slug: string;
   name: string;
+  imageUrl: string;
   size: Size;
   priceCents: number;
   quantity: number;
