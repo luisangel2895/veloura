@@ -2,18 +2,17 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
 import type { ProductSort, Size } from "@/types/catalog";
 
-type FilterSize = Size | "all";
+export type FilterSize = Size | "all";
 
-interface FilterState {
+export interface FilterState {
   size: FilterSize;
   category: string;
   sort: ProductSort;
 }
 
-interface FilterStore extends FilterState {
+export interface FilterStore extends FilterState {
   setFilter: <K extends keyof FilterState>(key: K, value: FilterState[K]) => void;
   clearFilters: () => void;
 }
@@ -28,7 +27,14 @@ export const useFilterStore = create<FilterStore>()(
   persist(
     (set) => ({
       ...defaultFilters,
-      setFilter: (key, value) => set(() => ({ [key]: value } as Pick<FilterState, typeof key>)),
+
+      setFilter: (key, value) =>
+        set((state) => {
+          // ✅ evita renders inútiles y loops
+          if (state[key] === value) return state;
+          return { ...state, [key]: value };
+        }),
+
       clearFilters: () => set(() => ({ ...defaultFilters })),
     }),
     {

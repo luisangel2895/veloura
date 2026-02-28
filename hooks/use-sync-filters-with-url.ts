@@ -1,73 +1,91 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import type { ProductSort } from "@/types/catalog";
 import { useFilterStore } from "@/store/filter-store";
 
 const allowedSorts: ProductSort[] = ["featured", "price-asc", "price-desc", "name"];
-const allowedSizes = ["XS", "S", "M", "L", "XL"];
+const allowedSizes = ["XS", "S", "M", "L", "XL"] as const;
+
+function normalize(v: string | null) {
+  return v && v.length ? v : null;
+}
 
 /**
- * Keeps the catalog filters aligned with the URL query string.
+ * Keeps catalog filters aligned with the URL query string.
+ * Prevents ping-pong loops (URL <-> store).
  */
 export function useSyncFiltersWithUrl() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { size, category, sort, setFilter } = useFilterStore((state) => ({
-    size: state.size,
-    category: state.category,
-    sort: state.sort,
-    setFilter: state.setFilter,
-  }));
 
+  // ✅ estabilidad: Next recrea el objeto searchParams
+  const qs = searchParams.toString();
+
+  // ✅ sin shallow: selecciona por separado
+  const size = useFilterStore((s) => s.size);
+  const category = useFilterStore((s) => s.category);
+  const sort = useFilterStore((s) => s.sort);
+  const setFilter = useFilterStore((s) => s.setFilter);
+
+  // rompe el ping-pong
+  const syncingFromUrl = useRef(false);
+  const syncingToUrl = useRef(false);
+
+  // URL -> Store
   useEffect(() => {
-    const nextSize = searchParams.get("size");
-    const nextCategory = searchParams.get("category");
-    const nextSort = searchParams.get("sort");
+    if (syncingToUrl.current) return;
 
-    if (nextSize && allowedSizes.includes(nextSize) && nextSize !== size) {
-      setFilter("size", nextSize as typeof size);
-    }
+    const params = new URLSearchParams(qs);
 
-    if (nextCategory && nextCategory !== category) {
-      setFilter("category", nextCategory);
-    }
+    const nextSizeRaw = normalize(params.get("size"));
+    const nextCategoryRaw = normalize(params.get("category"));
+    const nextSortRaw = normalize(params.get("sort"));
 
-    if (nextSort && allowedSorts.includes(nextSort as ProductSort) && nextSort !== sort) {
-      setFilter("sort", nextSort as ProductSort);
-    }
-  }, [category, searchParams, setFilter, size, sort]);
+    const nextSize =
+      nextSizeRaw && (allowedSizes as readonly string[]).includes(nextSizeRaw) ? nextSizeRaw : null;
 
+    const nextSort =
+      nextSortRaw && allowedSorts.includes(nextSortRaw as ProductSort)
+        ? (nextSortRaw as ProductSort)
+        : null;
+
+    const targetSize = (nextSize ?? "all") as typeof size;
+    const targetCategory = nextCategoryRaw ?? "all";
+    const targetSort = nextSort ?? "featured";
+
+    if (targetSize === size && targetCategory === category && targetSort === sort) return;
+
+    syncingFromUrl.current = true;
+    if (targetSize !== size) setFilter("size", targetSize);
+    if (targetCategory !== category) setFilter("category", targetCategory);
+    if (targetSort !== sort) setFilter("sort", targetSort);
+    syncingFromUrl.current = false;
+  }, [qs, size, category, sort, setFilter]);
+
+  // Store -> URL
   useEffect(() => {
-    const nextParams = new URLSearchParams(searchParams.toString());
+    if (syncingFromUrl.current) return;
 
-    if (size === "all") {
-      nextParams.delete("size");
-    } else {
-      nextParams.set("size", size);
-    }
+    const params = new URLSearchParams(qs);
 
-    if (category === "all") {
-      nextParams.delete("category");
-    } else {
-      nextParams.set("category", category);
-    }
+    const apply = (key: string, value: string | null) => {
+      if (!value) params.delete(key);
+      else params.set(key, value);
+    };
 
-    if (sort === "featured") {
-      nextParams.delete("sort");
-    } else {
-      nextParams.set("sort", sort);
-    }
+    apply("size", size === "all" ? null : String(size));
+    apply("category", category === "all" ? null : category);
+    apply("sort", sort === "featured" ? null : sort);
 
-    const current = searchParams.toString();
-    const next = nextParams.toString();
+    const nextQs = params.toString();
+    if (nextQs === qs) return;
 
-    if (current !== next) {
-      const query = next ? `?${next}` : "";
-      router.replace(`${pathname}${query}`, { scroll: false });
-    }
-  }, [category, pathname, router, searchParams, size, sort]);
+    syncingToUrl.current = true;
+    router.replace(nextQs ? `${pathname}?${nextQs}` : pathname, { scroll: false });
+    syncingToUrl.current = false;
+  }, [size, category, sort, qs, pathname, router]);
 }

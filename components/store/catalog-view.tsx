@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { shallow } from "zustand/shallow";
 
 import { getCategories } from "@/api/catalog";
 import { FilterBar } from "@/components/store/filter-bar";
@@ -54,20 +55,21 @@ export function CatalogView({
   syncWithUrl = false,
   seoCopy,
 }: CatalogViewProps) {
-  const { size, category, sort, setFilter, clearFilters } = useFilterStore((state) => ({
-    size: state.size,
-    category: state.category,
-    sort: state.sort,
-    setFilter: state.setFilter,
-    clearFilters: state.clearFilters,
-  }));
+
+  const size = useFilterStore((s) => s.size);
+  const category = useFilterStore((s) => s.category);
+  const sort = useFilterStore((s) => s.sort);
+  const setFilter = useFilterStore((s) => s.setFilter);
+  const clearFilters = useFilterStore((s) => s.clearFilters);
 
   const activeCategory = lockedCategory ?? (category !== "all" ? category : undefined);
+
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
     staleTime: 60_000,
   });
+
   const productsQuery = useProductsQuery(activeCategory);
 
   const visibleProducts = sortProducts(
@@ -146,13 +148,14 @@ export function CatalogView({
         onSortChange={(nextSort) => setFilter("sort", nextSort)}
         onClear={() => {
           clearFilters();
-          if (lockedCategory) {
-            setFilter("category", lockedCategory);
-          }
+          if (lockedCategory) setFilter("category", lockedCategory);
         }}
       />
 
-      <ProductGrid products={visibleProducts} loading={productsQuery.isLoading || categoriesQuery.isLoading} />
+      <ProductGrid
+        products={visibleProducts}
+        loading={productsQuery.isLoading || categoriesQuery.isLoading}
+      />
 
       {seoCopy ? (
         <section className="rounded-3xl border border-amber-500/10 bg-card/70 p-6 sm:p-8">
