@@ -1,48 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Local Development
 
-## Getting Started
-
-First, run the development server:
+Run the app locally:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Stripe Test Mode
-
-Set these environment variables before running checkout:
+Local checkout expects these Stripe variables:
 
 ```bash
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
 ```
+
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is required client-side for the checkout payment step.
+`STRIPE_SECRET_KEY` is required server-side for real local Stripe test mode.
+
+In CI, the workflow injects dummy values:
+
+```bash
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_dummy
+STRIPE_SECRET_KEY=sk_test_dummy
+```
+
+Those are enough for build/test because E2E uses a fake Stripe provider and mocked `create-payment-intent`.
+
+## Stripe Test Mode
 
 Use Stripe test card `4242 4242 4242 4242`, any future date, any CVC, and any ZIP code.
 
@@ -78,8 +65,42 @@ Run Playwright in UI mode:
 npm run e2e:ui
 ```
 
+Open the Playwright HTML report after a run:
+
+```bash
+npm run e2e:report
+```
+
 If this is the first time running Playwright in the repo, install the browser once:
 
 ```bash
 npx playwright install chromium
 ```
+
+## CI
+
+GitHub Actions runs on:
+
+- every `pull_request`
+- every push to `main`
+
+The workflow has two required jobs:
+
+- `quality`: install, lint, typecheck, unit tests with coverage
+- `e2e`: Playwright critical path with mocked Stripe
+
+The E2E job uploads these artifacts on every run, including failures:
+
+- `playwright-report/`
+- `test-results/`
+
+Coverage from the unit suite is also uploaded from `quality`.
+
+## Branch Protection Recommended
+
+Recommended GitHub branch protection for `main`:
+
+- require status checks: `quality` and `e2e`
+- require branches to be up to date before merging
+- disallow direct pushes to `main`
+- require pull requests before merge
