@@ -27,9 +27,6 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <Link href="/" className="uppercase tracking-[0.22em] hover:text-foreground">
-            {copy.headerNavNewArrivals}
-          </Link>
           <Link
             href="/category/balconette"
             className="uppercase tracking-[0.22em] hover:text-foreground"
@@ -41,6 +38,18 @@ export function SiteHeader() {
             className="uppercase tracking-[0.22em] hover:text-foreground"
           >
             {copy.headerNavBridal}
+          </Link>
+          <Link
+            href="/category/bodysuits"
+            className="uppercase tracking-[0.22em] hover:text-foreground"
+          >
+            {copy.headerNavBodysuits}
+          </Link>
+          <Link
+            href="/category/lounge"
+            className="uppercase tracking-[0.22em] hover:text-foreground"
+          >
+            {copy.headerNavLounge}
           </Link>
         </nav>
 

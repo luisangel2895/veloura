@@ -23,6 +23,8 @@ export const messages = {
     headerNavNewArrivals: "Novedades",
     headerNavBalconette: "Balconette",
     headerNavBridal: "Bridal",
+    headerNavBodysuits: "Bodysuits",
+    headerNavLounge: "Lounge",
     headerCart: "Abrir carrito",
     footerDescription:
       "Lenceria contemporanea con enfoque editorial, construida para escalar de front-end demo a un backend real sin rehacer la base.",
@@ -105,6 +107,8 @@ export const messages = {
     headerNavNewArrivals: "New arrivals",
     headerNavBalconette: "Balconette",
     headerNavBridal: "Bridal",
+    headerNavBodysuits: "Bodysuits",
+    headerNavLounge: "Lounge",
     headerCart: "Open cart",
     footerDescription:
       "Contemporary lingerie with an editorial point of view, built to scale from a front-end demo into a real backend without reworking the foundation.",
