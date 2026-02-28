@@ -116,6 +116,10 @@ const initialState: CheckoutState = {
   submitSucceeded: false,
 };
 
+function assertNever(value: never): never {
+  throw new Error(`Unhandled action: ${JSON.stringify(value)}`);
+}
+
 function nextStep(current: CheckoutStep): CheckoutStep {
   return steps[Math.min(steps.indexOf(current) + 1, steps.length - 1)];
 }
@@ -291,7 +295,7 @@ function checkoutReducer(state: CheckoutState, action: CheckoutAction): Checkout
             submitError: null,
           };
         default:
-          return state;
+          return assertNever(action.field);
       }
     }
     case "VALIDATE_STEP":
@@ -349,7 +353,7 @@ function checkoutReducer(state: CheckoutState, action: CheckoutAction): Checkout
         submitError: action.message,
       };
     default:
-      return state;
+      return assertNever(action);
   }
 }
 
@@ -625,8 +629,8 @@ export function CheckoutFlow() {
 
     try {
       await new Promise((resolve) => window.setTimeout(resolve, 700));
-      clearCart();
       dispatch({ type: "SUBMIT_SUCCESS" });
+      clearCart();
     } catch {
       dispatch({ type: "SUBMIT_ERROR", message: labels.primaryError });
     }
@@ -706,8 +710,11 @@ export function CheckoutFlow() {
         {state.step === "shipping" ? (
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium">{labels.fullName}</label>
+              <label htmlFor="shipping-full-name" className="text-sm font-medium">
+                {labels.fullName}
+              </label>
               <Input
+                id="shipping-full-name"
                 ref={registerInputRef("shipping.fullName")}
                 value={state.shipping.fullName}
                 onChange={(event) =>
@@ -719,15 +726,23 @@ export function CheckoutFlow() {
                 }
                 placeholder={labels.fullName}
                 aria-invalid={state.errors["shipping.fullName"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.fullName"] ? "shipping-full-name-error" : undefined
+                }
               />
               {state.errors["shipping.fullName"] ? (
-                <p className="text-sm text-destructive">{state.errors["shipping.fullName"]}</p>
+                <p id="shipping-full-name-error" className="text-sm text-destructive">
+                  {state.errors["shipping.fullName"]}
+                </p>
               ) : null}
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">{labels.email}</label>
+              <label htmlFor="shipping-email" className="text-sm font-medium">
+                {labels.email}
+              </label>
               <Input
+                id="shipping-email"
                 ref={registerInputRef("shipping.email")}
                 type="email"
                 value={state.shipping.email}
@@ -740,15 +755,23 @@ export function CheckoutFlow() {
                 }
                 placeholder={labels.email}
                 aria-invalid={state.errors["shipping.email"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.email"] ? "shipping-email-error" : undefined
+                }
               />
               {state.errors["shipping.email"] ? (
-                <p className="text-sm text-destructive">{state.errors["shipping.email"]}</p>
+                <p id="shipping-email-error" className="text-sm text-destructive">
+                  {state.errors["shipping.email"]}
+                </p>
               ) : null}
             </div>
 
             <div className="space-y-2 sm:col-span-2">
-              <label className="text-sm font-medium">{labels.address}</label>
+              <label htmlFor="shipping-address" className="text-sm font-medium">
+                {labels.address}
+              </label>
               <Input
+                id="shipping-address"
                 ref={registerInputRef("shipping.address")}
                 value={state.shipping.address}
                 onChange={(event) =>
@@ -760,15 +783,23 @@ export function CheckoutFlow() {
                 }
                 placeholder={labels.address}
                 aria-invalid={state.errors["shipping.address"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.address"] ? "shipping-address-error" : undefined
+                }
               />
               {state.errors["shipping.address"] ? (
-                <p className="text-sm text-destructive">{state.errors["shipping.address"]}</p>
+                <p id="shipping-address-error" className="text-sm text-destructive">
+                  {state.errors["shipping.address"]}
+                </p>
               ) : null}
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">{labels.city}</label>
+              <label htmlFor="shipping-city" className="text-sm font-medium">
+                {labels.city}
+              </label>
               <Input
+                id="shipping-city"
                 ref={registerInputRef("shipping.city")}
                 value={state.shipping.city}
                 onChange={(event) =>
@@ -780,15 +811,23 @@ export function CheckoutFlow() {
                 }
                 placeholder={labels.city}
                 aria-invalid={state.errors["shipping.city"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.city"] ? "shipping-city-error" : undefined
+                }
               />
               {state.errors["shipping.city"] ? (
-                <p className="text-sm text-destructive">{state.errors["shipping.city"]}</p>
+                <p id="shipping-city-error" className="text-sm text-destructive">
+                  {state.errors["shipping.city"]}
+                </p>
               ) : null}
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">{labels.postalCode}</label>
+              <label htmlFor="shipping-postal-code" className="text-sm font-medium">
+                {labels.postalCode}
+              </label>
               <Input
+                id="shipping-postal-code"
                 ref={registerInputRef("shipping.postalCode")}
                 value={state.shipping.postalCode}
                 onChange={(event) =>
@@ -801,9 +840,14 @@ export function CheckoutFlow() {
                 placeholder={labels.postalCode}
                 inputMode="numeric"
                 aria-invalid={state.errors["shipping.postalCode"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.postalCode"] ? "shipping-postal-code-error" : undefined
+                }
               />
               {state.errors["shipping.postalCode"] ? (
-                <p className="text-sm text-destructive">{state.errors["shipping.postalCode"]}</p>
+                <p id="shipping-postal-code-error" className="text-sm text-destructive">
+                  {state.errors["shipping.postalCode"]}
+                </p>
               ) : null}
             </div>
           </div>
@@ -813,7 +857,11 @@ export function CheckoutFlow() {
           <div className="space-y-6">
             <div className="space-y-3">
               <p className="text-sm font-medium">{labels.paymentSelect}</p>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div
+                className="grid gap-3 sm:grid-cols-3"
+                role="group"
+                aria-describedby={state.errors["payment.method"] ? "payment-method-error" : undefined}
+              >
                 {[
                   { id: "card" as PaymentMethod, label: "Card", icon: CreditCard },
                   { id: "link" as PaymentMethod, label: "Link", icon: Wallet },
@@ -829,6 +877,7 @@ export function CheckoutFlow() {
                         paymentMethodRefs.current[method.id] = node;
                       }}
                       type="button"
+                      aria-pressed={active}
                       onClick={() =>
                         dispatch({
                           type: "SET_FIELD",
@@ -856,7 +905,9 @@ export function CheckoutFlow() {
                 })}
               </div>
               {state.errors["payment.method"] ? (
-                <p className="text-sm text-destructive">{state.errors["payment.method"]}</p>
+                <p id="payment-method-error" className="text-sm text-destructive">
+                  {state.errors["payment.method"]}
+                </p>
               ) : null}
               <p className="text-sm leading-7 text-muted-foreground">{labels.secureNote}</p>
             </div>
@@ -864,6 +915,8 @@ export function CheckoutFlow() {
             <div className="rounded-3xl border border-border bg-background/60 p-5 dark:border-amber-500/10 dark:bg-background/30">
               <button
                 type="button"
+                role="switch"
+                aria-checked={!state.payment.billingSameAsShipping}
                 onClick={() =>
                   dispatch({
                     type: "SET_FIELD",
@@ -894,8 +947,11 @@ export function CheckoutFlow() {
               {!state.payment.billingSameAsShipping ? (
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2 sm:col-span-2">
-                    <label className="text-sm font-medium">{labels.billingName}</label>
+                    <label htmlFor="billing-full-name" className="text-sm font-medium">
+                      {labels.billingName}
+                    </label>
                     <Input
+                      id="billing-full-name"
                       ref={registerInputRef("payment.billingFullName")}
                       value={state.payment.billingFullName}
                       onChange={(event) =>
@@ -907,17 +963,25 @@ export function CheckoutFlow() {
                       }
                       placeholder={labels.billingName}
                       aria-invalid={state.errors["payment.billingFullName"] ? "true" : "false"}
+                      aria-describedby={
+                        state.errors["payment.billingFullName"]
+                          ? "billing-full-name-error"
+                          : undefined
+                      }
                     />
                     {state.errors["payment.billingFullName"] ? (
-                      <p className="text-sm text-destructive">
+                      <p id="billing-full-name-error" className="text-sm text-destructive">
                         {state.errors["payment.billingFullName"]}
                       </p>
                     ) : null}
                   </div>
 
                   <div className="space-y-2 sm:col-span-2">
-                    <label className="text-sm font-medium">{labels.billingAddress}</label>
+                    <label htmlFor="billing-address" className="text-sm font-medium">
+                      {labels.billingAddress}
+                    </label>
                     <Input
+                      id="billing-address"
                       ref={registerInputRef("payment.billingAddress")}
                       value={state.payment.billingAddress}
                       onChange={(event) =>
@@ -929,17 +993,25 @@ export function CheckoutFlow() {
                       }
                       placeholder={labels.billingAddress}
                       aria-invalid={state.errors["payment.billingAddress"] ? "true" : "false"}
+                      aria-describedby={
+                        state.errors["payment.billingAddress"]
+                          ? "billing-address-error"
+                          : undefined
+                      }
                     />
                     {state.errors["payment.billingAddress"] ? (
-                      <p className="text-sm text-destructive">
+                      <p id="billing-address-error" className="text-sm text-destructive">
                         {state.errors["payment.billingAddress"]}
                       </p>
                     ) : null}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">{labels.billingCity}</label>
+                    <label htmlFor="billing-city" className="text-sm font-medium">
+                      {labels.billingCity}
+                    </label>
                     <Input
+                      id="billing-city"
                       ref={registerInputRef("payment.billingCity")}
                       value={state.payment.billingCity}
                       onChange={(event) =>
@@ -951,17 +1023,23 @@ export function CheckoutFlow() {
                       }
                       placeholder={labels.billingCity}
                       aria-invalid={state.errors["payment.billingCity"] ? "true" : "false"}
+                      aria-describedby={
+                        state.errors["payment.billingCity"] ? "billing-city-error" : undefined
+                      }
                     />
                     {state.errors["payment.billingCity"] ? (
-                      <p className="text-sm text-destructive">
+                      <p id="billing-city-error" className="text-sm text-destructive">
                         {state.errors["payment.billingCity"]}
                       </p>
                     ) : null}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">{labels.billingPostalCode}</label>
+                    <label htmlFor="billing-postal-code" className="text-sm font-medium">
+                      {labels.billingPostalCode}
+                    </label>
                     <Input
+                      id="billing-postal-code"
                       ref={registerInputRef("payment.billingPostalCode")}
                       value={state.payment.billingPostalCode}
                       onChange={(event) =>
@@ -974,9 +1052,14 @@ export function CheckoutFlow() {
                       placeholder={labels.billingPostalCode}
                       inputMode="numeric"
                       aria-invalid={state.errors["payment.billingPostalCode"] ? "true" : "false"}
+                      aria-describedby={
+                        state.errors["payment.billingPostalCode"]
+                          ? "billing-postal-code-error"
+                          : undefined
+                      }
                     />
                     {state.errors["payment.billingPostalCode"] ? (
-                      <p className="text-sm text-destructive">
+                      <p id="billing-postal-code-error" className="text-sm text-destructive">
                         {state.errors["payment.billingPostalCode"]}
                       </p>
                     ) : null}
