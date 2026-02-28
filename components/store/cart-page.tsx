@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 
+import { useLanguage } from "@/components/providers/language-provider";
 import { ProductImage } from "@/components/store/product-image";
 import { Price } from "@/components/store/price";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 
 export function CartPage() {
+  const { copy } = useLanguage();
   const hasHydrated = useCart((state) => state.hasHydrated);
   const { items, subtotal, removeItem, updateQty } = useCart((state) => ({
     items: state.items,
@@ -19,9 +21,9 @@ export function CartPage() {
   if (!hasHydrated) {
     return (
       <div className="rounded-[2rem] border border-amber-500/10 bg-card/70 px-6 py-16 text-center">
-        <h1 className="text-5xl font-semibold">Cart</h1>
+        <h1 className="text-5xl font-semibold">{copy.cartTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
-          Restoring your saved cart from local storage.
+          {copy.cartRestore}
         </p>
       </div>
     );
@@ -30,13 +32,12 @@ export function CartPage() {
   if (!items.length) {
     return (
       <div className="rounded-[2rem] border border-dashed border-amber-500/20 bg-card/70 px-6 py-16 text-center">
-        <h1 className="text-5xl font-semibold">Your cart is empty.</h1>
+        <h1 className="text-5xl font-semibold">{copy.cartEmptyTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
-          Start with the signature edit and add a size-selected piece to see the cart state
-          persisted through local storage.
+          {copy.cartEmptyDescription}
         </p>
         <Button asChild className="mt-8 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
-          <Link href="/">Return to the atelier</Link>
+          <Link href="/">{copy.cartReturn}</Link>
         </Button>
       </div>
     );
@@ -45,7 +46,7 @@ export function CartPage() {
   return (
     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
       <section className="space-y-4">
-        <h1 className="text-5xl font-semibold">Cart</h1>
+        <h1 className="text-5xl font-semibold">{copy.cartTitle}</h1>
         <div className="space-y-4">
           {items.map((item) => (
             <article
@@ -96,7 +97,7 @@ export function CartPage() {
                     onClick={() => removeItem(item.id)}
                     className="text-muted-foreground hover:bg-transparent hover:text-foreground"
                   >
-                    Remove
+                    {copy.cartRemove}
                   </Button>
                 </div>
               </div>
@@ -110,10 +111,10 @@ export function CartPage() {
 
       <aside className="h-fit rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
-          Order summary
+          {copy.cartSummary}
         </p>
         <div className="mt-6 flex items-center justify-between">
-          <span className="text-muted-foreground">Subtotal</span>
+          <span className="text-muted-foreground">{copy.cartSubtotal}</span>
           <Price amountCents={subtotal} className="text-2xl font-semibold" />
         </div>
         <p className="mt-4 text-sm leading-7 text-muted-foreground">
@@ -121,7 +122,7 @@ export function CartPage() {
           models the full sequence independently from the cart store.
         </p>
         <Button asChild className="mt-8 h-12 w-full rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
-          <Link href="/checkout">Proceed to checkout</Link>
+          <Link href="/checkout">{copy.cartProceed}</Link>
         </Button>
       </aside>
     </div>

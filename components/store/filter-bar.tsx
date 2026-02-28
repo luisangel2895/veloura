@@ -1,15 +1,10 @@
 "use client";
 
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { type ProductSort, type Size } from "@/types/catalog";
 
 const sizeOptions: Array<Size | "all"> = ["all", "XS", "S", "M", "L", "XL"];
-const sortOptions: Array<{ label: string; value: ProductSort }> = [
-  { label: "Featured", value: "featured" },
-  { label: "Price Low", value: "price-asc" },
-  { label: "Price High", value: "price-desc" },
-  { label: "A-Z", value: "name" },
-];
 
 interface FilterBarProps {
   size: Size | "all";
@@ -72,13 +67,15 @@ export function FilterBar({
   onSortChange,
   onClear,
 }: FilterBarProps) {
+  const { copy } = useLanguage();
+
   return (
     <section className="rounded-3xl border border-amber-500/10 bg-card/75 p-5 shadow-sm backdrop-blur sm:p-6">
       <div className="grid gap-6 lg:grid-cols-[1.2fr_1.2fr_1fr_auto] lg:items-end">
         <ToggleGroup
-          label="Size"
+          label={copy.filterSize}
           options={sizeOptions.map((option) => ({
-            label: option === "all" ? "All" : option,
+            label: option === "all" ? copy.filterAll : option,
             value: option,
           }))}
           value={size}
@@ -87,9 +84,9 @@ export function FilterBar({
 
         {showCategoryFilter ? (
           <ToggleGroup
-            label="Category"
+            label={copy.filterCategory}
             options={[
-              { label: "All", value: "all" },
+              { label: copy.filterAll, value: "all" },
               ...categories.map((item) => ({ label: item.name, value: item.slug })),
             ]}
             value={category}
@@ -98,17 +95,22 @@ export function FilterBar({
         ) : (
           <div className="space-y-3">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-              Category
+              {copy.filterCategory}
             </p>
             <p className="text-sm text-muted-foreground">
-              This collection keeps the route category fixed while size and sort remain persistent.
+              {copy.filterLockedCategoryHelp}
             </p>
           </div>
         )}
 
         <ToggleGroup
-          label="Sort"
-          options={sortOptions}
+          label={copy.filterSort}
+          options={[
+            { label: copy.filterFeatured, value: "featured" },
+            { label: copy.filterPriceLow, value: "price-asc" },
+            { label: copy.filterPriceHigh, value: "price-desc" },
+            { label: copy.filterAZ, value: "name" },
+          ]}
           value={sort}
           onChange={onSortChange}
         />
@@ -119,7 +121,7 @@ export function FilterBar({
           onClick={onClear}
           className="border-amber-500/20 bg-transparent text-foreground hover:bg-amber-500/10 hover:text-foreground"
         >
-          Clear filters
+          {copy.filterClear}
         </Button>
       </div>
     </section>

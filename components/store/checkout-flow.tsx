@@ -3,6 +3,7 @@
 import { useReducer } from "react";
 import Link from "next/link";
 
+import { useLanguage } from "@/components/providers/language-provider";
 import { Price } from "@/components/store/price";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -93,6 +94,13 @@ function checkoutReducer(state: CheckoutState, action: CheckoutAction): Checkout
 
 function StepMarker({ current, target }: { current: CheckoutStep; target: CheckoutStep }) {
   const active = order.indexOf(current) >= order.indexOf(target);
+  const { copy } = useLanguage();
+  const stepLabels = {
+    shipping: copy.checkoutShipping,
+    payment: copy.checkoutPayment,
+    review: copy.checkoutReview,
+    complete: copy.checkoutComplete,
+  } as const;
 
   return (
     <div className="flex items-center gap-3">
@@ -105,12 +113,15 @@ function StepMarker({ current, target }: { current: CheckoutStep; target: Checko
       >
         {order.indexOf(target) + 1}
       </span>
-      <span className={active ? "text-foreground" : "text-muted-foreground"}>{target}</span>
+      <span className={active ? "text-foreground" : "text-muted-foreground"}>
+        {stepLabels[target]}
+      </span>
     </div>
   );
 }
 
 export function CheckoutFlow() {
+  const { copy } = useLanguage();
   const [state, dispatch] = useReducer(checkoutReducer, initialState);
   const hasHydrated = useCart((cart) => cart.hasHydrated);
   const { items, subtotal, clearCart } = useCart((cart) => ({
@@ -122,9 +133,9 @@ export function CheckoutFlow() {
   if (!hasHydrated) {
     return (
       <div className="rounded-[2rem] border border-amber-500/10 bg-card/70 px-6 py-16 text-center">
-        <h1 className="text-5xl font-semibold">Checkout</h1>
+        <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
-          Loading the latest cart snapshot before entering checkout.
+          {copy.checkoutLoading}
         </p>
       </div>
     );
@@ -133,12 +144,12 @@ export function CheckoutFlow() {
   if (!items.length && state.step !== "complete") {
     return (
       <div className="rounded-[2rem] border border-dashed border-amber-500/20 bg-card/70 px-6 py-16 text-center">
-        <h1 className="text-5xl font-semibold">Checkout</h1>
+        <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
-          Add at least one item before entering the reducer-driven checkout flow.
+          {copy.checkoutEmpty}
         </p>
         <Button asChild className="mt-8 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
-          <Link href="/">Browse products</Link>
+          <Link href="/">{copy.checkoutBrowse}</Link>
         </Button>
       </div>
     );
@@ -149,9 +160,9 @@ export function CheckoutFlow() {
       <section className="space-y-6 rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
         <div className="space-y-2">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
-            Reducer state machine
+            {copy.checkoutStateMachine}
           </p>
-          <h1 className="text-5xl font-semibold">Checkout</h1>
+          <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -273,14 +284,14 @@ export function CheckoutFlow() {
         {state.step === "complete" ? (
           <div className="rounded-3xl border border-amber-500/10 bg-amber-500/8 p-6">
             <p className="font-[family-name:var(--font-display)] text-4xl font-semibold">
-              Order confirmed.
+              {copy.checkoutOrderConfirmed}
             </p>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">
               The flow is complete and the reducer has transitioned to the terminal state. Cart
               data was cleared separately via Zustand to keep concerns isolated.
             </p>
             <Button asChild className="mt-6 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
-              <Link href="/">Return to the atelier</Link>
+              <Link href="/">{copy.cartReturn}</Link>
             </Button>
           </div>
         ) : null}
@@ -293,7 +304,7 @@ export function CheckoutFlow() {
               onClick={() => dispatch({ type: "BACK" })}
               className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
             >
-              Back
+              {copy.checkoutBack}
             </Button>
           ) : null}
 
@@ -306,7 +317,7 @@ export function CheckoutFlow() {
               }}
               className="rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200"
             >
-              Confirm order
+              {copy.checkoutConfirm}
             </Button>
           ) : null}
 
@@ -316,7 +327,7 @@ export function CheckoutFlow() {
               onClick={() => dispatch({ type: "NEXT" })}
               className="rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200"
             >
-              Continue
+              {copy.checkoutContinue}
             </Button>
           ) : null}
         </div>
@@ -324,7 +335,7 @@ export function CheckoutFlow() {
 
       <aside className="h-fit rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
-          Order summary
+          {copy.checkoutOrderSummary}
         </p>
         <div className="mt-6 space-y-4">
           {items.map((item) => (
@@ -340,7 +351,7 @@ export function CheckoutFlow() {
           ))}
         </div>
         <div className="mt-6 flex items-center justify-between border-t border-amber-500/10 pt-6">
-          <span className="text-muted-foreground">Subtotal</span>
+          <span className="text-muted-foreground">{copy.cartSubtotal}</span>
           <Price amountCents={subtotal} className="text-2xl font-semibold" />
         </div>
       </aside>

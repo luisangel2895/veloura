@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
+import { useLanguage } from "@/components/providers/language-provider";
 import { getCategories } from "@/api/catalog";
 import { FilterBar } from "@/components/store/filter-bar";
 import { ProductGrid } from "@/components/store/product-grid";
@@ -55,6 +56,7 @@ function PaginatedCatalogGrid({
   loading: boolean;
   pageSize?: number;
 }) {
+  const { copy } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
   const startIndex = (currentPage - 1) * pageSize;
@@ -71,7 +73,7 @@ function PaginatedCatalogGrid({
       {totalPages > 1 ? (
         <div className="flex flex-col items-center gap-4 rounded-3xl border border-amber-500/10 bg-card/70 px-5 py-5">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-            Page {currentPage} of {totalPages}
+            {copy.paginationPage} {currentPage} {copy.paginationOf} {totalPages}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button
@@ -82,7 +84,7 @@ function PaginatedCatalogGrid({
               disabled={currentPage === 1}
               className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
             >
-              Previous
+              {copy.paginationPrevious}
             </Button>
 
             {Array.from({ length: totalPages }).map((_, index) => {
@@ -114,7 +116,7 @@ function PaginatedCatalogGrid({
               disabled={currentPage === totalPages}
               className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
             >
-              Next
+              {copy.paginationNext}
             </Button>
           </div>
         </div>
@@ -134,6 +136,7 @@ export function CatalogView({
   enablePagination = false,
   seoCopy,
 }: CatalogViewProps) {
+  const { copy } = useLanguage();
   const size = useFilterStore((s) => s.size);
   const category = useFilterStore((s) => s.category);
   const sort = useFilterStore((s) => s.sort);
@@ -188,14 +191,13 @@ export function CatalogView({
         </div>
         <div className="rounded-[1.75rem] border border-amber-500/10 bg-gradient-to-br from-amber-400/10 via-transparent to-transparent p-6">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-200">
-            Private Atelier
+            {copy.privateAtelier}
           </p>
           <p className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold">
-            Intimacy, refined.
+            {copy.intimacyRefined}
           </p>
           <p className="mt-4 text-sm leading-7 text-muted-foreground">
-            Built with a typed mock API, query caching, URL-synced filters and store slices that
-            can graduate to a real commerce backend.
+            {copy.architectureCopy}
           </p>
         </div>
       </section>
@@ -212,7 +214,7 @@ export function CatalogView({
             variant="outline"
             className="border-amber-500/20 bg-transparent px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.28em] text-amber-100"
           >
-            Complimentary garment pouch
+            {copy.complimentaryPouch}
           </Badge>
         </div>
       </section>
@@ -241,7 +243,7 @@ export function CatalogView({
       {seoCopy ? (
         <section className="rounded-3xl border border-amber-500/10 bg-card/70 p-6 sm:p-8">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
-            Editorial Notes
+            {copy.editorialNotes}
           </p>
           <p className="mt-4 text-sm leading-8 text-muted-foreground sm:text-base">{seoCopy}</p>
         </section>

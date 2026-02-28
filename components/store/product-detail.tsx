@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/language-provider";
 import { ProductImage } from "@/components/store/product-image";
 import { Price } from "@/components/store/price";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ interface PanelState {
 }
 
 function ProductGallery({ product }: { product: Product }) {
+  const { copy } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const activeImage = product.images[currentImageIndex] ?? product.images[0];
 
@@ -69,7 +71,7 @@ function ProductGallery({ product }: { product: Product }) {
               type="button"
               onClick={showPreviousImage}
               className="absolute left-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/25 text-white backdrop-blur transition-colors hover:bg-black/40"
-              aria-label="Show previous product image"
+              aria-label={copy.productPrevImage}
             >
               <ChevronLeft className="size-5" />
             </button>
@@ -77,7 +79,7 @@ function ProductGallery({ product }: { product: Product }) {
               type="button"
               onClick={showNextImage}
               className="absolute right-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/25 text-white backdrop-blur transition-colors hover:bg-black/40"
-              aria-label="Show next product image"
+              aria-label={copy.productNextImage}
             >
               <ChevronRight className="size-5" />
             </button>
@@ -104,7 +106,7 @@ function ProductGallery({ product }: { product: Product }) {
                 ? "border-amber-300 shadow-[0_0_0_1px_rgba(252,211,77,0.35)]"
                 : "border-amber-500/10"
             }`}
-            aria-label={`Show frame ${index + 1}`}
+            aria-label={`${copy.productShowFrame} ${index + 1}`}
           >
             <div className="relative h-36">
               <ProductImage
@@ -115,7 +117,7 @@ function ProductGallery({ product }: { product: Product }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
               <p className="absolute bottom-3 left-3 text-[0.7rem] uppercase tracking-[0.24em] text-white/80">
-                Frame {index + 1}
+                {copy.productFrame} {index + 1}
               </p>
             </div>
           </button>
@@ -126,6 +128,7 @@ function ProductGallery({ product }: { product: Product }) {
 }
 
 export function ProductDetail({ slug, initialProduct, category }: ProductDetailProps) {
+  const { copy } = useLanguage();
   const productQuery = useProductQuery(slug, initialProduct);
   const addItem = useCart((state) => state.addItem);
   const product = productQuery.data ?? initialProduct;
@@ -140,18 +143,18 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
   const sections = [
     {
       key: "details" as const,
-      title: "Product details",
+      title: copy.productDetails,
       content: product.details.join(" "),
     },
     {
       key: "sizing" as const,
-      title: "Fit and sizing",
+      title: copy.productSizing,
       content:
         "Veloura fits true to size with a close, sculpted silhouette. If you move between sizes, choose the larger option for a softer lounge fit.",
     },
     {
       key: "delivery" as const,
-      title: "Delivery and care",
+      title: copy.productDelivery,
       content:
         "Dispatch is mocked at 24 hours for demo purposes. Pieces should be hand washed cold, reshaped while damp and dried flat away from direct heat.",
     },
@@ -161,7 +164,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
     <div className="space-y-8 pb-16">
       <nav className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.24em] text-muted-foreground">
         <Link href="/" className="hover:text-foreground">
-          Home
+          {copy.productHome}
         </Link>
         <span>/</span>
         {category ? (
@@ -207,7 +210,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
 
           <div className="space-y-3">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-              Select size
+              {copy.productSelectSize}
             </p>
             <div className="flex flex-wrap gap-2">
               {product.sizesAvailable.map((size) => (
@@ -240,7 +243,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
             className="h-12 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200"
           >
             {added ? <Check /> : <ShoppingBag />}
-            {added ? "Added to cart" : "Add to cart"}
+            {added ? copy.productAddedToCart : copy.productAddToCart}
           </Button>
 
           <div className="space-y-2">

@@ -1,3 +1,6 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/language-provider";
 import { ProductCard } from "@/components/store/product-card";
 import type { Product } from "@/types/catalog";
 
@@ -21,6 +24,8 @@ function ProductSkeleton() {
 }
 
 export function ProductGrid({ products, loading = false }: ProductGridProps) {
+  const { copy } = useLanguage();
+
   if (loading) {
     return (
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -34,10 +39,9 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
   if (!products.length) {
     return (
       <div className="rounded-3xl border border-dashed border-amber-500/20 bg-card/60 px-6 py-16 text-center">
-        <h2 className="text-3xl font-semibold">No products match these filters.</h2>
+        <h2 className="text-3xl font-semibold">{copy.noProductsTitle}</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
-          Try a broader size range or reset the catalog filters to surface the full atelier
-          assortment again.
+          {copy.noProductsDescription}
         </p>
       </div>
     );

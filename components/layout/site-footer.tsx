@@ -1,7 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
+import { useLanguage } from "@/components/providers/language-provider";
+
 export function SiteFooter() {
+  const { copy } = useLanguage();
+
   return (
     <footer className="border-t border-amber-500/10 bg-background/80">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-5 py-10 sm:px-8 md:flex-row md:items-end md:justify-between">
@@ -21,19 +27,18 @@ export function SiteFooter() {
             </p>
           </div>
           <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-            Lenceria contemporanea con enfoque editorial, construida para escalar de
-            front-end demo a un backend real sin rehacer la base.
+            {copy.footerDescription}
           </p>
         </div>
         <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">
-            Home
+            {copy.footerHome}
           </Link>
           <Link href="/cart" className="hover:text-foreground">
-            Cart
+            {copy.footerCart}
           </Link>
           <Link href="/checkout" className="hover:text-foreground">
-            Checkout
+            {copy.footerCheckout}
           </Link>
         </div>
       </div>
