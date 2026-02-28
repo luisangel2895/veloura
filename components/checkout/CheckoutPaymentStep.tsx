@@ -21,10 +21,14 @@ interface CheckoutPaymentItem {
 interface CheckoutPaymentShipping {
   fullName: string;
   email: string;
-  address: string;
+  country: string;
   city: string;
+  street: string;
+  streetNumber: string;
+  apartment: string;
+  reference: string;
   postalCode: string;
-  country?: string;
+  shippingMethod: string;
 }
 
 interface CheckoutPaymentStepProps {

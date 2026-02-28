@@ -7,6 +7,22 @@ import { ArrowRight, CheckCircle2, MapPin, ShieldCheck } from "lucide-react";
 
 import { CheckoutPaymentStep } from "@/components/checkout/CheckoutPaymentStep";
 import { useLanguage } from "@/components/providers/language-provider";
+import {
+  DEFAULT_COUNTRY,
+  DEFAULT_SHIPPING_METHOD,
+  SHIPPING_COUNTRIES,
+  SHIPPING_METHODS,
+  getCityOptions,
+  getPostalCodeHint,
+  getShippingFeeCents,
+  isShippingMethodCode,
+  isSupportedCountryCode,
+  isValidCityForCountry,
+  isValidPostalCode,
+  normalizePostalCode,
+  type ShippingMethodCode,
+  type SupportedCountryCode,
+} from "@/lib/checkout/shipping";
 import { Price } from "@/components/store/price";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,9 +35,14 @@ type PaymentMethod = "card" | "link" | "bank_transfer";
 type CheckoutField =
   | "shipping.fullName"
   | "shipping.email"
-  | "shipping.address"
+  | "shipping.country"
   | "shipping.city"
+  | "shipping.street"
+  | "shipping.streetNumber"
+  | "shipping.apartment"
+  | "shipping.reference"
   | "shipping.postalCode"
+  | "shipping.shippingMethod"
   | "payment.method"
   | "payment.billingSameAsShipping"
   | "payment.billingFullName"
@@ -33,10 +54,14 @@ type CheckoutErrors = Partial<Record<CheckoutField, string>>;
 interface ShippingForm {
   fullName: string;
   email: string;
-  address: string;
+  country: SupportedCountryCode;
   city: string;
+  street: string;
+  streetNumber: string;
+  apartment: string;
+  reference: string;
   postalCode: string;
-  country?: string;
+  shippingMethod: ShippingMethodCode;
 }
 
 interface PaymentForm {
@@ -106,9 +131,13 @@ const stepFieldOrder: Record<EditableCheckoutStep, CheckoutField[]> = {
   shipping: [
     "shipping.fullName",
     "shipping.email",
-    "shipping.address",
+    "shipping.country",
     "shipping.city",
+    "shipping.street",
+    "shipping.streetNumber",
+    "shipping.reference",
     "shipping.postalCode",
+    "shipping.shippingMethod",
   ],
   payment: [
     "payment.method",
@@ -125,10 +154,14 @@ const initialState: CheckoutState = {
   shipping: {
     fullName: "",
     email: "",
-    address: "",
+    country: DEFAULT_COUNTRY,
     city: "",
+    street: "",
+    streetNumber: "",
+    apartment: "",
+    reference: "",
     postalCode: "",
-    country: "US",
+    shippingMethod: DEFAULT_SHIPPING_METHOD,
   },
   payment: {
     method: "",
@@ -188,8 +221,13 @@ function asString(value: unknown): string | null {
   return typeof value === "string" ? value : null;
 }
 
-function asOptionalString(value: unknown): string | undefined {
-  return typeof value === "string" ? value : undefined;
+function formatShippingAddress(shipping: ShippingForm) {
+  const lineTwo = [shipping.streetNumber, shipping.street].filter(Boolean).join(" ");
+  const lineThree = [shipping.apartment.trim(), shipping.reference.trim()]
+    .filter(Boolean)
+    .join(" • ");
+
+  return [lineTwo, lineThree].filter(Boolean);
 }
 
 function parsePersistedCheckoutState(raw: string | null): PersistedCheckoutState | null {
@@ -213,13 +251,26 @@ function parsePersistedCheckoutState(raw: string | null): PersistedCheckoutState
       return null;
     }
 
+    const restoredCountry = isSupportedCountryCode(shipping.country)
+      ? shipping.country
+      : DEFAULT_COUNTRY;
+    const restoredCityCandidate = asString(shipping.city) ?? "";
+    const restoredCity = isValidCityForCountry(restoredCountry, restoredCityCandidate)
+      ? restoredCityCandidate
+      : "";
     const restoredShipping: ShippingForm = {
       fullName: asString(shipping.fullName) ?? "",
       email: asString(shipping.email) ?? "",
-      address: asString(shipping.address) ?? "",
-      city: asString(shipping.city) ?? "",
+      country: restoredCountry,
+      city: restoredCity,
+      street: asString(shipping.street) ?? asString(shipping.address) ?? "",
+      streetNumber: asString(shipping.streetNumber) ?? "",
+      apartment: asString(shipping.apartment) ?? "",
+      reference: asString(shipping.reference) ?? "",
       postalCode: asString(shipping.postalCode) ?? "",
-      country: asOptionalString(shipping.country) ?? "US",
+      shippingMethod: isShippingMethodCode(shipping.shippingMethod)
+        ? shipping.shippingMethod
+        : DEFAULT_SHIPPING_METHOD,
     };
 
     const restoredPayment: PaymentForm = {
@@ -351,14 +402,29 @@ function validateCurrentStep(state: CheckoutState, step: EditableCheckoutStep): 
     if (!validateEmail(state.shipping.email)) {
       errors["shipping.email"] = "A valid email is required.";
     }
-    if (!state.shipping.address.trim()) {
-      errors["shipping.address"] = "Address is required.";
+    if (!isSupportedCountryCode(state.shipping.country)) {
+      errors["shipping.country"] = "Select a supported country.";
     }
-    if (!state.shipping.city.trim()) {
-      errors["shipping.city"] = "City is required.";
+    if (!isValidCityForCountry(state.shipping.country, state.shipping.city)) {
+      errors["shipping.city"] = "Select a valid city.";
     }
-    if (!state.shipping.postalCode.trim()) {
-      errors["shipping.postalCode"] = "Postal code is required.";
+    if (state.shipping.street.trim().length < 3) {
+      errors["shipping.street"] = "Street is required.";
+    }
+    if (state.shipping.streetNumber.trim().length < 1) {
+      errors["shipping.streetNumber"] = "Street number is required.";
+    }
+    if (state.shipping.apartment.trim() && state.shipping.apartment.trim().length < 2) {
+      errors["shipping.apartment"] = "Apartment or suite is too short.";
+    }
+    if (state.shipping.reference.trim().length < 6) {
+      errors["shipping.reference"] = "Delivery reference is required.";
+    }
+    if (!isValidPostalCode(state.shipping.country, state.shipping.postalCode)) {
+      errors["shipping.postalCode"] = "Postal code is invalid for the selected country.";
+    }
+    if (!isShippingMethodCode(state.shipping.shippingMethod)) {
+      errors["shipping.shippingMethod"] = "Select a shipping method.";
     }
 
     return errors;
@@ -430,11 +496,34 @@ function checkoutReducer(state: CheckoutState, action: CheckoutAction): Checkout
             errors: nextErrors,
             submitError: null,
           };
-        case "shipping.address":
+        case "shipping.country": {
+          const nextCountry = isSupportedCountryCode(action.value)
+            ? action.value
+            : DEFAULT_COUNTRY;
+          const nextCity = isValidCityForCountry(nextCountry, state.shipping.city)
+            ? state.shipping.city
+            : "";
+
+          delete nextErrors["shipping.city"];
+
           return {
             ...state,
             ...resetPaymentIntentState,
-            shipping: { ...state.shipping, address: String(action.value) },
+            shipping: {
+              ...state.shipping,
+              country: nextCountry,
+              city: nextCity,
+              postalCode: "",
+            },
+            errors: nextErrors,
+            submitError: null,
+          };
+        }
+        case "shipping.street":
+          return {
+            ...state,
+            ...resetPaymentIntentState,
+            shipping: { ...state.shipping, street: String(action.value) },
             errors: nextErrors,
             submitError: null,
           };
@@ -450,7 +539,47 @@ function checkoutReducer(state: CheckoutState, action: CheckoutAction): Checkout
           return {
             ...state,
             ...resetPaymentIntentState,
-            shipping: { ...state.shipping, postalCode: String(action.value) },
+            shipping: {
+              ...state.shipping,
+              postalCode: normalizePostalCode(String(action.value)),
+            },
+            errors: nextErrors,
+            submitError: null,
+          };
+        case "shipping.streetNumber":
+          return {
+            ...state,
+            ...resetPaymentIntentState,
+            shipping: { ...state.shipping, streetNumber: String(action.value) },
+            errors: nextErrors,
+            submitError: null,
+          };
+        case "shipping.apartment":
+          return {
+            ...state,
+            ...resetPaymentIntentState,
+            shipping: { ...state.shipping, apartment: String(action.value) },
+            errors: nextErrors,
+            submitError: null,
+          };
+        case "shipping.reference":
+          return {
+            ...state,
+            ...resetPaymentIntentState,
+            shipping: { ...state.shipping, reference: String(action.value) },
+            errors: nextErrors,
+            submitError: null,
+          };
+        case "shipping.shippingMethod":
+          return {
+            ...state,
+            ...resetPaymentIntentState,
+            shipping: {
+              ...state.shipping,
+              shippingMethod: isShippingMethodCode(action.value)
+                ? action.value
+                : DEFAULT_SHIPPING_METHOD,
+            },
             errors: nextErrors,
             submitError: null,
           };
@@ -608,14 +737,14 @@ function StepMarker({
       type="button"
       onClick={() => onSelect(target)}
       disabled={target === "complete" || current === "complete"}
-      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors disabled:cursor-default disabled:opacity-100 ${
+      className={`flex min-w-0 items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors disabled:cursor-default disabled:opacity-100 ${
         isCurrent
           ? "border-amber-700 bg-amber-700/8 dark:border-amber-300 dark:bg-amber-300/10"
           : "border-border bg-background/60 hover:bg-accent dark:border-amber-500/10 dark:bg-background/30 dark:hover:bg-amber-500/8"
       }`}
     >
       <span
-        className={`inline-flex size-8 items-center justify-center rounded-full border text-xs font-semibold ${
+        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-semibold leading-none ${
           active
             ? "border-amber-700 bg-amber-700 text-amber-50 dark:border-amber-300 dark:bg-amber-300 dark:text-zinc-950"
             : "border-border text-muted-foreground dark:border-amber-500/20"
@@ -623,7 +752,9 @@ function StepMarker({
       >
         {targetIndex + 1}
       </span>
-      <span className={`text-sm ${active ? "text-foreground" : "text-muted-foreground"}`}>
+      <span
+        className={`min-w-0 text-sm leading-none ${active ? "text-foreground" : "text-muted-foreground"}`}
+      >
         {label}
       </span>
     </button>
@@ -641,7 +772,14 @@ export function CheckoutFlow() {
     subtotal: cart.subtotal,
     clearCart: cart.clearCart,
   }));
-  const inputRefs = useRef<Partial<Record<CheckoutField, HTMLInputElement | null>>>({});
+  const inputRefs = useRef<
+    Partial<
+      Record<
+        CheckoutField,
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null
+      >
+    >
+  >({});
 
   const labels = {
     shipping: locale === "es" ? "Envío" : "Shipping",
@@ -649,13 +787,37 @@ export function CheckoutFlow() {
     review: locale === "es" ? "Revisión" : "Review",
     complete: locale === "es" ? "Completo" : "Complete",
     shippingTitle: locale === "es" ? "Entrega y contacto" : "Shipping and contact",
+    shippingMethodTitle:
+      locale === "es" ? "Velocidad de entrega" : "Delivery speed",
     paymentTitle: locale === "es" ? "Pago confirmado" : "Confirmed payment",
     reviewTitle: locale === "es" ? "Revisión final" : "Final review",
     fullName: locale === "es" ? "Nombre completo" : "Full name",
     email: "Email",
-    address: locale === "es" ? "Dirección" : "Address",
+    country: locale === "es" ? "País" : "Country",
     city: locale === "es" ? "Ciudad" : "City",
+    street: locale === "es" ? "Calle" : "Street",
+    streetNumber: locale === "es" ? "Número" : "Street number",
+    apartment:
+      locale === "es" ? "Dpto / Suite (opcional)" : "Apt / Suite (optional)",
+    reference:
+      locale === "es" ? "Referencia de entrega" : "Delivery reference",
     postalCode: locale === "es" ? "Código postal" : "Postal code",
+    chooseCountry:
+      locale === "es" ? "Selecciona un país" : "Select a country",
+    chooseCity: locale === "es" ? "Selecciona una ciudad" : "Select a city",
+    shippingStandard:
+      locale === "es" ? "Envío estándar" : "Standard shipping",
+    shippingPremium:
+      locale === "es" ? "Envío premium" : "Premium shipping",
+    shippingStandardEta:
+      locale === "es" ? "Llega en 5 días" : "Arrives in 5 days",
+    shippingPremiumEta:
+      locale === "es" ? "Llega al día siguiente" : "Arrives next day",
+    orderMerchandise:
+      locale === "es" ? "Productos" : "Merchandise",
+    shippingFee:
+      locale === "es" ? "Costo de envío" : "Shipping",
+    orderTotal: locale === "es" ? "Total" : "Total",
     payAndContinue:
       locale === "es" ? "Pagar y continuar" : "Pay and continue",
     completeOrder:
@@ -687,11 +849,30 @@ export function CheckoutFlow() {
       locale === "es" ? "El nombre completo es obligatorio." : "Full name is required.",
     emailRequired:
       locale === "es" ? "Ingresa un correo válido." : "A valid email is required.",
-    addressRequired:
-      locale === "es" ? "La dirección es obligatoria." : "Address is required.",
-    cityRequired: locale === "es" ? "La ciudad es obligatoria." : "City is required.",
+    countryRequired:
+      locale === "es" ? "Selecciona un país válido." : "Select a supported country.",
+    cityRequired:
+      locale === "es" ? "Selecciona una ciudad válida." : "Select a valid city.",
+    streetRequired:
+      locale === "es" ? "La calle es obligatoria." : "Street is required.",
+    streetNumberRequired:
+      locale === "es" ? "El número es obligatorio." : "Street number is required.",
+    apartmentInvalid:
+      locale === "es"
+        ? "El dpto o suite es demasiado corto."
+        : "Apartment or suite is too short.",
+    referenceRequired:
+      locale === "es"
+        ? "Agrega una referencia de entrega."
+        : "Add a delivery reference.",
     postalRequired:
-      locale === "es" ? "El código postal es obligatorio." : "Postal code is required.",
+      locale === "es"
+        ? "El código postal no coincide con el país seleccionado."
+        : "Postal code is invalid for the selected country.",
+    shippingMethodRequired:
+      locale === "es"
+        ? "Selecciona un tipo de envío."
+        : "Select a shipping method.",
     paymentMethodRequired:
       locale === "es" ? "Selecciona un método de pago." : "Select a payment method.",
     billingNameRequired:
@@ -721,6 +902,8 @@ export function CheckoutFlow() {
     returnToStore:
       locale === "es" ? "Volver a la colección" : "Return to the collection",
   } as const;
+  const cityOptions = getCityOptions(state.shipping.country);
+  const postalCodeHint = getPostalCodeHint(state.shipping.country);
 
   useEffect(() => {
     if (!hasHydrated || hasRestoredCheckoutRef.current || typeof window === "undefined") {
@@ -826,7 +1009,7 @@ export function CheckoutFlow() {
   ]);
 
   function registerInputRef(field: CheckoutField) {
-    return (node: HTMLInputElement | null) => {
+    return (node: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null) => {
       inputRefs.current[field] = node;
     };
   }
@@ -854,14 +1037,29 @@ export function CheckoutFlow() {
         case "shipping.email":
           localized[field] = labels.emailRequired;
           break;
-        case "shipping.address":
-          localized[field] = labels.addressRequired;
+        case "shipping.country":
+          localized[field] = labels.countryRequired;
           break;
         case "shipping.city":
           localized[field] = labels.cityRequired;
           break;
+        case "shipping.street":
+          localized[field] = labels.streetRequired;
+          break;
+        case "shipping.streetNumber":
+          localized[field] = labels.streetNumberRequired;
+          break;
+        case "shipping.apartment":
+          localized[field] = labels.apartmentInvalid;
+          break;
+        case "shipping.reference":
+          localized[field] = labels.referenceRequired;
+          break;
         case "shipping.postalCode":
           localized[field] = labels.postalRequired;
+          break;
+        case "shipping.shippingMethod":
+          localized[field] = labels.shippingMethodRequired;
           break;
         case "payment.method":
           localized[field] = labels.paymentMethodRequired;
@@ -971,7 +1169,12 @@ export function CheckoutFlow() {
   }
 
   const summaryItems = state.orderSnapshot?.items ?? items;
-  const summarySubtotal = state.orderSnapshot?.subtotal ?? subtotal;
+  const merchandiseSubtotal = state.orderSnapshot?.subtotal ?? subtotal;
+  const shippingFeeCents = getShippingFeeCents(state.shipping.shippingMethod);
+  const orderTotalCents = merchandiseSubtotal + shippingFeeCents;
+  const paymentReference = (state.paymentIntentId ?? "pi_pending").toUpperCase();
+  const paymentStatusTone =
+    state.paymentIntentStatus === "succeeded" || state.paymentIntentStatus === "processing";
 
   if (!hasHydrated) {
     return (
@@ -1002,8 +1205,8 @@ export function CheckoutFlow() {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="space-y-6 rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8">
+    <div className="grid gap-8 lg:grid-cols-[1.18fr_0.82fr]">
+      <section className="space-y-6 rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8 xl:px-9">
         <div className="space-y-2">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
             {copy.checkoutStateMachine}
@@ -1030,7 +1233,8 @@ export function CheckoutFlow() {
         </div>
 
         {state.step === "shipping" ? (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-6">
+            <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label htmlFor="shipping-full-name" className="text-sm font-medium">
                 {labels.fullName}
@@ -1088,30 +1292,39 @@ export function CheckoutFlow() {
               ) : null}
             </div>
 
-            <div className="space-y-2 sm:col-span-2">
-              <label htmlFor="shipping-address" className="text-sm font-medium">
-                {labels.address}
+            <div className="space-y-2">
+              <label htmlFor="shipping-country" className="text-sm font-medium">
+                {labels.country}
               </label>
-              <Input
-                id="shipping-address"
-                ref={registerInputRef("shipping.address")}
-                value={state.shipping.address}
+              <select
+                id="shipping-country"
+                ref={registerInputRef("shipping.country")}
+                value={state.shipping.country}
                 onChange={(event) =>
                   dispatch({
                     type: "SET_FIELD",
-                    field: "shipping.address",
+                    field: "shipping.country",
                     value: event.target.value,
                   })
                 }
-                placeholder={labels.address}
-                aria-invalid={state.errors["shipping.address"] ? "true" : "false"}
+                aria-invalid={state.errors["shipping.country"] ? "true" : "false"}
                 aria-describedby={
-                  state.errors["shipping.address"] ? "shipping-address-error" : undefined
+                  state.errors["shipping.country"] ? "shipping-country-error" : undefined
                 }
-              />
-              {state.errors["shipping.address"] ? (
-                <p id="shipping-address-error" className="text-sm text-destructive">
-                  {state.errors["shipping.address"]}
+                className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+              >
+                <option value="" disabled>
+                  {labels.chooseCountry}
+                </option>
+                {SHIPPING_COUNTRIES.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+              {state.errors["shipping.country"] ? (
+                <p id="shipping-country-error" className="text-sm text-destructive">
+                  {state.errors["shipping.country"]}
                 </p>
               ) : null}
             </div>
@@ -1120,7 +1333,7 @@ export function CheckoutFlow() {
               <label htmlFor="shipping-city" className="text-sm font-medium">
                 {labels.city}
               </label>
-              <Input
+              <select
                 id="shipping-city"
                 ref={registerInputRef("shipping.city")}
                 value={state.shipping.city}
@@ -1131,15 +1344,110 @@ export function CheckoutFlow() {
                     value: event.target.value,
                   })
                 }
-                placeholder={labels.city}
                 aria-invalid={state.errors["shipping.city"] ? "true" : "false"}
                 aria-describedby={
                   state.errors["shipping.city"] ? "shipping-city-error" : undefined
                 }
-              />
+                className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+              >
+                <option value="" disabled>
+                  {labels.chooseCity}
+                </option>
+                {cityOptions.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
               {state.errors["shipping.city"] ? (
                 <p id="shipping-city-error" className="text-sm text-destructive">
                   {state.errors["shipping.city"]}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <label htmlFor="shipping-street" className="text-sm font-medium">
+                {labels.street}
+              </label>
+              <Input
+                id="shipping-street"
+                ref={registerInputRef("shipping.street")}
+                value={state.shipping.street}
+                onChange={(event) =>
+                  dispatch({
+                    type: "SET_FIELD",
+                    field: "shipping.street",
+                    value: event.target.value,
+                  })
+                }
+                placeholder={labels.street}
+                aria-invalid={state.errors["shipping.street"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.street"] ? "shipping-street-error" : undefined
+                }
+              />
+              {state.errors["shipping.street"] ? (
+                <p id="shipping-street-error" className="text-sm text-destructive">
+                  {state.errors["shipping.street"]}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="shipping-street-number" className="text-sm font-medium">
+                {labels.streetNumber}
+              </label>
+              <Input
+                id="shipping-street-number"
+                ref={registerInputRef("shipping.streetNumber")}
+                value={state.shipping.streetNumber}
+                onChange={(event) =>
+                  dispatch({
+                    type: "SET_FIELD",
+                    field: "shipping.streetNumber",
+                    value: event.target.value,
+                  })
+                }
+                placeholder={labels.streetNumber}
+                aria-invalid={state.errors["shipping.streetNumber"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.streetNumber"]
+                    ? "shipping-street-number-error"
+                    : undefined
+                }
+              />
+              {state.errors["shipping.streetNumber"] ? (
+                <p id="shipping-street-number-error" className="text-sm text-destructive">
+                  {state.errors["shipping.streetNumber"]}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="shipping-apartment" className="text-sm font-medium">
+                {labels.apartment}
+              </label>
+              <Input
+                id="shipping-apartment"
+                ref={registerInputRef("shipping.apartment")}
+                value={state.shipping.apartment}
+                onChange={(event) =>
+                  dispatch({
+                    type: "SET_FIELD",
+                    field: "shipping.apartment",
+                    value: event.target.value,
+                  })
+                }
+                placeholder={labels.apartment}
+                aria-invalid={state.errors["shipping.apartment"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.apartment"] ? "shipping-apartment-error" : undefined
+                }
+              />
+              {state.errors["shipping.apartment"] ? (
+                <p id="shipping-apartment-error" className="text-sm text-destructive">
+                  {state.errors["shipping.apartment"]}
                 </p>
               ) : null}
             </div>
@@ -1159,8 +1467,8 @@ export function CheckoutFlow() {
                     value: event.target.value,
                   })
                 }
-                placeholder={labels.postalCode}
-                inputMode="numeric"
+                placeholder={postalCodeHint}
+                inputMode="text"
                 aria-invalid={state.errors["shipping.postalCode"] ? "true" : "false"}
                 aria-describedby={
                   state.errors["shipping.postalCode"]
@@ -1171,6 +1479,98 @@ export function CheckoutFlow() {
               {state.errors["shipping.postalCode"] ? (
                 <p id="shipping-postal-code-error" className="text-sm text-destructive">
                   {state.errors["shipping.postalCode"]}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <label htmlFor="shipping-reference" className="text-sm font-medium">
+                {labels.reference}
+              </label>
+              <textarea
+                id="shipping-reference"
+                ref={registerInputRef("shipping.reference")}
+                value={state.shipping.reference}
+                onChange={(event) =>
+                  dispatch({
+                    type: "SET_FIELD",
+                    field: "shipping.reference",
+                    value: event.target.value,
+                  })
+                }
+                placeholder={labels.reference}
+                rows={3}
+                aria-invalid={state.errors["shipping.reference"] ? "true" : "false"}
+                aria-describedby={
+                  state.errors["shipping.reference"] ? "shipping-reference-error" : undefined
+                }
+                className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+              />
+              {state.errors["shipping.reference"] ? (
+                <p id="shipping-reference-error" className="text-sm text-destructive">
+                  {state.errors["shipping.reference"]}
+                </p>
+              ) : null}
+            </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <p className="text-sm font-medium">{labels.shippingMethodTitle}</p>
+                <p className="text-sm text-muted-foreground">
+                  {locale === "es"
+                    ? "Selecciona la velocidad de entrega para cerrar el total."
+                    : "Choose the delivery speed to finalize the total."}
+                </p>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2" role="radiogroup" aria-label={labels.shippingMethodTitle}>
+                {SHIPPING_METHODS.map((method) => {
+                  const selected = state.shipping.shippingMethod === method.code;
+                  const title =
+                    method.code === "standard" ? labels.shippingStandard : labels.shippingPremium;
+                  const eta =
+                    method.code === "standard"
+                      ? labels.shippingStandardEta
+                      : labels.shippingPremiumEta;
+
+                  return (
+                    <button
+                      key={method.code}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      onClick={() =>
+                        dispatch({
+                          type: "SET_FIELD",
+                          field: "shipping.shippingMethod",
+                          value: method.code,
+                        })
+                      }
+                      className={`rounded-2xl border px-4 py-4 text-left transition-colors ${
+                        selected
+                          ? "border-amber-700 bg-amber-700/8 dark:border-amber-300 dark:bg-amber-300/10"
+                          : "border-border bg-background/60 hover:bg-accent dark:border-amber-500/10 dark:bg-background/30 dark:hover:bg-amber-500/8"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-foreground">{title}</p>
+                          <p className="text-sm text-muted-foreground">{eta}</p>
+                        </div>
+                        <Price
+                          amountCents={method.priceCents}
+                          className="text-base font-semibold text-foreground"
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {state.errors["shipping.shippingMethod"] ? (
+                <p className="text-sm text-destructive">
+                  {state.errors["shipping.shippingMethod"]}
                 </p>
               ) : null}
             </div>
@@ -1205,26 +1605,65 @@ export function CheckoutFlow() {
             <p className="text-sm font-medium">{labels.reviewTitle}</p>
 
             <div className="grid gap-5 md:grid-cols-2">
-              <div className="rounded-2xl border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/70">
+              <div className="h-full rounded-2xl border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/70">
                 <p className="text-sm font-medium">{labels.shippingTitle}</p>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">
                   {state.shipping.fullName}
                   <br />
                   {state.shipping.email}
                   <br />
-                  {state.shipping.address}
+                  {formatShippingAddress(state.shipping).map((line) => (
+                    <span key={line}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
                   <br />
                   {state.shipping.city}, {state.shipping.postalCode}
+                  <br />
+                  {
+                    SHIPPING_COUNTRIES.find((country) => country.code === state.shipping.country)
+                      ?.name
+                  }
+                  <br />
+                  {state.shipping.shippingMethod === "standard"
+                    ? labels.shippingStandard
+                    : labels.shippingPremium}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/70">
+              <div className="h-full rounded-2xl border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/70">
                 <p className="text-sm font-medium">{labels.paymentTitle}</p>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                  {state.paymentIntentId ?? "PaymentIntent"}
-                  <br />
-                  {state.paymentIntentStatus ?? "succeeded"}
-                </p>
+                <div className="mt-4 space-y-4">
+                  <div className="rounded-2xl border border-amber-700/20 bg-amber-700/8 px-4 py-3 dark:border-amber-300/20 dark:bg-amber-300/10">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-amber-700 dark:text-amber-200">
+                      {locale === "es" ? "Código de compra" : "Purchase code"}
+                    </p>
+                    <p className="mt-2 break-all font-mono text-sm font-medium text-foreground">
+                      {paymentReference}
+                    </p>
+                  </div>
+
+                  <div
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] ${
+                      paymentStatusTone
+                        ? "bg-emerald-500/12 text-emerald-700 dark:bg-emerald-400/12 dark:text-emerald-300"
+                        : "bg-amber-700/10 text-amber-700 dark:bg-amber-300/10 dark:text-amber-200"
+                    }`}
+                  >
+                    {paymentStatusTone
+                      ? locale === "es"
+                        ? "Pagado"
+                        : "Paid"
+                      : state.paymentIntentStatus ?? "Pending"}
+                  </div>
+
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {locale === "es"
+                      ? "El pago fue autorizado y este código identifica la compra para seguimiento y soporte."
+                      : "Payment was authorized and this code identifies the purchase for support and tracking."}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -1242,6 +1681,14 @@ export function CheckoutFlow() {
                     <Price amountCents={item.priceCents * item.quantity} className="font-medium" />
                   </div>
                 ))}
+                <div className="flex items-center justify-between gap-4 border-t border-border pt-3 text-sm dark:border-amber-500/10">
+                  <span className="text-muted-foreground">{labels.shippingFee}</span>
+                  <Price amountCents={shippingFeeCents} className="font-medium" />
+                </div>
+                <div className="flex items-center justify-between gap-4 text-sm font-medium">
+                  <span>{labels.orderTotal}</span>
+                  <Price amountCents={orderTotalCents} />
+                </div>
               </div>
             </div>
           </div>
@@ -1259,15 +1706,26 @@ export function CheckoutFlow() {
               {copy.checkoutOrderConfirmed}
             </p>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{labels.completeIntro}</p>
-            <div className="mt-6 rounded-2xl border border-border bg-background/60 p-4 dark:border-amber-500/10 dark:bg-background/30">
-              <p className="text-sm font-medium text-foreground">
-                {locale === "es" ? "PaymentIntent" : "PaymentIntent"}
-              </p>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                {state.paymentIntentId ?? "n/a"}
-                <br />
-                {state.paymentIntentStatus ?? "succeeded"}
-              </p>
+            <div className="mt-6 space-y-4 rounded-2xl border border-border bg-background/60 p-4 dark:border-amber-500/10 dark:bg-background/30">
+              <div className="rounded-2xl border border-amber-700/20 bg-amber-700/8 px-4 py-3 dark:border-amber-300/20 dark:bg-amber-300/10">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-amber-700 dark:text-amber-200">
+                  {locale === "es" ? "Código de compra" : "Purchase code"}
+                </p>
+                <p className="mt-2 break-all font-mono text-sm font-medium text-foreground">
+                  {paymentReference}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center rounded-full bg-emerald-500/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700 dark:bg-emerald-400/12 dark:text-emerald-300">
+                  {locale === "es" ? "Pago exitoso" : "Payment successful"}
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {locale === "es"
+                    ? "Tu pago fue autorizado y la compra ya quedó confirmada."
+                    : "Your payment was authorized and the purchase is now confirmed."}
+                </span>
+              </div>
             </div>
             <Button
               asChild
@@ -1344,9 +1802,19 @@ export function CheckoutFlow() {
           ))}
         </div>
 
-        <div className="mt-6 flex items-center justify-between border-t border-border pt-6 dark:border-amber-500/10">
-          <span className="text-muted-foreground">{copy.cartSubtotal}</span>
-          <Price amountCents={summarySubtotal} className="text-2xl font-semibold" />
+        <div className="mt-6 space-y-3 border-t border-border pt-6 dark:border-amber-500/10">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">{labels.orderMerchandise}</span>
+            <Price amountCents={merchandiseSubtotal} className="font-medium" />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">{labels.shippingFee}</span>
+            <Price amountCents={shippingFeeCents} className="font-medium" />
+          </div>
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-foreground">{labels.orderTotal}</span>
+            <Price amountCents={orderTotalCents} className="text-2xl font-semibold" />
+          </div>
         </div>
 
         <div className="mt-6 rounded-3xl border border-border bg-background/60 px-4 py-4 text-sm text-muted-foreground dark:border-amber-500/10 dark:bg-background/30">

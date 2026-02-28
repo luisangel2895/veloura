@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import {
+  SHIPPING_METHOD_CODES,
+  SUPPORTED_COUNTRY_CODES,
+  getShippingFeeCents,
+  isValidCityForCountry,
+  isValidPostalCode,
+} from "@/lib/checkout/shipping";
 import { mockProducts } from "@/lib/data/mock-products";
 
 export const runtime = "nodejs";
@@ -19,10 +26,14 @@ const itemSchema = z.object({
 const shippingSchema = z.object({
   fullName: z.string().min(1),
   email: z.string().email(),
-  address: z.string().min(1),
+  country: z.enum(SUPPORTED_COUNTRY_CODES),
   city: z.string().min(1),
+  street: z.string().min(2),
+  streetNumber: z.string().min(1),
+  apartment: z.string().trim().max(24).optional(),
+  reference: z.string().min(6).max(160),
   postalCode: z.string().min(1),
-  country: z.string().min(2).max(2).optional(),
+  shippingMethod: z.enum(SHIPPING_METHOD_CODES),
 });
 
 const requestSchema = z.object({
@@ -30,7 +41,10 @@ const requestSchema = z.object({
   shipping: shippingSchema,
 });
 
-function computeTrustedAmount(items: Array<z.infer<typeof itemSchema>>) {
+function computeTrustedAmount(
+  items: Array<z.infer<typeof itemSchema>>,
+  shippingMethod: z.infer<typeof shippingSchema>["shippingMethod"],
+) {
   return items.reduce((sum, item) => {
     const product = mockProducts.find((candidate) => candidate.id === item.id);
 
@@ -39,7 +53,7 @@ function computeTrustedAmount(items: Array<z.infer<typeof itemSchema>>) {
     }
 
     return sum + product.priceCents * item.quantity;
-  }, 0);
+  }, getShippingFeeCents(shippingMethod));
 }
 
 function buildStripeBody(params: {
@@ -47,6 +61,7 @@ function buildStripeBody(params: {
   currency: string;
   email: string;
   items: Array<z.infer<typeof itemSchema>>;
+  shipping: z.infer<typeof shippingSchema>;
 }) {
   const body = new URLSearchParams();
 
@@ -55,6 +70,9 @@ function buildStripeBody(params: {
   body.set("receipt_email", params.email);
   body.set("automatic_payment_methods[enabled]", "true");
   body.set("metadata[cart_size]", String(params.items.length));
+  body.set("metadata[shipping_method]", params.shipping.shippingMethod);
+  body.set("metadata[shipping_country]", params.shipping.country);
+  body.set("metadata[shipping_city]", params.shipping.city);
   body.set(
     "metadata[item_ids]",
     params.items
@@ -130,13 +148,35 @@ export async function POST(request: Request) {
   }
 
   try {
-    const amount = computeTrustedAmount(parsed.data.items);
+    if (!isValidCityForCountry(parsed.data.shipping.country, parsed.data.shipping.city)) {
+      return NextResponse.json(
+        {
+          error: "City is not available for the selected country.",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (!isValidPostalCode(parsed.data.shipping.country, parsed.data.shipping.postalCode)) {
+      return NextResponse.json(
+        {
+          error: "Postal code does not match the selected country.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const amount = computeTrustedAmount(
+      parsed.data.items,
+      parsed.data.shipping.shippingMethod,
+    );
     const stripeResponse = await createStripePaymentIntent(
       buildStripeBody({
         amount,
         currency: BASE_CURRENCY,
         email: parsed.data.shipping.email,
         items: parsed.data.items,
+        shipping: parsed.data.shipping,
       }),
       secretKey,
     );
