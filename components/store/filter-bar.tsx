@@ -1,5 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
+import { ArrowDown, ArrowUp } from "lucide-react";
+
 import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { type ProductSort, type Size } from "@/types/catalog";
@@ -15,7 +18,6 @@ interface FilterBarProps {
   onSizeChange: (size: Size | "all") => void;
   onCategoryChange: (category: string) => void;
   onSortChange: (sort: ProductSort) => void;
-  onClear: () => void;
 }
 
 function ToggleGroup<T extends string>({
@@ -26,7 +28,7 @@ function ToggleGroup<T extends string>({
   align = "left",
 }: {
   label: string;
-  options: Array<{ label: string; value: T }>;
+  options: Array<{ label: ReactNode; value: T }>;
   value: T;
   onChange: (value: T) => void;
   align?: "left" | "right";
@@ -75,7 +77,6 @@ export function FilterBar({
   onSizeChange,
   onCategoryChange,
   onSortChange,
-  onClear,
 }: FilterBarProps) {
   const { copy } = useLanguage();
 
@@ -88,7 +89,10 @@ export function FilterBar({
               label={copy.filterCategory}
               options={[
                 { label: copy.filterAll, value: "all" },
-                ...categories.map((item) => ({ label: item.name, value: item.slug })),
+                ...categories.map((item) => ({
+                  label: item.name.toUpperCase(),
+                  value: item.slug,
+                })),
               ]}
               value={category}
               onChange={onCategoryChange}
@@ -107,22 +111,29 @@ export function FilterBar({
               label={copy.filterSort}
               align="right"
               options={[
-                { label: copy.filterFeatured, value: "featured" },
-                { label: copy.filterPriceLow, value: "price-asc" },
-                { label: copy.filterPriceHigh, value: "price-desc" },
-                { label: copy.filterAZ, value: "name" },
+                { label: copy.filterFeatured.toUpperCase(), value: "featured" },
+                {
+                  label: (
+                    <span className="inline-flex items-center gap-1.5 uppercase">
+                      <span>PRICE</span>
+                      <ArrowUp className="size-3.5" />
+                    </span>
+                  ),
+                  value: "price-asc",
+                },
+                {
+                  label: (
+                    <span className="inline-flex items-center gap-1.5 uppercase">
+                      <span>PRICE</span>
+                      <ArrowDown className="size-3.5" />
+                    </span>
+                  ),
+                  value: "price-desc",
+                },
               ]}
               value={sort}
               onChange={onSortChange}
             />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClear}
-              className="rounded-full border-amber-500/20 bg-transparent text-foreground hover:bg-amber-500/10 hover:text-foreground"
-            >
-              {copy.filterClear}
-            </Button>
           </div>
         </div>
 

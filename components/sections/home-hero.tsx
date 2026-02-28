@@ -29,7 +29,7 @@ export function HomeHero() {
           <h1 className="mx-auto max-w-3xl font-[family-name:var(--font-display)] text-5xl font-normal leading-[0.94] tracking-[0.01em] sm:text-7xl">
             Intimacy,
             <br />
-            redefined.
+            <span className="italic">redefined.</span>
           </h1>
           <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
             A curated selection of sculptural silhouettes and ceremony pieces, designed

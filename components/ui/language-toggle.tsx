@@ -11,21 +11,27 @@ export function LanguageToggle() {
 
   return (
     <div
-      className="flex items-center gap-1 rounded-full border border-amber-500/20 bg-card/80 p-1 shadow-sm"
+      className="relative grid h-10 grid-cols-2 items-center rounded-full border border-amber-500/20 bg-card/80 p-1 shadow-sm"
       aria-label={copy.languageLabel}
     >
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-y-1 w-[calc(50%-0.25rem)] rounded-full bg-amber-300 transition-transform duration-300 ease-out ${
+          locale === "en" ? "translate-x-[calc(100%+0.25rem)]" : "translate-x-0"
+        }`}
+      />
       {options.map((option) => (
         <Button
           key={option}
           type="button"
-          variant={locale === option ? "default" : "ghost"}
+          variant="ghost"
           size="sm"
           onClick={() => setLocale(option)}
-          className={
+          className={`relative z-10 h-8 rounded-full px-3 text-xs font-semibold uppercase tracking-[0.18em] transition-colors duration-300 ${
             locale === option
-              ? "h-8 rounded-full bg-amber-300 px-3 text-zinc-950 hover:bg-amber-200"
-              : "h-8 rounded-full px-3 text-foreground hover:bg-amber-500/10"
-          }
+              ? "text-zinc-950 hover:bg-transparent"
+              : "text-foreground hover:bg-amber-500/10"
+          }`}
         >
           {option === "es" ? copy.languageSpanish : copy.languageEnglish}
         </Button>

@@ -151,7 +151,6 @@ export function CatalogView({
   const category = useFilterStore((s) => s.category);
   const sort = useFilterStore((s) => s.sort);
   const setFilter = useFilterStore((s) => s.setFilter);
-  const clearFilters = useFilterStore((s) => s.clearFilters);
 
   const activeCategory = lockedCategory ?? (category !== "all" ? category : undefined);
 
@@ -262,10 +261,6 @@ export function CatalogView({
           onSizeChange={(nextSize) => setFilter("size", nextSize)}
           onCategoryChange={(nextCategory) => setFilter("category", nextCategory)}
           onSortChange={(nextSort) => setFilter("sort", nextSort)}
-          onClear={() => {
-            clearFilters();
-            if (lockedCategory) setFilter("category", lockedCategory);
-          }}
         />
 
         {enablePagination ? (

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 
 import { LanguageProvider } from "@/components/providers/language-provider";
+import { LanguageTransitionFrame } from "@/components/providers/language-transition-frame";
 import { StoreHydrator } from "@/components/providers/store-hydrator";
 import type { Locale } from "@/lib/i18n";
 
@@ -32,7 +33,7 @@ export function AppProviders({
       <LanguageProvider initialLocale={initialLocale}>
         <QueryClientProvider client={queryClient}>
           <StoreHydrator />
-          {children}
+          <LanguageTransitionFrame>{children}</LanguageTransitionFrame>
         </QueryClientProvider>
       </LanguageProvider>
     </ThemeProvider>
