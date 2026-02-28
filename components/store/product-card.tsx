@@ -20,6 +20,7 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             seed={product.slug}
             sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw"
+            showBrandSkeleton
           />
           <div
             className="absolute inset-0 opacity-70"
