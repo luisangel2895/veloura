@@ -11,6 +11,21 @@ export function createBaseMetadata(): Metadata {
       template: `%s | ${brand.name}`,
     },
     description: brand.shortDescription,
+    icons: {
+      icon: [
+        {
+          url: "/brand/veloura-logo.png",
+          type: "image/png",
+        },
+      ],
+      shortcut: ["/brand/veloura-logo.png"],
+      apple: [
+        {
+          url: "/brand/veloura-logo.png",
+          type: "image/png",
+        },
+      ],
+    },
     openGraph: {
       title: brand.defaultTitle,
       description: brand.shortDescription,
