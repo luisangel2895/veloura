@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, ChevronDown, ShoppingBag } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 
 import { ProductImage } from "@/components/store/product-image";
 import { Price } from "@/components/store/price";
@@ -23,6 +23,106 @@ interface PanelState {
   details: boolean;
   sizing: boolean;
   delivery: boolean;
+}
+
+function ProductGallery({ product }: { product: Product }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const activeImage = product.images[currentImageIndex] ?? product.images[0];
+
+  const showPreviousImage = () => {
+    setCurrentImageIndex((current) =>
+      current === 0 ? product.images.length - 1 : current - 1,
+    );
+  };
+
+  const showNextImage = () => {
+    setCurrentImageIndex((current) =>
+      current === product.images.length - 1 ? 0 : current + 1,
+    );
+  };
+
+  return (
+    <section className="space-y-4">
+      <div className="relative min-h-[34rem] overflow-hidden rounded-[2rem] border border-amber-500/10">
+        <div
+          key={activeImage}
+          className="absolute inset-0 animate-in fade-in-0 zoom-in-95 duration-500"
+        >
+          <ProductImage
+            src={activeImage}
+            alt={product.name}
+            seed={`${product.slug}-hero-${currentImageIndex}`}
+            className="absolute inset-0"
+            sizes="(min-width: 1024px) 55vw, 100vw"
+          />
+          <div
+            className="absolute inset-0 opacity-65"
+            style={{
+              backgroundImage: `linear-gradient(180deg, transparent 15%, ${product.palette[0]} 100%)`,
+            }}
+          />
+        </div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_30%)]" />
+        {product.images.length > 1 ? (
+          <>
+            <button
+              type="button"
+              onClick={showPreviousImage}
+              className="absolute left-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/25 text-white backdrop-blur transition-colors hover:bg-black/40"
+              aria-label="Show previous product image"
+            >
+              <ChevronLeft className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={showNextImage}
+              className="absolute right-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/25 text-white backdrop-blur transition-colors hover:bg-black/40"
+              aria-label="Show next product image"
+            >
+              <ChevronRight className="size-5" />
+            </button>
+          </>
+        ) : null}
+        <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-black/15 p-6 backdrop-blur">
+          <p className="text-[0.7rem] uppercase tracking-[0.28em] text-white/70">
+            {product.tagline}
+          </p>
+          <p className="mt-3 font-[family-name:var(--font-display)] text-5xl font-semibold text-white">
+            {product.name}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        {product.images.map((image, index) => (
+          <button
+            key={image}
+            type="button"
+            onClick={() => setCurrentImageIndex(index)}
+            className={`overflow-hidden rounded-3xl border text-left transition-all ${
+              currentImageIndex === index
+                ? "border-amber-300 shadow-[0_0_0_1px_rgba(252,211,77,0.35)]"
+                : "border-amber-500/10"
+            }`}
+            aria-label={`Show frame ${index + 1}`}
+          >
+            <div className="relative h-36">
+              <ProductImage
+                src={image}
+                alt={`${product.name} view ${index + 1}`}
+                seed={`${product.slug}-${index + 1}`}
+                sizes="(min-width: 640px) 20vw, 100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+              <p className="absolute bottom-3 left-3 text-[0.7rem] uppercase tracking-[0.24em] text-white/80">
+                Frame {index + 1}
+              </p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 export function ProductDetail({ slug, initialProduct, category }: ProductDetailProps) {
@@ -76,51 +176,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
       </nav>
 
       <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <section className="space-y-4">
-          <div className="relative min-h-[34rem] overflow-hidden rounded-[2rem] border border-amber-500/10">
-            <ProductImage
-              src={product.images[0]}
-              alt={product.name}
-              seed={`${product.slug}-hero`}
-              className="absolute inset-0"
-              sizes="(min-width: 1024px) 55vw, 100vw"
-            />
-            <div
-              className="absolute inset-0 opacity-65"
-              style={{
-                backgroundImage: `linear-gradient(180deg, transparent 15%, ${product.palette[0]} 100%)`,
-              }}
-            />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_30%)]" />
-            <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-white/10 bg-black/15 p-6 backdrop-blur">
-              <p className="text-[0.7rem] uppercase tracking-[0.28em] text-white/70">
-                {product.tagline}
-              </p>
-              <p className="mt-3 font-[family-name:var(--font-display)] text-5xl font-semibold text-white">
-                {product.name}
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            {product.images.map((image, index) => (
-              <div key={image} className="overflow-hidden rounded-3xl border border-amber-500/10">
-                <div className="relative h-36">
-                  <ProductImage
-                    src={image}
-                    alt={`${product.name} view ${index + 1}`}
-                    seed={`${product.slug}-${index + 1}`}
-                    sizes="(min-width: 640px) 20vw, 100vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
-                  <p className="absolute bottom-3 left-3 text-[0.7rem] uppercase tracking-[0.24em] text-white/80">
-                    Frame {index + 1}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <ProductGallery key={product.slug} product={product} />
 
         <section className="space-y-6 rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
           <div className="space-y-4">
