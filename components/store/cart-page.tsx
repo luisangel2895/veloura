@@ -47,7 +47,7 @@ export function CartPage() {
         </p>
         <Button
           asChild
-          className="mt-8 h-12 rounded-full bg-amber-700 px-6 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+          className="mt-8 h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
         >
           <Link href="/">{collectionCta}</Link>
         </Button>
@@ -197,11 +197,15 @@ export function CartPage() {
         </div>
         <Button
           asChild
-          className="mt-8 h-12 w-full rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+          className="mt-8 h-14 w-full rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
         >
           <Link href="/checkout">{copy.cartProceed}</Link>
         </Button>
-        <Button asChild variant="ghost" className="mt-3 h-11 w-full rounded-full">
+        <Button
+          asChild
+          variant="outline"
+          className="mt-3 h-14 w-full rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
+        >
           <Link href="/">
             {collectionCta}
             <ArrowRight className="size-4" />

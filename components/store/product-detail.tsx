@@ -240,19 +240,30 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
             </div>
           </div>
 
-          <Button
-            type="button"
-            size="lg"
-            onClick={() => {
-              addItem(product, selectedSize);
-              setAdded(true);
-              window.setTimeout(() => setAdded(false), 1600);
-            }}
-            className="h-12 rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
-          >
-            {added ? <Check /> : <ShoppingBag />}
-            {added ? copy.productAddedToCart : copy.productAddToCart}
-          </Button>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Button
+              type="button"
+              size="lg"
+              onClick={() => {
+                addItem(product, selectedSize);
+                setAdded(true);
+                window.setTimeout(() => setAdded(false), 1600);
+              }}
+              className="h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+            >
+              {added ? <Check className="size-4" /> : <ShoppingBag className="size-4" />}
+              {added ? copy.productAddedToCart : copy.productAddToCart}
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="h-14 rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
+            >
+              <Link href="/cart">{copy.productGoToCart}</Link>
+            </Button>
+          </div>
 
           <div className="space-y-2">
             {sections.map((section) => (

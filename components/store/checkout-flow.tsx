@@ -23,6 +23,7 @@ import {
   type ShippingMethodCode,
   type SupportedCountryCode,
 } from "@/lib/checkout/shipping";
+import { isValidEmail } from "@/lib/checkout/validators";
 import { Price } from "@/components/store/price";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -192,10 +193,6 @@ function nextStep(current: CheckoutStep): CheckoutStep {
 
 function previousStep(current: CheckoutStep): CheckoutStep {
   return steps[Math.max(steps.indexOf(current) - 1, 0)];
-}
-
-function validateEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
 function cloneOrderSnapshot(items: CartItem[], subtotal: number): OrderSnapshot {
@@ -399,7 +396,7 @@ function validateCurrentStep(state: CheckoutState, step: EditableCheckoutStep): 
     if (!state.shipping.fullName.trim()) {
       errors["shipping.fullName"] = "Full name is required.";
     }
-    if (!validateEmail(state.shipping.email)) {
+    if (!isValidEmail(state.shipping.email)) {
       errors["shipping.email"] = "A valid email is required.";
     }
     if (!isSupportedCountryCode(state.shipping.country)) {
@@ -902,6 +899,10 @@ export function CheckoutFlow() {
     returnToStore:
       locale === "es" ? "Volver a la colección" : "Return to the collection",
   } as const;
+  const primaryActionButtonClassName =
+    "h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200";
+  const secondaryActionButtonClassName =
+    "h-14 rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10";
   const cityOptions = getCityOptions(state.shipping.country);
   const postalCodeHint = getPostalCodeHint(state.shipping.country);
 
@@ -1196,7 +1197,8 @@ export function CheckoutFlow() {
         </p>
         <Button
           asChild
-          className="mt-8 rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+          variant="outline"
+          className={`mt-8 ${secondaryActionButtonClassName}`}
         >
           <Link href="/">{labels.returnToStore}</Link>
         </Button>
@@ -1706,6 +1708,15 @@ export function CheckoutFlow() {
               {copy.checkoutOrderConfirmed}
             </p>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{labels.completeIntro}</p>
+            <p className="mt-3 text-sm leading-7 text-foreground/85 dark:text-foreground/80">
+              {state.shipping.email
+                ? locale === "es"
+                  ? `Te enviamos el recibo a ${state.shipping.email}.`
+                  : `We sent the receipt to ${state.shipping.email}.`
+                : locale === "es"
+                  ? "Pago confirmado. Puedes ver tu recibo en tu banco."
+                  : "Payment confirmed. You can view your receipt in your bank."}
+            </p>
             <div className="mt-6 space-y-4 rounded-2xl border border-border bg-background/60 p-4 dark:border-amber-500/10 dark:bg-background/30">
               <div className="rounded-2xl border border-amber-700/20 bg-amber-700/8 px-4 py-3 dark:border-amber-300/20 dark:bg-amber-300/10">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-amber-700 dark:text-amber-200">
@@ -1729,20 +1740,28 @@ export function CheckoutFlow() {
             </div>
             <Button
               asChild
-              className="mt-6 rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+              variant="outline"
+              className={`mt-6 w-full ${secondaryActionButtonClassName}`}
             >
-              <Link href="/">{copy.cartReturn}</Link>
+              <Link href="/">
+                {copy.cartReturn}
+                <ArrowRight className="size-4" />
+              </Link>
             </Button>
           </div>
         ) : null}
 
-        <div className="flex flex-wrap gap-3">
+        <div className={state.step === "review" ? "grid gap-3 sm:grid-cols-2" : "flex flex-wrap gap-3"}>
           {state.step !== "shipping" && state.step !== "complete" ? (
             <Button
               type="button"
               variant="outline"
               onClick={() => dispatch({ type: "PREV_STEP" })}
-              className="border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
+              className={
+                state.step === "review"
+                  ? `w-full ${secondaryActionButtonClassName}`
+                  : secondaryActionButtonClassName
+              }
             >
               {copy.checkoutBack}
             </Button>
@@ -1752,7 +1771,7 @@ export function CheckoutFlow() {
             <Button
               type="button"
               onClick={handleShippingContinue}
-              className="rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+              className={`w-full ${primaryActionButtonClassName}`}
             >
               <ArrowRight className="size-4" />
               {copy.checkoutContinue}
@@ -1764,7 +1783,7 @@ export function CheckoutFlow() {
               type="button"
               onClick={() => void handleCompleteOrder()}
               disabled={state.isSubmitting}
-              className="rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+              className={`w-full ${primaryActionButtonClassName}`}
             >
               {state.isSubmitting ? <ArrowRight className="size-4 animate-pulse" /> : <CheckCircle2 className="size-4" />}
               {labels.completeOrder}

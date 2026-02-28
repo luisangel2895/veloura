@@ -380,9 +380,9 @@ export function CheckoutPaymentStep({
             type="button"
             onClick={handleConfirmPayment}
             disabled={!clientSecret || !isReady || isCreatingIntent || isConfirmingPayment}
-            className="rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+            className="h-14 rounded-none bg-amber-700 px-8 text-xs font-semibold uppercase tracking-[0.18em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
           >
-            {isConfirmingPayment ? <Loader2 className="size-4 animate-spin" /> : <CreditCard className="size-4" />}
+            {isConfirmingPayment ? <Loader2 className="size-3.5 animate-spin" /> : <CreditCard className="size-3.5" />}
             {payLabel}
           </Button>
         </div>
@@ -407,7 +407,7 @@ export function CheckoutPaymentStep({
           variant="outline"
           onClick={() => setRetryCount((current) => current + 1)}
           disabled={isCreatingIntent}
-          className="border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
+          className="h-14 rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
         >
           {locale === "es" ? "Reintentar pago" : "Retry payment setup"}
         </Button>
