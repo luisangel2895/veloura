@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { ProductDetail } from "@/components/store/product-detail";
-import { brand } from "@/lib/brand";
 import { getMockCategoryBySlug } from "@/lib/data/mock-categories";
 import { getMockProductBySlug } from "@/lib/data/mock-products";
 import {
@@ -49,16 +48,16 @@ export default async function ProductPage({
     <>
       <JsonLd
         data={buildBreadcrumbJsonLd([
-          { name: "Home", url: brand.url },
+          { name: "Home", url: "/" },
           ...(category
             ? [
                 {
                   name: category.name,
-                  url: `${brand.url}/category/${category.slug}`,
+                  url: `/category/${category.slug}`,
                 },
               ]
             : []),
-          { name: product.name, url: `${brand.url}/product/${product.slug}` },
+          { name: product.name },
         ])}
       />
       <JsonLd data={buildProductJsonLd(product, category)} />

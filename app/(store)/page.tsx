@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 
+import { JsonLd } from "@/components/seo/json-ld";
 import { HomePageView } from "@/components/store/home-page";
+import { buildBreadcrumbJsonLd, createHomeMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Luxury essentials",
-  description: "Hero-led storefront with URL-synced catalog filters and a mocked commerce flow.",
-};
+export const metadata: Metadata = createHomeMetadata();
 
 export default function HomePage() {
-  return <HomePageView />;
+  return (
+    <>
+      <JsonLd data={buildBreadcrumbJsonLd([{ name: "Home" }])} />
+      <HomePageView />
+    </>
+  );
 }

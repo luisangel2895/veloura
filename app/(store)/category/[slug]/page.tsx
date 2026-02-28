@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { CatalogView } from "@/components/store/catalog-view";
-import { brand } from "@/lib/brand";
 import { getMockCategoryBySlug } from "@/lib/data/mock-categories";
 import { buildBreadcrumbJsonLd, createCategoryMetadata } from "@/lib/seo/metadata";
 
@@ -40,8 +39,8 @@ export default async function CategoryPage({
     <>
       <JsonLd
         data={buildBreadcrumbJsonLd([
-          { name: "Home", url: brand.url },
-          { name: category.name, url: `${brand.url}/category/${category.slug}` },
+          { name: "Home", url: "/" },
+          { name: category.name },
         ])}
       />
       <CatalogView
