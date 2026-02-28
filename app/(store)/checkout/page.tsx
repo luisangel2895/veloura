@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { StripeProvider } from "@/components/stripe/StripeProvider";
 import { CheckoutFlow } from "@/components/store/checkout-flow";
 
 export const metadata: Metadata = {
@@ -12,5 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default function CheckoutPage() {
-  return <CheckoutFlow />;
+  return (
+    <StripeProvider>
+      <CheckoutFlow />
+    </StripeProvider>
+  );
 }
