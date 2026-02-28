@@ -9,7 +9,7 @@ export function SiteFooter() {
   const { copy } = useLanguage();
 
   return (
-    <footer className="border-t border-amber-500/10 bg-background/80">
+    <footer id="site-footer" className="border-t border-amber-500/10 bg-background/80">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-5 py-10 sm:px-8 md:flex-row md:items-end md:justify-between">
         <div className="space-y-3">
           <div className="flex items-center gap-3">

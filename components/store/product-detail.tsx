@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 
@@ -139,6 +139,14 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
     sizing: false,
     delivery: false,
   });
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, [slug]);
 
   const sections = [
     {

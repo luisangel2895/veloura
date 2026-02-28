@@ -11,7 +11,7 @@ export function LanguageToggle() {
 
   return (
     <div
-      className="flex items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/8 p-1"
+      className="flex items-center gap-1 rounded-full border border-amber-500/20 bg-card/80 p-1 shadow-sm"
       aria-label={copy.languageLabel}
     >
       {options.map((option) => (
@@ -24,7 +24,7 @@ export function LanguageToggle() {
           className={
             locale === option
               ? "h-8 rounded-full bg-amber-300 px-3 text-zinc-950 hover:bg-amber-200"
-              : "h-8 rounded-full px-3 text-amber-100 hover:bg-amber-500/10"
+              : "h-8 rounded-full px-3 text-foreground hover:bg-amber-500/10"
           }
         >
           {option === "es" ? copy.languageSpanish : copy.languageEnglish}

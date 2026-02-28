@@ -24,6 +24,11 @@ interface CatalogViewProps {
   syncWithUrl?: boolean;
   enablePagination?: boolean;
   seoCopy?: string;
+  showIntroSection?: boolean;
+  showPromoBanner?: boolean;
+  sectionId?: string;
+  collectionTitle?: string;
+  collectionDescription?: string;
 }
 
 function sortProducts(products: Product[], sort: ProductSort) {
@@ -135,6 +140,11 @@ export function CatalogView({
   syncWithUrl = false,
   enablePagination = false,
   seoCopy,
+  showIntroSection = true,
+  showPromoBanner = true,
+  sectionId,
+  collectionTitle,
+  collectionDescription,
 }: CatalogViewProps) {
   const { copy } = useLanguage();
   const size = useFilterStore((s) => s.size);
@@ -168,77 +178,106 @@ export function CatalogView({
   const isLoading = productsQuery.isLoading || categoriesQuery.isLoading;
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="space-y-8">
       {syncWithUrl ? (
         <Suspense fallback={null}>
           <FilterUrlSyncBridge />
         </Suspense>
       ) : null}
 
-      <section className="grid gap-8 rounded-[2rem] border border-amber-500/10 bg-card/70 p-6 shadow-sm sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
-        <div className="space-y-5">
-          <Badge className="bg-amber-500/10 px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.32em] text-amber-200">
-            {eyebrow}
-          </Badge>
-          <div className="space-y-4">
-            <h1 className="max-w-3xl text-5xl font-semibold tracking-tight sm:text-6xl">
-              {title}
-            </h1>
-            <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-              {description}
-            </p>
+      {showIntroSection ? (
+        <section className="grid gap-8 rounded-[2rem] border border-amber-500/10 bg-card/70 p-6 shadow-sm sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
+          <div className="space-y-5">
+            <Badge className="bg-amber-500/10 px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.32em] text-amber-200">
+              {eyebrow}
+            </Badge>
+            <div className="space-y-4">
+              <h1 className="max-w-3xl text-5xl font-semibold tracking-tight sm:text-6xl">
+                {title}
+              </h1>
+              <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
+                {description}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="rounded-[1.75rem] border border-amber-500/10 bg-gradient-to-br from-amber-400/10 via-transparent to-transparent p-6">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-200">
-            {copy.privateAtelier}
-          </p>
-          <p className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold">
-            {copy.intimacyRefined}
-          </p>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground">
-            {copy.architectureCopy}
-          </p>
-        </div>
-      </section>
-
-      <section className="rounded-3xl border border-amber-500/10 bg-amber-500/8 px-6 py-5">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
+          <div className="rounded-[1.75rem] border border-amber-500/10 bg-gradient-to-br from-amber-400/10 via-transparent to-transparent p-6">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-200">
-              {promoLabel}
+              {copy.privateAtelier}
             </p>
-            <p className="mt-1 text-sm leading-7 text-muted-foreground">{promoCopy}</p>
+            <p className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold">
+              {copy.intimacyRefined}
+            </p>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              {copy.architectureCopy}
+            </p>
           </div>
-          <Badge
-            variant="outline"
-            className="border-amber-500/20 bg-transparent px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.28em] text-amber-100"
-          >
-            {copy.complimentaryPouch}
-          </Badge>
-        </div>
+        </section>
+      ) : null}
+
+      {showPromoBanner ? (
+        <section className="rounded-3xl border border-amber-500/10 bg-amber-500/8 px-6 py-5">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-200">
+                {promoLabel}
+              </p>
+              <p className="mt-1 text-sm leading-7 text-muted-foreground">{promoCopy}</p>
+            </div>
+            <Badge
+              variant="outline"
+              className="border-amber-500/20 bg-transparent px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.28em] text-amber-100"
+            >
+              {copy.complimentaryPouch}
+            </Badge>
+          </div>
+        </section>
+      ) : null}
+
+      <section
+        id={sectionId}
+        className="scroll-mt-[6.75rem] space-y-6 rounded-[2.25rem] border border-amber-500/10 bg-card/65 px-5 py-8 shadow-sm sm:scroll-mt-[7rem] sm:px-8 sm:py-10"
+      >
+        {collectionTitle ? (
+          <div className="space-y-3 text-center">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-200">
+              {eyebrow}
+            </p>
+            <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+              {collectionTitle}
+            </h2>
+            {collectionDescription ? (
+              <p className="mx-auto max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
+                {collectionDescription}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
+        <FilterBar
+          size={size}
+          category={lockedCategory ?? category}
+          sort={sort}
+          categories={categories}
+          showCategoryFilter={!lockedCategory}
+          onSizeChange={(nextSize) => setFilter("size", nextSize)}
+          onCategoryChange={(nextCategory) => setFilter("category", nextCategory)}
+          onSortChange={(nextSort) => setFilter("sort", nextSort)}
+          onClear={() => {
+            clearFilters();
+            if (lockedCategory) setFilter("category", lockedCategory);
+          }}
+        />
+
+        {enablePagination ? (
+          <PaginatedCatalogGrid
+            key={paginationKey}
+            products={visibleProducts}
+            loading={isLoading}
+          />
+        ) : (
+          <ProductGrid products={visibleProducts} loading={isLoading} />
+        )}
       </section>
-
-      <FilterBar
-        size={size}
-        category={lockedCategory ?? category}
-        sort={sort}
-        categories={categories}
-        showCategoryFilter={!lockedCategory}
-        onSizeChange={(nextSize) => setFilter("size", nextSize)}
-        onCategoryChange={(nextCategory) => setFilter("category", nextCategory)}
-        onSortChange={(nextSort) => setFilter("sort", nextSort)}
-        onClear={() => {
-          clearFilters();
-          if (lockedCategory) setFilter("category", lockedCategory);
-        }}
-      />
-
-      {enablePagination ? (
-        <PaginatedCatalogGrid key={paginationKey} products={visibleProducts} loading={isLoading} />
-      ) : (
-        <ProductGrid products={visibleProducts} loading={isLoading} />
-      )}
 
       {seoCopy ? (
         <section className="rounded-3xl border border-amber-500/10 bg-card/70 p-6 sm:p-8">

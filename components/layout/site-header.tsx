@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 
@@ -14,19 +13,9 @@ export function SiteHeader() {
   const { copy } = useLanguage();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-amber-500/10 bg-background/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-amber-500/10 bg-background/88 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="group flex items-center gap-3">
-          <span className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-amber-500/20 bg-amber-500/10">
-            <Image
-              src="/brand/veloura-logo.png"
-              alt="Veloura logo"
-              fill
-              sizes="44px"
-              className="object-cover"
-              priority
-            />
-          </span>
+        <Link href="/" className="group flex items-center">
           <div>
             <p className="font-[family-name:var(--font-display)] text-2xl font-semibold text-foreground">
               Veloura
@@ -38,18 +27,24 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <Link href="/" className="hover:text-foreground">
+          <Link href="/" className="uppercase tracking-[0.22em] hover:text-foreground">
             {copy.headerNavNewArrivals}
           </Link>
-          <Link href="/category/balconette" className="hover:text-foreground">
+          <Link
+            href="/category/balconette"
+            className="uppercase tracking-[0.22em] hover:text-foreground"
+          >
             {copy.headerNavBalconette}
           </Link>
-          <Link href="/category/bridal" className="hover:text-foreground">
+          <Link
+            href="/category/bridal"
+            className="uppercase tracking-[0.22em] hover:text-foreground"
+          >
             {copy.headerNavBridal}
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <LanguageToggle />
           <ThemeToggle />
           <Link

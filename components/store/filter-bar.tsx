@@ -23,18 +23,28 @@ function ToggleGroup<T extends string>({
   options,
   value,
   onChange,
+  align = "left",
 }: {
   label: string;
   options: Array<{ label: string; value: T }>;
   value: T;
   onChange: (value: T) => void;
+  align?: "left" | "right";
 }) {
   return (
     <div className="space-y-3">
-      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+      <p
+        className={`text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground ${
+          align === "right" ? "text-left xl:text-right" : ""
+        }`}
+      >
         {label}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div
+        className={`flex flex-wrap gap-2 ${
+          align === "right" ? "xl:justify-end" : ""
+        }`}
+      >
         {options.map((option) => (
           <Button
             key={option.value}
@@ -70,59 +80,63 @@ export function FilterBar({
   const { copy } = useLanguage();
 
   return (
-    <section className="rounded-3xl border border-amber-500/10 bg-card/75 p-5 shadow-sm backdrop-blur sm:p-6">
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_1.2fr_1fr_auto] lg:items-end">
-        <ToggleGroup
-          label={copy.filterSize}
-          options={sizeOptions.map((option) => ({
-            label: option === "all" ? copy.filterAll : option,
-            value: option,
-          }))}
-          value={size}
-          onChange={onSizeChange}
-        />
+    <section className="rounded-[1.75rem] border border-amber-500/10 bg-background/50 p-5 backdrop-blur sm:p-6">
+      <div className="space-y-6">
+        <div className="grid gap-6 xl:grid-cols-[1.4fr_0.8fr]">
+          {showCategoryFilter ? (
+            <ToggleGroup
+              label={copy.filterCategory}
+              options={[
+                { label: copy.filterAll, value: "all" },
+                ...categories.map((item) => ({ label: item.name, value: item.slug })),
+              ]}
+              value={category}
+              onChange={onCategoryChange}
+            />
+          ) : (
+            <div className="space-y-3">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                {copy.filterCategory}
+              </p>
+              <p className="text-sm text-muted-foreground">{copy.filterLockedCategoryHelp}</p>
+            </div>
+          )}
 
-        {showCategoryFilter ? (
-          <ToggleGroup
-            label={copy.filterCategory}
-            options={[
-              { label: copy.filterAll, value: "all" },
-              ...categories.map((item) => ({ label: item.name, value: item.slug })),
-            ]}
-            value={category}
-            onChange={onCategoryChange}
-          />
-        ) : (
-          <div className="space-y-3">
-            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-              {copy.filterCategory}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {copy.filterLockedCategoryHelp}
-            </p>
+          <div className="flex flex-col gap-4 xl:items-end">
+            <ToggleGroup
+              label={copy.filterSort}
+              align="right"
+              options={[
+                { label: copy.filterFeatured, value: "featured" },
+                { label: copy.filterPriceLow, value: "price-asc" },
+                { label: copy.filterPriceHigh, value: "price-desc" },
+                { label: copy.filterAZ, value: "name" },
+              ]}
+              value={sort}
+              onChange={onSortChange}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClear}
+              className="rounded-full border-amber-500/20 bg-transparent text-foreground hover:bg-amber-500/10 hover:text-foreground"
+            >
+              {copy.filterClear}
+            </Button>
           </div>
-        )}
+        </div>
 
-        <ToggleGroup
-          label={copy.filterSort}
-          options={[
-            { label: copy.filterFeatured, value: "featured" },
-            { label: copy.filterPriceLow, value: "price-asc" },
-            { label: copy.filterPriceHigh, value: "price-desc" },
-            { label: copy.filterAZ, value: "name" },
-          ]}
-          value={sort}
-          onChange={onSortChange}
-        />
-
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onClear}
-          className="border-amber-500/20 bg-transparent text-foreground hover:bg-amber-500/10 hover:text-foreground"
-        >
-          {copy.filterClear}
-        </Button>
+        <div className="space-y-3 border-t border-amber-500/10 pt-6">
+          <ToggleGroup
+            label={copy.filterSize}
+            options={sizeOptions.map((option) => ({
+              label: option === "all" ? copy.filterAll : option,
+              value: option,
+            }))}
+            value={size}
+            onChange={onSizeChange}
+          />
+        </div>
       </div>
     </section>
   );
