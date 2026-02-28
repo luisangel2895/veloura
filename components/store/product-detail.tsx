@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 
@@ -128,12 +128,13 @@ function ProductGallery({ product }: { product: Product }) {
 }
 
 export function ProductDetail({ slug, initialProduct, category }: ProductDetailProps) {
-  const { copy } = useLanguage();
+  const { copy, locale } = useLanguage();
   const productQuery = useProductQuery(slug, initialProduct);
   const addItem = useCart((state) => state.addItem);
   const product = productQuery.data ?? initialProduct;
   const [selectedSize, setSelectedSize] = useState<Size>(initialProduct.sizesAvailable[0]);
-  const [added, setAdded] = useState(false);
+  const [addedProductSlug, setAddedProductSlug] = useState<string | null>(null);
+  const addFeedbackTimeoutRef = useRef<number | null>(null);
   const [panels, setPanels] = useState<PanelState>({
     details: true,
     sizing: false,
@@ -141,12 +142,24 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
   });
 
   useEffect(() => {
+    if (addFeedbackTimeoutRef.current) {
+      window.clearTimeout(addFeedbackTimeoutRef.current);
+      addFeedbackTimeoutRef.current = null;
+    }
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: "auto",
     });
   }, [slug]);
+
+  useEffect(() => {
+    return () => {
+      if (addFeedbackTimeoutRef.current) {
+        window.clearTimeout(addFeedbackTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const sections = [
     {
@@ -167,6 +180,8 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
         "Dispatch is mocked at 24 hours for demo purposes. Pieces should be hand washed cold, reshaped while damp and dried flat away from direct heat.",
     },
   ];
+  const showAddedFeedback = addedProductSlug === product.slug;
+  const isSpanish = locale === "es";
 
   return (
     <div className="space-y-8 pb-16">
@@ -247,13 +262,61 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
               data-testid="add-to-cart"
               onClick={() => {
                 addItem(product, selectedSize);
-                setAdded(true);
-                window.setTimeout(() => setAdded(false), 1600);
+
+                if (addFeedbackTimeoutRef.current) {
+                  window.clearTimeout(addFeedbackTimeoutRef.current);
+                }
+
+                setAddedProductSlug(product.slug);
+                addFeedbackTimeoutRef.current = window.setTimeout(() => {
+                  setAddedProductSlug(null);
+                  addFeedbackTimeoutRef.current = null;
+                }, 1900);
               }}
-              className="h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+              className={`relative h-14 overflow-hidden rounded-none px-8 font-semibold uppercase transition-all duration-500 ease-out ${
+                isSpanish ? "text-[0.72rem] tracking-[0.14em]" : "text-sm tracking-[0.2em]"
+              } ${
+                showAddedFeedback
+                  ? "bg-foreground text-background shadow-[0_18px_45px_-22px_rgba(39,34,28,0.45)] ring-1 ring-amber-700/15 hover:bg-foreground/92 dark:shadow-[0_18px_45px_-22px_rgba(248,245,239,0.16)] dark:ring-amber-300/15"
+                  : "bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+              }`}
             >
-              {added ? <Check className="size-4" /> : <ShoppingBag className="size-4" />}
-              {added ? copy.productAddedToCart : copy.productAddToCart}
+              <span
+                className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
+                  showAddedFeedback
+                    ? "opacity-100 bg-[linear-gradient(120deg,transparent_12%,rgba(180,140,52,0.18)_42%,transparent_72%)] dark:bg-[linear-gradient(120deg,transparent_12%,rgba(252,211,77,0.16)_42%,transparent_72%)]"
+                    : "opacity-0"
+                }`}
+              />
+              <span
+                key={showAddedFeedback ? "added" : "idle"}
+                className={`relative z-10 inline-flex items-center animate-in fade-in-0 zoom-in-95 duration-300 ${
+                  isSpanish ? "gap-1.5" : "gap-2"
+                }`}
+              >
+                <span
+                  className={`inline-flex items-center justify-center transition-transform duration-300 ${
+                    showAddedFeedback ? "scale-110" : "scale-100"
+                  }`}
+                >
+                  {showAddedFeedback ? (
+                    <Check className={isSpanish ? "size-3.5" : "size-4"} />
+                  ) : (
+                    <ShoppingBag className={isSpanish ? "size-3.5" : "size-4"} />
+                  )}
+                </span>
+                <span
+                  className={
+                    showAddedFeedback
+                      ? isSpanish
+                        ? "tracking-[0.16em]"
+                        : "tracking-[0.24em]"
+                      : undefined
+                  }
+                >
+                  {showAddedFeedback ? copy.productAddedToCart : copy.productAddToCart}
+                </span>
+              </span>
             </Button>
 
             <Button

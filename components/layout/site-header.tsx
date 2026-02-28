@@ -9,7 +9,10 @@ import { LanguageToggle } from "@/components/ui/language-toggle";
 import { useCart } from "@/hooks/use-cart";
 
 export function SiteHeader() {
-  const totalItems = useCart((state) => state.totalItems);
+  const { totalItems, lastAddedAt } = useCart((state) => ({
+    totalItems: state.totalItems,
+    lastAddedAt: state.lastAddedAt,
+  }));
   const { copy } = useLanguage();
 
   return (
@@ -62,8 +65,20 @@ export function SiteHeader() {
             className="relative inline-flex h-10 items-center justify-center px-1 text-muted-foreground transition-colors hover:text-foreground dark:text-amber-100 dark:hover:text-amber-50"
             aria-label={copy.headerCart}
           >
-            <ShoppingBag className="size-5" />
-            <span className="absolute -top-1 -right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber-700 px-1.5 text-[0.65rem] font-semibold text-amber-50 dark:bg-amber-300 dark:text-zinc-950">
+            <span
+              key={`cart-icon-${lastAddedAt || 0}`}
+              className={lastAddedAt ? "inline-flex animate-cart-nudge" : "inline-flex"}
+            >
+              <ShoppingBag className="size-5" />
+            </span>
+            <span
+              key={`cart-badge-${lastAddedAt || 0}-${totalItems}`}
+              className={`absolute -top-1 -right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber-700 px-1.5 text-[0.65rem] font-semibold text-amber-50 dark:bg-amber-300 dark:text-zinc-950 ${
+                lastAddedAt
+                  ? "animate-cart-badge-pop shadow-[0_8px_20px_-10px_rgba(180,140,52,0.9)] dark:shadow-[0_8px_20px_-10px_rgba(252,211,77,0.55)]"
+                  : ""
+              }`}
+            >
               {totalItems}
             </span>
           </Link>

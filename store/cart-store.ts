@@ -11,6 +11,7 @@ interface CartStore {
   totalItems: number;
   subtotal: number;
   hasHydrated: boolean;
+  lastAddedAt: number;
   setHasHydrated: (value: boolean) => void;
   addItem: (product: Product, size: Size) => void;
   removeItem: (id: string) => void;
@@ -22,6 +23,7 @@ const emptyCartState = {
   items: [],
   totalItems: 0,
   subtotal: 0,
+  lastAddedAt: 0,
 };
 
 export const useCartStore = create<CartStore>()(
@@ -36,11 +38,14 @@ export const useCartStore = create<CartStore>()(
           const existing = state.items.find((item) => item.id === id);
 
           if (existing) {
-            return calculateCartTotals(
-              state.items.map((item) =>
-                item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+            return {
+              ...calculateCartTotals(
+                state.items.map((item) =>
+                  item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+                ),
               ),
-            );
+              lastAddedAt: Date.now(),
+            };
           }
 
           const nextItem: CartItem = {
@@ -55,7 +60,10 @@ export const useCartStore = create<CartStore>()(
             palette: product.palette,
           };
 
-          return calculateCartTotals([...state.items, nextItem]);
+          return {
+            ...calculateCartTotals([...state.items, nextItem]),
+            lastAddedAt: Date.now(),
+          };
         }),
       removeItem: (id) =>
         set((state) => calculateCartTotals(state.items.filter((item) => item.id !== id))),
@@ -69,7 +77,11 @@ export const useCartStore = create<CartStore>()(
             state.items.map((item) => (item.id === id ? { ...item, quantity: qty } : item)),
           );
         }),
-      clearCart: () => set((state) => ({ ...emptyCartState, hasHydrated: state.hasHydrated })),
+      clearCart: () =>
+        set((state) => ({
+          ...emptyCartState,
+          hasHydrated: state.hasHydrated,
+        })),
     }),
     {
       name: "veloura-cart",
