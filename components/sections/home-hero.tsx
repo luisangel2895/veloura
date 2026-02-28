@@ -23,7 +23,7 @@ export function HomeHero() {
     <section className="relative -mx-5 flex min-h-[calc(100svh-5.5rem)] items-center justify-center px-5 pb-28 pt-8 text-center sm:-mx-8 sm:min-h-[calc(100svh-6rem)] sm:px-8">
       <div className="relative mx-auto max-w-4xl">
         <div className="space-y-4">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-amber-200">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-amber-700 dark:text-amber-200">
             New Collection
           </p>
           <h1 className="mx-auto max-w-3xl font-[family-name:var(--font-display)] text-5xl font-normal leading-[0.94] tracking-[0.01em] sm:text-7xl">
@@ -42,7 +42,7 @@ export function HomeHero() {
             type="button"
             size="lg"
             onClick={() => smoothScrollTo("collection")}
-            className="h-14 rounded-none bg-amber-300 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-zinc-950 hover:bg-amber-200"
+            className="h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
           >
             EXPLORE COLLECTION
             <ArrowRight className="size-4" />
@@ -51,7 +51,7 @@ export function HomeHero() {
             asChild
             variant="outline"
             size="lg"
-            className="h-14 rounded-none border-amber-500/20 bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-amber-500/10"
+            className="h-14 rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
           >
             <Link href="/our-story">OUR STORY</Link>
           </Button>
@@ -65,7 +65,7 @@ export function HomeHero() {
         aria-label="Scroll to collection"
       >
         <span>Discover more</span>
-        <span className="inline-flex size-10 items-center justify-center rounded-full border border-amber-500/15 bg-background/70 motion-safe:animate-bounce">
+        <span className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-background/80 motion-safe:animate-bounce dark:border-amber-500/15 dark:bg-background/70">
           <ChevronDown className="size-4" />
         </span>
       </button>

@@ -13,7 +13,7 @@ export default function OurStoryPage() {
   return (
     <div className="space-y-10 pb-16">
       <section className="space-y-5 text-center">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-amber-200">
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.38em] text-amber-700 dark:text-amber-200">
           Brand Manifesto
         </p>
         <h1 className="mx-auto max-w-4xl font-[family-name:var(--font-display)] text-5xl font-normal leading-[0.95] tracking-[0.01em] sm:text-7xl">
@@ -27,8 +27,8 @@ export default function OurStoryPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <article className="rounded-[2rem] border border-amber-500/10 bg-card/70 p-6 sm:p-8">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-200">
+        <article className="rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/70 sm:p-8">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-700 dark:text-amber-200">
             Mission
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-tight">Design with intention.</h2>
@@ -40,8 +40,8 @@ export default function OurStoryPage() {
           </p>
         </article>
 
-        <article className="rounded-[2rem] border border-amber-500/10 bg-card/70 p-6 sm:p-8">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-200">
+        <article className="rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/70 sm:p-8">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-700 dark:text-amber-200">
             Vision
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-tight">Elevate the everyday ritual.</h2>
@@ -53,8 +53,8 @@ export default function OurStoryPage() {
         </article>
       </section>
 
-      <section className="rounded-[2rem] border border-amber-500/10 bg-card/60 p-6 sm:p-8">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-200">
+      <section className="rounded-[2rem] border border-border bg-card/70 p-6 dark:border-amber-500/10 dark:bg-card/60 sm:p-8">
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-700 dark:text-amber-200">
           What We Believe
         </p>
         <div className="mt-5 grid gap-5 md:grid-cols-3">

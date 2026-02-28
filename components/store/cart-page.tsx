@@ -20,7 +20,7 @@ export function CartPage() {
 
   if (!hasHydrated) {
     return (
-      <div className="rounded-[2rem] border border-amber-500/10 bg-card/70 px-6 py-16 text-center">
+      <div className="rounded-[2rem] border border-border bg-card/80 px-6 py-16 text-center dark:border-amber-500/10 dark:bg-card/70">
         <h1 className="text-5xl font-semibold">{copy.cartTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.cartRestore}
@@ -31,12 +31,12 @@ export function CartPage() {
 
   if (!items.length) {
     return (
-      <div className="rounded-[2rem] border border-dashed border-amber-500/20 bg-card/70 px-6 py-16 text-center">
+      <div className="rounded-[2rem] border border-dashed border-border bg-card/80 px-6 py-16 text-center dark:border-amber-500/20 dark:bg-card/70">
         <h1 className="text-5xl font-semibold">{copy.cartEmptyTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.cartEmptyDescription}
         </p>
-        <Button asChild className="mt-8 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
+        <Button asChild className="mt-8 rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200">
           <Link href="/">{copy.cartReturn}</Link>
         </Button>
       </div>
@@ -51,7 +51,7 @@ export function CartPage() {
           {items.map((item) => (
             <article
               key={item.id}
-              className="grid gap-4 rounded-[2rem] border border-amber-500/10 bg-card/75 p-5 sm:grid-cols-[8rem_1fr_auto]"
+              className="grid gap-4 rounded-[2rem] border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/75 sm:grid-cols-[8rem_1fr_auto]"
             >
               <div className="h-32 overflow-hidden rounded-3xl">
                 <ProductImage
@@ -76,7 +76,7 @@ export function CartPage() {
                     variant="outline"
                     size="icon-sm"
                     onClick={() => updateQty(item.id, item.quantity - 1)}
-                    className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+                    className="border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
                   >
                     -
                   </Button>
@@ -86,7 +86,7 @@ export function CartPage() {
                     variant="outline"
                     size="icon-sm"
                     onClick={() => updateQty(item.id, item.quantity + 1)}
-                    className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+                    className="border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
                   >
                     +
                   </Button>
@@ -109,8 +109,8 @@ export function CartPage() {
         </div>
       </section>
 
-      <aside className="h-fit rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
+      <aside className="h-fit rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
           {copy.cartSummary}
         </p>
         <div className="mt-6 flex items-center justify-between">
@@ -121,7 +121,7 @@ export function CartPage() {
           Shipping and taxes are intentionally omitted from the mock flow. The checkout reducer
           models the full sequence independently from the cart store.
         </p>
-        <Button asChild className="mt-8 h-12 w-full rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
+        <Button asChild className="mt-8 h-12 w-full rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200">
           <Link href="/checkout">{copy.cartProceed}</Link>
         </Button>
       </aside>

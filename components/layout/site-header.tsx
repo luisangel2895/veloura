@@ -13,7 +13,7 @@ export function SiteHeader() {
   const { copy } = useLanguage();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-amber-500/10 bg-background/88 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/92 backdrop-blur-xl dark:border-amber-500/10 dark:bg-background/88">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
         <Link href="/" className="group flex items-center">
           <div>
@@ -49,11 +49,11 @@ export function SiteHeader() {
           <ThemeToggle />
           <Link
             href="/cart"
-            className="relative inline-flex size-10 items-center justify-center rounded-full border border-amber-500/20 bg-amber-500/10 text-amber-100 transition-colors hover:bg-amber-500/15"
+            className="relative inline-flex size-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-foreground dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-100 dark:hover:bg-amber-500/15"
             aria-label={copy.headerCart}
           >
             <ShoppingBag className="size-4" />
-            <span className="absolute -top-1 -right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber-300 px-1.5 text-[0.65rem] font-semibold text-zinc-950">
+            <span className="absolute -top-1 -right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber-700 px-1.5 text-[0.65rem] font-semibold text-amber-50 dark:bg-amber-300 dark:text-zinc-950">
               {totalItems}
             </span>
           </Link>

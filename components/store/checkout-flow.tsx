@@ -107,8 +107,8 @@ function StepMarker({ current, target }: { current: CheckoutStep; target: Checko
       <span
         className={`inline-flex size-8 items-center justify-center rounded-full border text-xs font-semibold ${
           active
-            ? "border-amber-300 bg-amber-300 text-zinc-950"
-            : "border-amber-500/20 text-muted-foreground"
+            ? "border-amber-700 bg-amber-700 text-amber-50 dark:border-amber-300 dark:bg-amber-300 dark:text-zinc-950"
+            : "border-border text-muted-foreground dark:border-amber-500/20"
         }`}
       >
         {order.indexOf(target) + 1}
@@ -132,7 +132,7 @@ export function CheckoutFlow() {
 
   if (!hasHydrated) {
     return (
-      <div className="rounded-[2rem] border border-amber-500/10 bg-card/70 px-6 py-16 text-center">
+      <div className="rounded-[2rem] border border-border bg-card/80 px-6 py-16 text-center dark:border-amber-500/10 dark:bg-card/70">
         <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.checkoutLoading}
@@ -143,12 +143,12 @@ export function CheckoutFlow() {
 
   if (!items.length && state.step !== "complete") {
     return (
-      <div className="rounded-[2rem] border border-dashed border-amber-500/20 bg-card/70 px-6 py-16 text-center">
+      <div className="rounded-[2rem] border border-dashed border-border bg-card/80 px-6 py-16 text-center dark:border-amber-500/20 dark:bg-card/70">
         <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.checkoutEmpty}
         </p>
-        <Button asChild className="mt-8 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
+        <Button asChild className="mt-8 rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200">
           <Link href="/">{copy.checkoutBrowse}</Link>
         </Button>
       </div>
@@ -157,9 +157,9 @@ export function CheckoutFlow() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="space-y-6 rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
+      <section className="space-y-6 rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8">
         <div className="space-y-2">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
             {copy.checkoutStateMachine}
           </p>
           <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
@@ -262,7 +262,7 @@ export function CheckoutFlow() {
         ) : null}
 
         {state.step === "review" ? (
-          <div className="space-y-4 rounded-3xl border border-amber-500/10 bg-background/40 p-5">
+          <div className="space-y-4 rounded-3xl border border-border bg-background/60 p-5 dark:border-amber-500/10 dark:bg-background/40">
             <div>
               <p className="text-sm font-medium">Shipping</p>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">
@@ -282,7 +282,7 @@ export function CheckoutFlow() {
         ) : null}
 
         {state.step === "complete" ? (
-          <div className="rounded-3xl border border-amber-500/10 bg-amber-500/8 p-6">
+          <div className="rounded-3xl border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-amber-500/8">
             <p className="font-[family-name:var(--font-display)] text-4xl font-semibold">
               {copy.checkoutOrderConfirmed}
             </p>
@@ -290,7 +290,7 @@ export function CheckoutFlow() {
               The flow is complete and the reducer has transitioned to the terminal state. Cart
               data was cleared separately via Zustand to keep concerns isolated.
             </p>
-            <Button asChild className="mt-6 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200">
+            <Button asChild className="mt-6 rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200">
               <Link href="/">{copy.cartReturn}</Link>
             </Button>
           </div>
@@ -302,7 +302,7 @@ export function CheckoutFlow() {
               type="button"
               variant="outline"
               onClick={() => dispatch({ type: "BACK" })}
-              className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+              className="border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
             >
               {copy.checkoutBack}
             </Button>
@@ -315,7 +315,7 @@ export function CheckoutFlow() {
                 clearCart();
                 dispatch({ type: "COMPLETE" });
               }}
-              className="rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200"
+              className="rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
             >
               {copy.checkoutConfirm}
             </Button>
@@ -325,7 +325,7 @@ export function CheckoutFlow() {
             <Button
               type="button"
               onClick={() => dispatch({ type: "NEXT" })}
-              className="rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200"
+              className="rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
             >
               {copy.checkoutContinue}
             </Button>
@@ -333,8 +333,8 @@ export function CheckoutFlow() {
         </div>
       </section>
 
-      <aside className="h-fit rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
+      <aside className="h-fit rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
           {copy.checkoutOrderSummary}
         </p>
         <div className="mt-6 space-y-4">
@@ -350,7 +350,7 @@ export function CheckoutFlow() {
             </div>
           ))}
         </div>
-        <div className="mt-6 flex items-center justify-between border-t border-amber-500/10 pt-6">
+        <div className="mt-6 flex items-center justify-between border-t border-border pt-6 dark:border-amber-500/10">
           <span className="text-muted-foreground">{copy.cartSubtotal}</span>
           <Price amountCents={subtotal} className="text-2xl font-semibold" />
         </div>

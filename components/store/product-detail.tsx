@@ -45,7 +45,7 @@ function ProductGallery({ product }: { product: Product }) {
 
   return (
     <section className="space-y-4">
-      <div className="relative min-h-[34rem] overflow-hidden rounded-[2rem] border border-amber-500/10">
+      <div className="relative min-h-[34rem] overflow-hidden rounded-[2rem] border border-border dark:border-amber-500/10">
         <div
           key={activeImage}
           className="absolute inset-0 animate-in fade-in-0 zoom-in-95 duration-500"
@@ -70,7 +70,7 @@ function ProductGallery({ product }: { product: Product }) {
             <button
               type="button"
               onClick={showPreviousImage}
-              className="absolute left-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/25 text-white backdrop-blur transition-colors hover:bg-black/40"
+              className="absolute left-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur transition-colors hover:bg-black/35"
               aria-label={copy.productPrevImage}
             >
               <ChevronLeft className="size-5" />
@@ -78,7 +78,7 @@ function ProductGallery({ product }: { product: Product }) {
             <button
               type="button"
               onClick={showNextImage}
-              className="absolute right-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/25 text-white backdrop-blur transition-colors hover:bg-black/40"
+              className="absolute right-4 top-1/2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur transition-colors hover:bg-black/35"
               aria-label={copy.productNextImage}
             >
               <ChevronRight className="size-5" />
@@ -103,8 +103,8 @@ function ProductGallery({ product }: { product: Product }) {
             onClick={() => setCurrentImageIndex(index)}
             className={`overflow-hidden rounded-3xl border text-left transition-all ${
               currentImageIndex === index
-                ? "border-amber-300 shadow-[0_0_0_1px_rgba(252,211,77,0.35)]"
-                : "border-amber-500/10"
+                ? "border-amber-700 shadow-[0_0_0_1px_rgba(180,140,52,0.28)] dark:border-amber-300 dark:shadow-[0_0_0_1px_rgba(252,211,77,0.35)]"
+                : "border-border dark:border-amber-500/10"
             }`}
             aria-label={`${copy.productShowFrame} ${index + 1}`}
           >
@@ -189,9 +189,9 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
       <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <ProductGallery key={product.slug} product={product} />
 
-        <section className="space-y-6 rounded-[2rem] border border-amber-500/10 bg-card/75 p-6 sm:p-8">
+        <section className="space-y-6 rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8">
           <div className="space-y-4">
-            <Badge className="bg-amber-500/10 px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.32em] text-amber-200">
+            <Badge className="bg-amber-700/10 px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.32em] text-amber-700 dark:bg-amber-500/10 dark:text-amber-200">
               {category?.name ?? product.categorySlug}
             </Badge>
             <div className="space-y-3">
@@ -205,7 +205,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
                   <Badge
                     key={tag}
                     variant="outline"
-                    className="border-amber-500/20 bg-transparent text-[0.7rem] uppercase tracking-[0.24em] text-muted-foreground"
+                    className="border-border bg-transparent text-[0.7rem] uppercase tracking-[0.24em] text-muted-foreground dark:border-amber-500/20"
                   >
                     {tag}
                   </Badge>
@@ -214,7 +214,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
             </div>
           </div>
 
-          <Separator className="bg-amber-500/10" />
+          <Separator className="bg-border dark:bg-amber-500/10" />
 
           <div className="space-y-3">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
@@ -230,8 +230,8 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
                   onClick={() => setSelectedSize(size)}
                   className={
                     selectedSize === size
-                      ? "bg-amber-300 text-zinc-950 hover:bg-amber-200"
-                      : "border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+                      ? "bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+                      : "border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
                   }
                 >
                   {size}
@@ -248,7 +248,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
               setAdded(true);
               window.setTimeout(() => setAdded(false), 1600);
             }}
-            className="h-12 rounded-full bg-amber-300 text-zinc-950 hover:bg-amber-200"
+            className="h-12 rounded-full bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
           >
             {added ? <Check /> : <ShoppingBag />}
             {added ? copy.productAddedToCart : copy.productAddToCart}
@@ -256,7 +256,7 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
 
           <div className="space-y-2">
             {sections.map((section) => (
-              <div key={section.key} className="rounded-3xl border border-amber-500/10 px-5 py-4">
+              <div key={section.key} className="rounded-3xl border border-border px-5 py-4 dark:border-amber-500/10">
                 <button
                   type="button"
                   className="flex w-full items-center justify-between gap-4 text-left"

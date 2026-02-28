@@ -76,7 +76,7 @@ function PaginatedCatalogGrid({
       <ProductGrid products={pagedProducts} />
 
       {totalPages > 1 ? (
-        <div className="flex flex-col items-center gap-4 rounded-3xl border border-amber-500/10 bg-card/70 px-5 py-5">
+        <div className="flex flex-col items-center gap-4 rounded-3xl border border-border bg-card/80 px-5 py-5 dark:border-amber-500/10 dark:bg-card/70">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
             {copy.paginationPage} {currentPage} {copy.paginationOf} {totalPages}
           </p>
@@ -87,7 +87,7 @@ function PaginatedCatalogGrid({
               size="sm"
               onClick={() => setCurrentPage((current) => Math.max(1, current - 1))}
               disabled={currentPage === 1}
-              className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+              className="border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
             >
               {copy.paginationPrevious}
             </Button>
@@ -104,8 +104,8 @@ function PaginatedCatalogGrid({
                   onClick={() => setCurrentPage(page)}
                   className={
                     page === currentPage
-                      ? "bg-amber-300 text-zinc-950 hover:bg-amber-200"
-                      : "border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+                      ? "bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+                      : "border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
                   }
                 >
                   {page}
@@ -119,7 +119,7 @@ function PaginatedCatalogGrid({
               size="sm"
               onClick={() => setCurrentPage((current) => Math.min(totalPages, current + 1))}
               disabled={currentPage === totalPages}
-              className="border-amber-500/20 bg-transparent hover:bg-amber-500/10"
+              className="border-border bg-transparent hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
             >
               {copy.paginationNext}
             </Button>
@@ -185,9 +185,9 @@ export function CatalogView({
       ) : null}
 
       {showIntroSection ? (
-        <section className="grid gap-8 rounded-[2rem] border border-amber-500/10 bg-card/70 p-6 shadow-sm sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
+        <section className="grid gap-8 rounded-[2rem] border border-border bg-card/80 p-6 shadow-sm dark:border-amber-500/10 dark:bg-card/70 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
           <div className="space-y-5">
-            <Badge className="bg-amber-500/10 px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.32em] text-amber-200">
+            <Badge className="bg-amber-700/10 px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.32em] text-amber-700 dark:bg-amber-500/10 dark:text-amber-200">
               {eyebrow}
             </Badge>
             <div className="space-y-4">
@@ -199,8 +199,8 @@ export function CatalogView({
               </p>
             </div>
           </div>
-          <div className="rounded-[1.75rem] border border-amber-500/10 bg-gradient-to-br from-amber-400/10 via-transparent to-transparent p-6">
-            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-200">
+          <div className="rounded-[1.75rem] border border-border bg-gradient-to-br from-amber-700/8 via-transparent to-transparent p-6 dark:border-amber-500/10 dark:from-amber-400/10">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-700 dark:text-amber-200">
               {copy.privateAtelier}
             </p>
             <p className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold">
@@ -214,17 +214,17 @@ export function CatalogView({
       ) : null}
 
       {showPromoBanner ? (
-        <section className="rounded-3xl border border-amber-500/10 bg-amber-500/8 px-6 py-5">
+        <section className="rounded-3xl border border-border bg-card/70 px-6 py-5 dark:border-amber-500/10 dark:bg-amber-500/8">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-200">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-amber-700 dark:text-amber-200">
                 {promoLabel}
               </p>
               <p className="mt-1 text-sm leading-7 text-muted-foreground">{promoCopy}</p>
             </div>
             <Badge
               variant="outline"
-              className="border-amber-500/20 bg-transparent px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.28em] text-amber-100"
+              className="border-border bg-transparent px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.28em] text-amber-700 dark:border-amber-500/20 dark:text-amber-100"
             >
               {copy.complimentaryPouch}
             </Badge>
@@ -234,11 +234,11 @@ export function CatalogView({
 
       <section
         id={sectionId}
-        className="scroll-mt-[6.75rem] space-y-6 rounded-[2.25rem] border border-amber-500/10 bg-card/65 px-5 py-8 shadow-sm sm:scroll-mt-[7rem] sm:px-8 sm:py-10"
+        className="scroll-mt-[6.75rem] space-y-6 rounded-[2.25rem] border border-border bg-card/72 px-5 py-8 shadow-sm dark:border-amber-500/10 dark:bg-card/65 sm:scroll-mt-[7rem] sm:px-8 sm:py-10"
       >
         {collectionTitle ? (
           <div className="space-y-3 text-center">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-200">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-700 dark:text-amber-200">
               {eyebrow}
             </p>
             <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -275,8 +275,8 @@ export function CatalogView({
       </section>
 
       {seoCopy ? (
-        <section className="rounded-3xl border border-amber-500/10 bg-card/70 p-6 sm:p-8">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-200">
+        <section className="rounded-3xl border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/70 sm:p-8">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
             {copy.editorialNotes}
           </p>
           <p className="mt-4 text-sm leading-8 text-muted-foreground sm:text-base">{seoCopy}</p>

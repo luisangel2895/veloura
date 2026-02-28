@@ -13,7 +13,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.slug}`} className="group block h-full">
-      <Card className="h-full overflow-hidden border-amber-500/10 bg-card/80 py-0 transition-transform duration-300 group-hover:-translate-y-1">
+      <Card className="h-full overflow-hidden border-border bg-card/85 py-0 transition-transform duration-300 group-hover:-translate-y-1 dark:border-amber-500/10 dark:bg-card/80">
         <div className="relative aspect-[3/4] overflow-hidden">
           <ProductImage
             src={product.images[0]}
@@ -41,7 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
               <Badge
                 key={tag}
                 variant="outline"
-                className="border-amber-500/20 bg-amber-500/5 text-[0.7rem] uppercase tracking-[0.22em] text-amber-200"
+                className="border-border bg-amber-700/5 text-[0.7rem] uppercase tracking-[0.22em] text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/5 dark:text-amber-200"
               >
                 {tag}
               </Badge>

@@ -56,8 +56,8 @@ function ToggleGroup<T extends string>({
             onClick={() => onChange(option.value)}
             className={
               value === option.value
-                ? "bg-amber-300 text-zinc-950 hover:bg-amber-200"
-                : "border-amber-500/20 bg-transparent text-foreground hover:bg-amber-500/10 hover:text-foreground"
+                ? "bg-amber-700 text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+                : "border-border bg-transparent text-foreground hover:bg-accent hover:text-foreground dark:border-amber-500/20 dark:hover:bg-amber-500/10"
             }
           >
             {option.label}
@@ -81,7 +81,7 @@ export function FilterBar({
   const { copy } = useLanguage();
 
   return (
-    <section className="rounded-[1.75rem] border border-amber-500/10 bg-background/50 p-5 backdrop-blur sm:p-6">
+    <section className="rounded-[1.75rem] border border-border bg-background/70 p-5 backdrop-blur dark:border-amber-500/10 dark:bg-background/50 sm:p-6">
       <div className="space-y-6">
         <div className="grid gap-6 xl:grid-cols-[1.4fr_0.8fr]">
           {showCategoryFilter ? (
@@ -137,7 +137,7 @@ export function FilterBar({
           </div>
         </div>
 
-        <div className="space-y-3 border-t border-amber-500/10 pt-6">
+        <div className="space-y-3 border-t border-border pt-6 dark:border-amber-500/10">
           <ToggleGroup
             label={copy.filterSize}
             options={sizeOptions.map((option) => ({

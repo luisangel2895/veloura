@@ -11,7 +11,7 @@ interface ProductGridProps {
 
 function ProductSkeleton() {
   return (
-    <div className="overflow-hidden rounded-3xl border border-amber-500/10 bg-card/60">
+    <div className="overflow-hidden rounded-3xl border border-border bg-card/70 dark:border-amber-500/10 dark:bg-card/60">
       <div className="aspect-[3/4] animate-pulse bg-muted" />
       <div className="space-y-3 p-5">
         <div className="h-4 w-24 animate-pulse rounded bg-muted" />
@@ -38,7 +38,7 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
 
   if (!products.length) {
     return (
-      <div className="rounded-3xl border border-dashed border-amber-500/20 bg-card/60 px-6 py-16 text-center">
+      <div className="rounded-3xl border border-dashed border-border bg-card/70 px-6 py-16 text-center dark:border-amber-500/20 dark:bg-card/60">
         <h2 className="text-3xl font-semibold">{copy.noProductsTitle}</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
           {copy.noProductsDescription}
