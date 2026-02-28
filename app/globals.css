@@ -120,9 +120,6 @@
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
   @media (prefers-reduced-motion: no-preference) {
     html.theme-switching,
     html.theme-switching *,

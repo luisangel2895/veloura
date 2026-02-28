@@ -26,6 +26,13 @@ export const messages = {
     headerNavBodysuits: "Bodysuits",
     headerNavLounge: "Lounge",
     headerCart: "Abrir carrito",
+    footerEmailPlaceholder: "Tu correo",
+    footerEmailInvalid: "Ingresa un correo valido para suscribirte.",
+    footerSubscribeAria: "Suscribirse",
+    footerSubscribeTitle: "Gracias por registrarte.",
+    footerSubscribeCopy:
+      "Te enviaremos novedades, promociones editoriales y nuevos lanzamientos de la tienda en cuanto esten disponibles.",
+    footerSubscribeClose: "Cerrar",
     footerDescription:
       "Lenceria contemporanea con enfoque editorial, construida para escalar de front-end demo a un backend real sin rehacer la base.",
     footerHome: "Inicio",
@@ -110,6 +117,13 @@ export const messages = {
     headerNavBodysuits: "Bodysuits",
     headerNavLounge: "Lounge",
     headerCart: "Open cart",
+    footerEmailPlaceholder: "Your email",
+    footerEmailInvalid: "Please enter a valid email address to subscribe.",
+    footerSubscribeAria: "Subscribe",
+    footerSubscribeTitle: "Thank you for subscribing.",
+    footerSubscribeCopy:
+      "We will send you store updates, private promotions and newly released pieces as soon as they are available.",
+    footerSubscribeClose: "Close",
     footerDescription:
       "Contemporary lingerie with an editorial point of view, built to scale from a front-end demo into a real backend without reworking the foundation.",
     footerHome: "Home",
