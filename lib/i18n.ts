@@ -72,7 +72,7 @@ export const messages = {
     cartEmptyTitle: "Tu carrito esta vacio.",
     cartEmptyDescription:
       "Empieza por la seleccion principal y agrega una pieza con talla elegida para ver el estado persistido en localStorage.",
-    cartReturn: "Volver al atelier",
+    cartReturn: "Volver a Veloura",
     cartSummary: "Resumen de pedido",
     cartSubtotal: "Subtotal",
     cartProceed: "Ir a checkout",
@@ -164,7 +164,7 @@ export const messages = {
     cartEmptyTitle: "Your cart is empty.",
     cartEmptyDescription:
       "Start with the signature edit and add a size-selected piece to see the cart state persisted through local storage.",
-    cartReturn: "Return to the atelier",
+    cartReturn: "Back to Veloura",
     cartSummary: "Order summary",
     cartSubtotal: "Subtotal",
     cartProceed: "Proceed to checkout",

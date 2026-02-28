@@ -1065,8 +1065,7 @@ export function CheckoutFlow() {
             </div>
             <Button
               asChild
-              variant="outline"
-              className={`mt-6 w-full ${secondaryActionButtonClassName}`}
+              className={`mt-6 w-full ${primaryActionButtonClassName}`}
             >
               <Link href="/">
                 {copy.cartReturn}
