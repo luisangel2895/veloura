@@ -1,15 +1,27 @@
 import { expect, test, type Page } from "@playwright/test";
 
-async function installFakeStripe(page: Page, paymentStatus = "succeeded") {
-  await page.addInitScript(({ status }) => {
+type MockPaymentStatus = "succeeded" | "processing" | "requires_capture";
+
+interface StripeInitPayload {
+  status: MockPaymentStatus;
+}
+
+async function installFakeStripe(
+  page: Page,
+  paymentStatus: MockPaymentStatus = "succeeded",
+): Promise<void> {
+  await page.addInitScript(({ status }: StripeInitPayload) => {
     window.Stripe = () => ({
       elements: () => ({
         create: () => {
-          let host = null;
+          let host: HTMLElement | null = null;
 
           return {
-            mount(target) {
-              host = typeof target === "string" ? document.querySelector(target) : target;
+            mount(target: string | HTMLElement) {
+              host =
+                typeof target === "string"
+                  ? document.querySelector<HTMLElement>(target)
+                  : target;
 
               if (host instanceof HTMLElement) {
                 const shell = document.createElement("div");
@@ -53,7 +65,7 @@ async function installFakeStripe(page: Page, paymentStatus = "succeeded") {
   }, { status: paymentStatus });
 }
 
-async function mockPaymentIntent(page: Page) {
+async function mockPaymentIntent(page: Page): Promise<void> {
   await page.route("**/api/stripe/create-payment-intent", async (route) => {
     await route.fulfill({
       status: 200,
@@ -65,17 +77,17 @@ async function mockPaymentIntent(page: Page) {
   });
 }
 
-async function addProductToCart(page: Page, slug: string) {
+async function addProductToCart(page: Page, slug: string): Promise<void> {
   await page.goto(`/product/${slug}`);
   await page.getByTestId("add-to-cart").click();
 }
 
-async function goToCheckout(page: Page) {
+async function goToCheckout(page: Page): Promise<void> {
   await page.getByTestId("cart-button").click();
   await page.locator('a[href="/checkout"]').click();
 }
 
-async function fillValidShipping(page: Page) {
+async function fillValidShipping(page: Page): Promise<void> {
   await page.locator("#shipping-full-name").fill("Angel Doe");
   await page.locator("#shipping-email").fill("angel@example.com");
   await page.locator("#shipping-city").selectOption("New York");

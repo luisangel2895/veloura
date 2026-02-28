@@ -11,11 +11,11 @@ import {
 function dispatchSequence(
   initialState: CheckoutState,
   actions: CheckoutAction[],
-) {
+): CheckoutState {
   return actions.reduce(checkoutReducer, initialState);
 }
 
-function buildValidShippingState() {
+function buildValidShippingState(): CheckoutState {
   return dispatchSequence(createInitialCheckoutState(), [
     { type: "SET_FIELD", field: "shipping.fullName", value: "Angel Doe" },
     { type: "SET_FIELD", field: "shipping.email", value: "angel@example.com" },

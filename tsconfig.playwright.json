@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true
+  },
+  "include": [
+    "e2e/**/*.ts",
+    "e2e/**/*.d.ts"
+  ],
+  "exclude": ["node_modules", ".next"]
+}
