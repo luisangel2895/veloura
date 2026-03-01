@@ -335,6 +335,8 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
                 <button
                   type="button"
                   className="flex w-full items-center justify-between gap-4 text-left"
+                  aria-expanded={panels[section.key]}
+                  aria-controls={`product-panel-${section.key}`}
                   onClick={() =>
                     setPanels((current) => ({
                       ...current,
@@ -344,14 +346,21 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
                 >
                   <span className="font-medium">{section.title}</span>
                   <ChevronDown
-                    className={`size-4 transition-transform ${
+                    className={`size-4 transition-transform duration-300 ease-out ${
                       panels[section.key] ? "rotate-180" : ""
                     }`}
                   />
                 </button>
-                {panels[section.key] ? (
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{section.content}</p>
-                ) : null}
+                <div
+                  id={`product-panel-${section.key}`}
+                  className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${
+                    panels[section.key] ? "mt-3 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-sm leading-7 text-muted-foreground">{section.content}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
