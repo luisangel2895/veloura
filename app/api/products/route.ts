@@ -4,6 +4,8 @@ import { delay } from "@/lib/data/delay";
 import { getMockProducts } from "@/lib/data/mock-products";
 import type { ProductsResponse } from "@/types/catalog";
 
+export const revalidate = 300;
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const category = searchParams.get("category") ?? undefined;
@@ -16,9 +18,16 @@ export async function GET(request: NextRequest) {
     slug,
   });
 
-  return NextResponse.json<ProductsResponse>({
-    products,
-    total: products.length,
-    generatedAt: new Date().toISOString(),
-  });
+  return NextResponse.json<ProductsResponse>(
+    {
+      products,
+      total: products.length,
+      generatedAt: new Date().toISOString(),
+    },
+    {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
+      },
+    },
+  );
 }

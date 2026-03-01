@@ -169,6 +169,10 @@
   a {
     @apply transition-colors;
   }
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--ring) 88%, transparent);
+    outline-offset: 3px;
+  }
 }
 
 @keyframes cart-nudge {

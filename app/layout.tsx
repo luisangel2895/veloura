@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 
 import { AppProviders } from "@/components/providers/app-providers";
+import { JsonLd } from "@/components/seo/json-ld";
 import { resolveLocale } from "@/lib/i18n";
-import { createBaseMetadata } from "@/lib/seo/metadata";
+import { buildOrganizationJsonLd, createBaseMetadata } from "@/lib/seo/metadata";
 
 import "./globals.css";
 
@@ -20,13 +21,14 @@ export default async function RootLayout({
   const initialLocale = resolveLocale(cookieLocale ?? headerStore.get("accept-language"));
 
   return (
-    <html lang={initialLocale} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/brand/veloura-logo.png" type="image/png" />
         <link rel="shortcut icon" href="/brand/veloura-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/brand/veloura-logo.png" />
       </head>
       <body className="antialiased" suppressHydrationWarning>
+        <JsonLd data={buildOrganizationJsonLd()} />
         <AppProviders initialLocale={initialLocale}>{children}</AppProviders>
       </body>
     </html>

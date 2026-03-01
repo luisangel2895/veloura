@@ -14,6 +14,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 1,
     },
+    {
+      url: toAbsoluteUrl("/grid"),
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
     ...getMockCategories().map((category) => ({
       url: toAbsoluteUrl(`/category/${category.slug}`),
       lastModified: now,

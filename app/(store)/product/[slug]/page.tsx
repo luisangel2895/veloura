@@ -11,6 +11,8 @@ import {
   createProductMetadata,
 } from "@/lib/seo/metadata";
 
+export const revalidate = 300;
+
 export async function generateMetadata({
   params,
 }: {

@@ -56,6 +56,7 @@ function ProductGallery({ product }: { product: Product }) {
             seed={`${product.slug}-hero-${currentImageIndex}`}
             className="absolute inset-0"
             sizes="(min-width: 1024px) 55vw, 100vw"
+            priority
           />
           <div
             className="absolute inset-0 opacity-65"

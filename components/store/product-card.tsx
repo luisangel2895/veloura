@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Link from "next/link";
 
 import { ProductImage } from "@/components/store/product-image";
@@ -8,9 +9,10 @@ import type { Product } from "@/types/catalog";
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+function ProductCardComponent({ product, priority = false }: ProductCardProps) {
   return (
     <Link href={`/product/${product.slug}`} className="group block h-full">
       <Card className="h-full overflow-hidden border-border bg-card/85 py-0 transition-transform duration-300 group-hover:-translate-y-1 dark:border-amber-500/10 dark:bg-card/80">
@@ -20,6 +22,7 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             seed={product.slug}
             sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw"
+            priority={priority}
             showBrandSkeleton
           />
           <div
@@ -60,3 +63,5 @@ export function ProductCard({ product }: ProductCardProps) {
     </Link>
   );
 }
+
+export const ProductCard = memo(ProductCardComponent);

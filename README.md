@@ -187,6 +187,50 @@ The project includes a professional CI pipeline designed for pull request safety
 - **Automatic Vercel deployment**
   Once code is merged and the repository is connected to Vercel, deployment can proceed automatically through Vercel’s standard preview/production flow.
 
+## Performance & SEO Strategy
+
+Veloura is tuned around the metrics that matter most in a production ecommerce storefront:
+
+- **Metadata discipline**
+  App Router metadata is defined per route with canonical URLs, Open Graph, Twitter cards, dynamic product/category metadata, `robots.txt`, and a generated sitemap that covers the storefront and PDP routes.
+
+- **Structured data**
+  The app ships `Organization`, `BreadcrumbList`, and product-level JSON-LD so search engines can understand brand identity, catalog hierarchy, and PDP commerce data.
+
+- **Media optimization**
+  Product imagery uses `next/image` with responsive `sizes`, modern format optimization, eager loading only where it improves above-the-fold rendering, and branded loading states to avoid abrupt content shifts.
+
+- **Caching and revalidation**
+  Mock catalog APIs return cache headers and the main storefront routes use revalidation so content remains fast while staying compatible with ISR-style delivery.
+
+- **Security and delivery**
+  Security headers are configured in `next.config.ts`, Stripe secrets stay server-only, and static brand/video assets are served with long-lived immutable cache headers.
+
+- **Bundle awareness**
+  The config is ready for bundle inspection via `ANALYZE=true npm run build` once `@next/bundle-analyzer` is installed, allowing targeted dependency audits without affecting production builds.
+
+### Measuring With Lighthouse
+
+Use Chrome Lighthouse against the production deployment or a local production build:
+
+```bash
+npm run build
+npm run start
+```
+
+Then run Lighthouse on:
+
+- `/`
+- `/grid`
+- `/product/<slug>`
+
+Target scores:
+
+- Performance: 95+
+- Accessibility: 95+
+- Best Practices: 95+
+- SEO: 95+
+
 ## Testing Strategy
 
 The test suite intentionally focuses on the route that matters most:

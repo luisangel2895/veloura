@@ -96,7 +96,7 @@ export function HomeHero() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             disablePictureInPicture
             aria-hidden="true"
           >

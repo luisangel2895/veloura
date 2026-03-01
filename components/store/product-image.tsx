@@ -11,6 +11,7 @@ interface ProductImageProps {
   seed: string;
   className?: string;
   sizes?: string;
+  priority?: boolean;
   showBrandSkeleton?: boolean;
 }
 
@@ -20,6 +21,7 @@ export function ProductImage({
   seed,
   className,
   sizes,
+  priority = false,
   showBrandSkeleton = false,
 }: ProductImageProps) {
   const fallbackSrc = `https://picsum.photos/seed/${seed}/1200/1600`;
@@ -61,8 +63,11 @@ export function ProductImage({
         alt={alt}
         width={1200}
         height={1600}
-        unoptimized
+        priority={priority}
+        quality={84}
         sizes={sizes}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
         className={cn("h-full w-full object-cover", className)}
         onLoad={() => {
           setIsLoaded(true);

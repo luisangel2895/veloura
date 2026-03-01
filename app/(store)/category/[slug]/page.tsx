@@ -6,6 +6,8 @@ import { CatalogView } from "@/components/store/catalog-view";
 import { getMockCategoryBySlug } from "@/lib/data/mock-categories";
 import { buildBreadcrumbJsonLd, createCategoryMetadata } from "@/lib/seo/metadata";
 
+export const revalidate = 300;
+
 export async function generateMetadata({
   params,
 }: {

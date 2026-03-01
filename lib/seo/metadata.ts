@@ -3,6 +3,15 @@ import type { Metadata } from "next";
 import { brand } from "@/lib/brand";
 import type { Category, Product } from "@/types/catalog";
 
+const socialImagePath = "/brand/veloura-logo.png";
+const defaultKeywords = [
+  brand.name,
+  "luxury lingerie",
+  "editorial ecommerce",
+  "next.js commerce",
+  "stripe checkout",
+];
+
 export function getBaseUrl() {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
@@ -49,7 +58,7 @@ function buildPageMetadata({
   return {
     title,
     description,
-    keywords,
+    keywords: [...defaultKeywords, ...(keywords ?? [])],
     category,
     alternates: {
       canonical: path,
@@ -60,13 +69,20 @@ function buildPageMetadata({
       url: path,
       siteName: brand.name,
       type: "website",
-      images: ["/brand/veloura-logo.png"],
+      images: [
+        {
+          url: socialImagePath,
+          width: 512,
+          height: 512,
+          alt: `${brand.name} logo`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: socialTitle,
       description,
-      images: ["/brand/veloura-logo.png"],
+      images: [socialImagePath],
     },
   };
 }
@@ -79,20 +95,32 @@ export function createBaseMetadata(): Metadata {
       template: `%s | ${brand.name}`,
     },
     description: brand.shortDescription,
+    applicationName: brand.name,
+    keywords: defaultKeywords,
+    referrer: "strict-origin-when-cross-origin",
     icons: {
       icon: [
         {
-          url: "/brand/veloura-logo.png",
+          url: socialImagePath,
           type: "image/png",
         },
       ],
-      shortcut: ["/brand/veloura-logo.png"],
+      shortcut: [socialImagePath],
       apple: [
         {
-          url: "/brand/veloura-logo.png",
+          url: socialImagePath,
           type: "image/png",
         },
       ],
+    },
+    appleWebApp: {
+      capable: true,
+      title: brand.name,
+      statusBarStyle: "default",
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
     openGraph: {
       title: brand.defaultTitle,
@@ -100,13 +128,20 @@ export function createBaseMetadata(): Metadata {
       url: "/",
       siteName: brand.name,
       type: "website",
-      images: ["/brand/veloura-logo.png"],
+      images: [
+        {
+          url: socialImagePath,
+          width: 512,
+          height: 512,
+          alt: `${brand.name} logo`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: brand.defaultTitle,
       description: brand.shortDescription,
-      images: ["/brand/veloura-logo.png"],
+      images: [socialImagePath],
     },
   };
 }
@@ -114,8 +149,18 @@ export function createBaseMetadata(): Metadata {
 export function createHomeMetadata(): Metadata {
   return buildPageMetadata({
     title: "Luxury essentials",
-    description: "Hero-led storefront with URL-synced catalog filters and a mocked commerce flow.",
+    description:
+      "Modern editorial lingerie storefront with luxury product discovery, URL-synced catalog filters and Stripe-ready checkout architecture.",
     path: "/",
+  });
+}
+
+export function createGridMetadata(): Metadata {
+  return buildPageMetadata({
+    title: "Shop the collection",
+    description:
+      "Browse the full Veloura catalog with editorial product cards, live filtering and a performance-tuned product grid.",
+    path: "/grid",
   });
 }
 
@@ -157,6 +202,17 @@ export function buildBreadcrumbJsonLd(items: Array<{ name: string; url?: string 
   };
 }
 
+export function buildOrganizationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: brand.name,
+    url: getBaseUrl(),
+    logo: toAbsoluteUrl(socialImagePath),
+    description: brand.shortDescription,
+  };
+}
+
 export function buildProductJsonLd(product: Product, category?: Category) {
   return {
     "@context": "https://schema.org",
@@ -175,6 +231,11 @@ export function buildProductJsonLd(product: Product, category?: Category) {
       priceCurrency: "USD",
       price: (product.priceCents / 100).toFixed(2),
       availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: {
+        "@type": "Organization",
+        name: brand.name,
+      },
       url: toAbsoluteUrl(`/product/${product.slug}`),
     },
   };
