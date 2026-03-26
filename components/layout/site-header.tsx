@@ -8,6 +8,7 @@ import { useLanguage } from "@/components/providers/language-provider";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { useCart } from "@/hooks/use-cart";
+import { useLocalePath } from "@/hooks/use-locale-path";
 
 export function SiteHeader() {
   const { totalItems, lastAddedAt } = useCart((state) => ({
@@ -15,6 +16,7 @@ export function SiteHeader() {
     lastAddedAt: state.lastAddedAt,
   }));
   const { copy } = useLanguage();
+  const lp = useLocalePath();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const [cartAnnouncement, setCartAnnouncement] = useState("");
@@ -31,19 +33,19 @@ export function SiteHeader() {
 
   const categoryLinks = [
     {
-      href: "/category/balconette",
+      href: lp("/category/balconette"),
       label: copy.headerNavBalconette,
     },
     {
-      href: "/category/bridal",
+      href: lp("/category/bridal"),
       label: copy.headerNavBridal,
     },
     {
-      href: "/category/bodysuits",
+      href: lp("/category/bodysuits"),
       label: copy.headerNavBodysuits,
     },
     {
-      href: "/category/lounge",
+      href: lp("/category/lounge"),
       label: copy.headerNavLounge,
     },
   ];
@@ -77,7 +79,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/92 backdrop-blur-xl dark:border-amber-500/10 dark:bg-background/88">
       <div className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="group flex items-center">
+        <Link href={lp("/")} className="group flex items-center">
           <div>
             <p className="font-[family-name:var(--font-display)] text-2xl font-semibold text-foreground">
               Veloura
@@ -158,7 +160,7 @@ export function SiteHeader() {
           </div>
           <ThemeToggle />
           <Link
-            href="/cart"
+            href={lp("/cart")}
             data-testid="cart-button"
             className="relative inline-flex h-10 items-center justify-center px-1 text-muted-foreground transition-colors hover:text-foreground dark:text-amber-100 dark:hover:text-amber-50"
             aria-label={copy.headerCart}

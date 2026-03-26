@@ -5,6 +5,7 @@ import { ProductImage } from "@/components/store/product-image";
 import { Price } from "@/components/store/price";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLocalePath } from "@/hooks/use-locale-path";
 import type { Product } from "@/types/catalog";
 
 interface ProductCardProps {
@@ -13,8 +14,9 @@ interface ProductCardProps {
 }
 
 function ProductCardComponent({ product, priority = false }: ProductCardProps) {
+  const lp = useLocalePath();
   return (
-    <Link href={`/product/${product.slug}`} className="group block h-full">
+    <Link href={lp(`/product/${product.slug}`)} className="group block h-full">
       <Card className="h-full overflow-hidden border-border bg-card/85 py-0 transition-transform duration-300 group-hover:-translate-y-1 dark:border-amber-500/10 dark:bg-card/80">
         <div className="relative aspect-[3/4] overflow-hidden">
           <ProductImage

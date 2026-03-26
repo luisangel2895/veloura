@@ -1,13 +1,32 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/providers/language-provider";
 import type { Locale } from "@/lib/i18n";
 
+const SUPPORTED_LOCALES: Locale[] = ["es", "en"];
+
 export function LanguageToggle() {
   const { locale, setLocale, copy } = useLanguage();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const options: Locale[] = ["es", "en"];
+  function handleLocaleChange(nextLocale: Locale) {
+    if (nextLocale === locale) return;
+
+    setLocale(nextLocale);
+
+    // Update URL to reflect the new locale
+    const segments = pathname.split("/");
+    if (SUPPORTED_LOCALES.includes(segments[1] as Locale)) {
+      segments[1] = nextLocale;
+    } else {
+      segments.splice(1, 0, nextLocale);
+    }
+    router.replace(segments.join("/") || "/");
+  }
 
   return (
     <div
@@ -20,13 +39,13 @@ export function LanguageToggle() {
           locale === "en" ? "translate-x-[calc(100%+0.25rem)]" : "translate-x-0"
         }`}
       />
-      {options.map((option) => (
+      {SUPPORTED_LOCALES.map((option) => (
         <Button
           key={option}
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => setLocale(option)}
+          onClick={() => handleLocaleChange(option)}
           className={`relative z-10 h-8 rounded-full px-3 text-xs font-semibold uppercase tracking-[0.18em] transition-colors duration-300 ${
             locale === option
               ? "text-amber-50 hover:bg-transparent dark:text-zinc-950"

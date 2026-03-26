@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+const SUPPORTED_LOCALES = ["en", "es"] as const;
+const DEFAULT_LOCALE = "es";
+
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 10;
 
@@ -23,21 +26,83 @@ function isRateLimited(key: string): boolean {
   return entry.count > RATE_LIMIT_MAX_REQUESTS;
 }
 
-export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/api/stripe")) {
-    const key = getRateLimitKey(request);
+function resolveLocaleFromRequest(request: NextRequest): string {
+  const cookieLocale = request.cookies.get("veloura-locale")?.value;
+  if (
+    cookieLocale &&
+    SUPPORTED_LOCALES.includes(cookieLocale as (typeof SUPPORTED_LOCALES)[number])
+  ) {
+    return cookieLocale;
+  }
 
+  const acceptLanguage = request.headers.get("accept-language") ?? "";
+  if (acceptLanguage.toLowerCase().includes("en")) {
+    return "en";
+  }
+
+  return DEFAULT_LOCALE;
+}
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Rate limiting for Stripe API
+  if (pathname.startsWith("/api/stripe")) {
+    const key = getRateLimitKey(request);
     if (isRateLimited(key)) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
         { status: 429 },
       );
     }
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  // Skip locale handling for API, static files, and internal routes
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/brand") ||
+    pathname.startsWith("/videos") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/manifest") ||
+    pathname.startsWith("/opengraph-image") ||
+    pathname.startsWith("/sitemap") ||
+    pathname.startsWith("/robots")
+  ) {
+    return NextResponse.next();
+  }
+
+  // Check if the URL starts with a locale prefix
+  const segments = pathname.split("/");
+  const maybeLocale = segments[1];
+
+  if (SUPPORTED_LOCALES.includes(maybeLocale as (typeof SUPPORTED_LOCALES)[number])) {
+    // URL has locale prefix (e.g., /en/product/foo) → rewrite to real path
+    const locale = maybeLocale;
+    const realPath = "/" + segments.slice(2).join("/") || "/";
+    const url = request.nextUrl.clone();
+    url.pathname = realPath;
+
+    const response = NextResponse.rewrite(url);
+    response.cookies.set("veloura-locale", locale, {
+      path: "/",
+      maxAge: 31536000,
+      sameSite: "lax",
+    });
+    return response;
+  }
+
+  // No locale prefix → redirect to prefixed URL
+  const locale = resolveLocaleFromRequest(request);
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname}`;
+  return NextResponse.redirect(url);
 }
 
 export const config = {
-  matcher: ["/api/stripe/:path*"],
+  matcher: [
+    // Match everything except static files with extensions
+    "/((?!_next/static|_next/image|.*\\.(?:ico|png|jpg|jpeg|gif|svg|webp|mp4|webm|css|js|woff2?|ttf|eot)).*)",
+  ],
 };

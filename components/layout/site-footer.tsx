@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLocalePath } from "@/hooks/use-locale-path";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -14,6 +15,7 @@ function isValidEmail(email: string) {
 
 export function SiteFooter() {
   const { copy, locale } = useLanguage();
+  const lp = useLocalePath();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -72,7 +74,10 @@ export function SiteFooter() {
               </div>
 
               <div className="space-y-2">
-                <form className="flex max-w-md items-center gap-3" onSubmit={handleNewsletterSubmit}>
+                <form
+                  className="flex max-w-md items-center gap-3"
+                  onSubmit={handleNewsletterSubmit}
+                >
                   <Input
                     type="email"
                     value={email}
@@ -107,16 +112,16 @@ export function SiteFooter() {
                 Shop
               </p>
               <div className="flex flex-col gap-4 text-lg text-muted-foreground">
-                <Link href="/category/balconette" className="hover:text-foreground">
+                <Link href={lp("/category/balconette")} className="hover:text-foreground">
                   Balconette
                 </Link>
-                <Link href="/category/bridal" className="hover:text-foreground">
+                <Link href={lp("/category/bridal")} className="hover:text-foreground">
                   Bridal
                 </Link>
-                <Link href="/category/bodysuits" className="hover:text-foreground">
+                <Link href={lp("/category/bodysuits")} className="hover:text-foreground">
                   Bodysuits
                 </Link>
-                <Link href="/category/lounge" className="hover:text-foreground">
+                <Link href={lp("/category/lounge")} className="hover:text-foreground">
                   Lounge
                 </Link>
               </div>
@@ -127,10 +132,10 @@ export function SiteFooter() {
                 About
               </p>
               <div className="flex flex-col gap-4 text-lg text-muted-foreground">
-                <Link href="/our-story" className="hover:text-foreground">
+                <Link href={lp("/our-story")} className="hover:text-foreground">
                   Our Story
                 </Link>
-                <Link href="/our-story" className="hover:text-foreground">
+                <Link href={lp("/our-story")} className="hover:text-foreground">
                   Sustainability
                 </Link>
               </div>
@@ -145,10 +150,10 @@ export function SiteFooter() {
                   : "© 2026 Veloura. All rights reserved."}
               </p>
               <div className="flex items-center gap-8">
-                <Link href="/policies" className="hover:text-foreground">
+                <Link href={lp("/policies")} className="hover:text-foreground">
                   Privacy
                 </Link>
-                <Link href="/policies" className="hover:text-foreground">
+                <Link href={lp("/policies")} className="hover:text-foreground">
                   Terms
                 </Link>
               </div>
