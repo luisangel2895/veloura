@@ -1,0 +1,17 @@
+{
+  "name": "Veloura — Intimate Atelier",
+  "short_name": "Veloura",
+  "description": "Luxury editorial lingerie storefront with Stripe-ready checkout.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/brand/veloura-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

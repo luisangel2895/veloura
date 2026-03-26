@@ -62,6 +62,11 @@ function buildPageMetadata({
     category,
     alternates: {
       canonical: path,
+      languages: {
+        en: path,
+        es: path,
+        "x-default": path,
+      },
     },
     openGraph: {
       title: socialTitle,

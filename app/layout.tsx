@@ -21,11 +21,12 @@ export default async function RootLayout({
   const initialLocale = resolveLocale(cookieLocale ?? headerStore.get("accept-language"));
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={initialLocale} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/brand/veloura-logo.png" type="image/png" />
         <link rel="shortcut icon" href="/brand/veloura-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/brand/veloura-logo.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
       </head>
       <body className="antialiased" suppressHydrationWarning>
         <JsonLd data={buildOrganizationJsonLd()} />
