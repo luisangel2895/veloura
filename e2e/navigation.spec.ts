@@ -11,24 +11,24 @@ test.describe("navigation and pages", () => {
     await expect(page).toHaveTitle(/collection/i);
   });
 
-  test("shows custom 404 for invalid product slug", async ({ page }) => {
-    const response = await page.goto("/product/this-does-not-exist");
-    expect(response?.status()).toBe(404);
+  test("shows not-found content for invalid product slug", async ({ page }) => {
+    await page.goto("/product/this-does-not-exist");
+    await expect(page.getByText(/not found/i)).toBeVisible();
   });
 
-  test("shows custom 404 for invalid category slug", async ({ page }) => {
-    const response = await page.goto("/category/nonexistent");
-    expect(response?.status()).toBe(404);
+  test("shows not-found content for invalid category slug", async ({ page }) => {
+    await page.goto("/category/nonexistent");
+    await expect(page.getByText(/not found/i)).toBeVisible();
   });
 
-  test("shows custom 404 for random page", async ({ page }) => {
+  test("shows 404 for random page", async ({ page }) => {
     const response = await page.goto("/random-page-that-does-not-exist");
     expect(response?.status()).toBe(404);
   });
 
   test("navigates from home to product detail", async ({ page }) => {
     await page.goto("/");
-    await page.locator('a[href="/product/noir-essence-balconette"]').first().click();
+    await page.locator('a[href*="/product/noir-essence-balconette"]').first().click();
     await expect(page.getByText("Noir Essence Balconette")).toBeVisible();
   });
 

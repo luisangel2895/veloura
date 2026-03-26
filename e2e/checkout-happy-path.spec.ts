@@ -104,7 +104,7 @@ test.describe("critical checkout flow", () => {
     await mockPaymentIntent(page);
 
     await page.goto("/");
-    await page.locator('a[href="/product/noir-essence-balconette"]').first().click();
+    await page.locator('a[href*="/product/noir-essence-balconette"]').first().click();
     await page.getByTestId("add-to-cart").click();
     await goToCheckout(page);
 
