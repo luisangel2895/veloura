@@ -1,0 +1,12 @@
+{
+  "types": [
+    { "type": "feat", "section": "Added" },
+    { "type": "fix", "section": "Fixed" },
+    { "type": "perf", "section": "Performance" },
+    { "type": "refactor", "section": "Changed" },
+    { "type": "docs", "section": "Documentation" },
+    { "type": "test", "section": "Testing" },
+    { "type": "ci", "section": "CI/CD" },
+    { "type": "chore", "hidden": true }
+  ]
+}
