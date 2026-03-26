@@ -258,15 +258,11 @@ export function parsePersistedCheckoutState(raw: string | null): PersistedChecko
 
     const restoredPayment: PaymentForm = {
       method:
-        payment.method === "card" ||
-        payment.method === "link" ||
-        payment.method === "bank_transfer"
+        payment.method === "card" || payment.method === "link" || payment.method === "bank_transfer"
           ? payment.method
           : "",
       billingSameAsShipping:
-        typeof payment.billingSameAsShipping === "boolean"
-          ? payment.billingSameAsShipping
-          : true,
+        typeof payment.billingSameAsShipping === "boolean" ? payment.billingSameAsShipping : true,
       billingFullName: asString(payment.billingFullName) ?? "",
       billingAddress: asString(payment.billingAddress) ?? "",
       billingCity: asString(payment.billingCity) ?? "",
@@ -337,8 +333,7 @@ export function parsePersistedCheckoutState(raw: string | null): PersistedChecko
     }
 
     const restoredPaymentIntentStatus = asString(parsed.paymentIntentStatus);
-    const resolvedStep =
-      step === "review" && !restoredPaymentIntentStatus ? "payment" : step;
+    const resolvedStep = step === "review" && !restoredPaymentIntentStatus ? "payment" : step;
 
     return {
       step: resolvedStep,
@@ -487,9 +482,7 @@ export function checkoutReducer(state: CheckoutState, action: CheckoutAction): C
             submitError: null,
           };
         case "shipping.country": {
-          const nextCountry = isSupportedCountryCode(action.value)
-            ? action.value
-            : DEFAULT_COUNTRY;
+          const nextCountry = isSupportedCountryCode(action.value) ? action.value : DEFAULT_COUNTRY;
           const nextCity = isValidCityForCountry(nextCountry, state.shipping.city)
             ? state.shipping.city
             : "";

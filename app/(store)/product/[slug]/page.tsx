@@ -32,11 +32,7 @@ export async function generateMetadata({
   return createProductMetadata(product, category);
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = getMockProductBySlug(slug);
 

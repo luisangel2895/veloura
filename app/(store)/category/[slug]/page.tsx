@@ -25,11 +25,7 @@ export async function generateMetadata({
   return createCategoryMetadata(category);
 }
 
-export default async function CategoryPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const category = getMockCategoryBySlug(slug);
 
@@ -39,12 +35,7 @@ export default async function CategoryPage({
 
   return (
     <>
-      <JsonLd
-        data={buildBreadcrumbJsonLd([
-          { name: "Home", url: "/" },
-          { name: category.name },
-        ])}
-      />
+      <JsonLd data={buildBreadcrumbJsonLd([{ name: "Home", url: "/" }, { name: category.name }])} />
       <CatalogView
         title={`${category.name} Collection`}
         eyebrow={category.heroEyebrow}

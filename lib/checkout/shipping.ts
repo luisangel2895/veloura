@@ -80,7 +80,9 @@ export const SHIPPING_METHODS: readonly ShippingMethodConfig[] = [
 ] as const;
 
 export function isSupportedCountryCode(value: unknown): value is SupportedCountryCode {
-  return typeof value === "string" && SUPPORTED_COUNTRY_CODES.includes(value as SupportedCountryCode);
+  return (
+    typeof value === "string" && SUPPORTED_COUNTRY_CODES.includes(value as SupportedCountryCode)
+  );
 }
 
 export function isShippingMethodCode(value: unknown): value is ShippingMethodCode {
@@ -88,7 +90,9 @@ export function isShippingMethodCode(value: unknown): value is ShippingMethodCod
 }
 
 export function getCountryConfig(countryCode: SupportedCountryCode) {
-  return SHIPPING_COUNTRIES.find((country) => country.code === countryCode) ?? SHIPPING_COUNTRIES[0];
+  return (
+    SHIPPING_COUNTRIES.find((country) => country.code === countryCode) ?? SHIPPING_COUNTRIES[0]
+  );
 }
 
 export function getCityOptions(countryCode: SupportedCountryCode) {

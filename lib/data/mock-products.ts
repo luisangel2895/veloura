@@ -311,7 +311,10 @@ const generatedProductDescriptors = [
 ] as const;
 
 function toSlugSegment(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 const generatedProducts: Product[] = generatedProductDescriptors.map((descriptor, index) => {

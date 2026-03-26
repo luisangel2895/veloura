@@ -188,10 +188,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const amount = computeTrustedAmount(
-      parsed.data.items,
-      parsed.data.shipping.shippingMethod,
-    );
+    const amount = computeTrustedAmount(parsed.data.items, parsed.data.shipping.shippingMethod);
 
     console.info("[stripe] creating PaymentIntent", {
       email: parsed.data.shipping.email,
@@ -227,8 +224,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         {
-          error:
-            stripePayload?.error?.message ?? "Stripe could not create the PaymentIntent.",
+          error: stripePayload?.error?.message ?? "Stripe could not create the PaymentIntent.",
         },
         { status: stripeResponse.status || 500 },
       );
@@ -260,8 +256,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const message =
-      error instanceof Error ? error.message : "Unable to create the PaymentIntent.";
+    const message = error instanceof Error ? error.message : "Unable to create the PaymentIntent.";
 
     console.error("[stripe] PaymentIntent creation crashed", {
       email: parsed.success ? parsed.data.shipping.email : undefined,

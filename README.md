@@ -154,10 +154,10 @@ npx playwright show-report
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
+| Variable                             | Description                                                             |
+| ------------------------------------ | ----------------------------------------------------------------------- |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Public Stripe key exposed to the client for loading the payment runtime |
-| `STRIPE_SECRET_KEY` | Server-side Stripe secret used only when creating PaymentIntents |
+| `STRIPE_SECRET_KEY`                  | Server-side Stripe secret used only when creating PaymentIntents        |
 
 ### Test vs Live Keys
 
@@ -182,7 +182,7 @@ The project includes a professional CI pipeline designed for pull request safety
   The E2E workflow uploads artifacts on every run, including failures:
   - `playwright-report/`
   - `test-results/`
-  Unit coverage is uploaded from the quality job.
+    Unit coverage is uploaded from the quality job.
 
 - **Automatic Vercel deployment**
   Once code is merged and the repository is connected to Vercel, deployment can proceed automatically through Vercel’s standard preview/production flow.

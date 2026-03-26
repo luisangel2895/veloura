@@ -206,9 +206,7 @@ export function CatalogView({
             <p className="mt-4 font-[family-name:var(--font-display)] text-4xl font-semibold">
               {copy.intimacyRefined}
             </p>
-            <p className="mt-4 text-sm leading-7 text-muted-foreground">
-              {copy.architectureCopy}
-            </p>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">{copy.architectureCopy}</p>
           </div>
         </section>
       ) : null}
@@ -241,9 +239,7 @@ export function CatalogView({
             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-700 dark:text-amber-200">
               {eyebrow}
             </p>
-            <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              {collectionTitle}
-            </h2>
+            <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">{collectionTitle}</h2>
             {collectionDescription ? (
               <p className="mx-auto max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
                 {collectionDescription}

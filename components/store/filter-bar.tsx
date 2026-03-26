@@ -42,11 +42,7 @@ function ToggleGroup<T extends string>({
       >
         {label}
       </p>
-      <div
-        className={`flex flex-wrap gap-2 ${
-          align === "right" ? "xl:justify-end" : ""
-        }`}
-      >
+      <div className={`flex flex-wrap gap-2 ${align === "right" ? "xl:justify-end" : ""}`}>
         {options.map((option) => (
           <Button
             key={option.value}

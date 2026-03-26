@@ -20,9 +20,9 @@ export default function PoliciesPage() {
           Privacy, terms and customer clarity.
         </h1>
         <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-          This page outlines the policies that frame the Veloura storefront experience in this
-          demo environment, including privacy practices, order expectations and the terms that
-          govern site usage.
+          This page outlines the policies that frame the Veloura storefront experience in this demo
+          environment, including privacy practices, order expectations and the terms that govern
+          site usage.
         </p>
       </section>
 
@@ -35,13 +35,13 @@ export default function PoliciesPage() {
           <div className="mt-4 space-y-4 text-sm leading-8 text-muted-foreground sm:text-base">
             <p>
               Veloura only collects the information required to support browsing, mock cart
-              persistence and newsletter sign-up interactions inside this demo storefront. We do
-              not process real payments or transmit purchase data to a production commerce backend.
+              persistence and newsletter sign-up interactions inside this demo storefront. We do not
+              process real payments or transmit purchase data to a production commerce backend.
             </p>
             <p>
               Any locally stored cart data remains in the user&apos;s browser and is used only to
-              preserve the shopping experience across refreshes. Newsletter submissions in this
-              demo trigger a confirmation flow only and are not sent to an external provider.
+              preserve the shopping experience across refreshes. Newsletter submissions in this demo
+              trigger a confirmation flow only and are not sent to an external provider.
             </p>
             <p>
               If this storefront is later connected to real infrastructure, the privacy policy

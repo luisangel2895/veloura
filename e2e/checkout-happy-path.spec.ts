@@ -10,59 +10,60 @@ async function installFakeStripe(
   page: Page,
   paymentStatus: MockPaymentStatus = "succeeded",
 ): Promise<void> {
-  await page.addInitScript(({ status }: StripeInitPayload) => {
-    window.Stripe = () => ({
-      elements: () => ({
-        create: () => {
-          let host: HTMLElement | null = null;
+  await page.addInitScript(
+    ({ status }: StripeInitPayload) => {
+      window.Stripe = () => ({
+        elements: () => ({
+          create: () => {
+            let host: HTMLElement | null = null;
 
+            return {
+              mount(target: string | HTMLElement) {
+                host =
+                  typeof target === "string" ? document.querySelector<HTMLElement>(target) : target;
+
+                if (host instanceof HTMLElement) {
+                  const shell = document.createElement("div");
+                  shell.setAttribute("data-testid", "mock-payment-element");
+                  shell.textContent = "Mock Payment Element";
+                  shell.style.minHeight = "72px";
+                  shell.style.display = "flex";
+                  shell.style.alignItems = "center";
+                  shell.style.justifyContent = "center";
+                  shell.style.border = "1px solid rgba(180,140,52,0.22)";
+                  shell.style.borderRadius = "16px";
+                  shell.style.fontSize = "12px";
+                  shell.style.letterSpacing = "0.18em";
+                  shell.style.textTransform = "uppercase";
+                  shell.style.color = "rgb(113 113 122)";
+                  host.replaceChildren(shell);
+                }
+              },
+              unmount() {
+                if (host instanceof HTMLElement) {
+                  host.replaceChildren();
+                }
+              },
+              destroy() {
+                if (host instanceof HTMLElement) {
+                  host.replaceChildren();
+                }
+              },
+            };
+          },
+        }),
+        async confirmPayment() {
           return {
-            mount(target: string | HTMLElement) {
-              host =
-                typeof target === "string"
-                  ? document.querySelector<HTMLElement>(target)
-                  : target;
-
-              if (host instanceof HTMLElement) {
-                const shell = document.createElement("div");
-                shell.setAttribute("data-testid", "mock-payment-element");
-                shell.textContent = "Mock Payment Element";
-                shell.style.minHeight = "72px";
-                shell.style.display = "flex";
-                shell.style.alignItems = "center";
-                shell.style.justifyContent = "center";
-                shell.style.border = "1px solid rgba(180,140,52,0.22)";
-                shell.style.borderRadius = "16px";
-                shell.style.fontSize = "12px";
-                shell.style.letterSpacing = "0.18em";
-                shell.style.textTransform = "uppercase";
-                shell.style.color = "rgb(113 113 122)";
-                host.replaceChildren(shell);
-              }
-            },
-            unmount() {
-              if (host instanceof HTMLElement) {
-                host.replaceChildren();
-              }
-            },
-            destroy() {
-              if (host instanceof HTMLElement) {
-                host.replaceChildren();
-              }
+            paymentIntent: {
+              id: "pi_mock_checkout",
+              status,
             },
           };
         },
-      }),
-      async confirmPayment() {
-        return {
-          paymentIntent: {
-            id: "pi_mock_checkout",
-            status,
-          },
-        };
-      },
-    });
-  }, { status: paymentStatus });
+      });
+    },
+    { status: paymentStatus },
+  );
 }
 
 async function mockPaymentIntent(page: Page): Promise<void> {

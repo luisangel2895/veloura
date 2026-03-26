@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { CatalogView } from "@/components/store/catalog-view";
-import {
-  buildBreadcrumbJsonLd,
-  createGridMetadata,
-} from "@/lib/seo/metadata";
+import { buildBreadcrumbJsonLd, createGridMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = createGridMetadata();
 export const revalidate = 300;
@@ -13,12 +10,7 @@ export const revalidate = 300;
 export default function GridPage() {
   return (
     <>
-      <JsonLd
-        data={buildBreadcrumbJsonLd([
-          { name: "Home", url: "/" },
-          { name: "Grid" },
-        ])}
-      />
+      <JsonLd data={buildBreadcrumbJsonLd([{ name: "Home", url: "/" }, { name: "Grid" }])} />
       <CatalogView
         title="Shop the Collection"
         eyebrow="Editorial Catalog"

@@ -84,9 +84,7 @@ export function HomeHero() {
 
         <div
           className={`absolute inset-0 hidden lg:block transition-all duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            isVideoReady
-              ? "opacity-100 blur-0 scale-100"
-              : "opacity-0 blur-xl scale-[1.03]"
+            isVideoReady ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-xl scale-[1.03]"
           }`}
         >
           <video
@@ -119,8 +117,8 @@ export function HomeHero() {
             <span className="italic">redefined.</span>
           </h1>
           <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground dark:text-white/80 sm:text-lg">
-            A curated selection of sculptural silhouettes and ceremony pieces, designed
-            through the lens of understated luxury.
+            A curated selection of sculptural silhouettes and ceremony pieces, designed through the
+            lens of understated luxury.
           </p>
         </div>
 

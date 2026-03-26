@@ -32,15 +32,11 @@ function ProductGallery({ product }: { product: Product }) {
   const activeImage = product.images[currentImageIndex] ?? product.images[0];
 
   const showPreviousImage = () => {
-    setCurrentImageIndex((current) =>
-      current === 0 ? product.images.length - 1 : current - 1,
-    );
+    setCurrentImageIndex((current) => (current === 0 ? product.images.length - 1 : current - 1));
   };
 
   const showNextImage = () => {
-    setCurrentImageIndex((current) =>
-      current === product.images.length - 1 ? 0 : current + 1,
-    );
+    setCurrentImageIndex((current) => (current === product.images.length - 1 ? 0 : current + 1));
   };
 
   return (
@@ -332,7 +328,10 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
 
           <div className="space-y-2">
             {sections.map((section) => (
-              <div key={section.key} className="rounded-3xl border border-border px-5 py-4 dark:border-amber-500/10">
+              <div
+                key={section.key}
+                className="rounded-3xl border border-border px-5 py-4 dark:border-amber-500/10"
+              >
                 <button
                   type="button"
                   className="flex w-full items-center justify-between gap-4 text-left"
@@ -355,7 +354,9 @@ export function ProductDetail({ slug, initialProduct, category }: ProductDetailP
                 <div
                   id={`product-panel-${section.key}`}
                   className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${
-                    panels[section.key] ? "mt-3 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"
+                    panels[section.key]
+                      ? "mt-3 grid-rows-[1fr] opacity-100"
+                      : "mt-0 grid-rows-[0fr] opacity-0"
                   }`}
                 >
                   <div className="overflow-hidden">

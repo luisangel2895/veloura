@@ -96,10 +96,7 @@ export function CheckoutFlow() {
   }));
   const inputRefs = useRef<
     Partial<
-      Record<
-        CheckoutField,
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null
-      >
+      Record<CheckoutField, HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>
     >
   >({});
 
@@ -109,8 +106,7 @@ export function CheckoutFlow() {
     review: locale === "es" ? "Revisión" : "Review",
     complete: locale === "es" ? "Completo" : "Complete",
     shippingTitle: locale === "es" ? "Entrega y contacto" : "Shipping and contact",
-    shippingMethodTitle:
-      locale === "es" ? "Velocidad de entrega" : "Delivery speed",
+    shippingMethodTitle: locale === "es" ? "Velocidad de entrega" : "Delivery speed",
     paymentTitle: locale === "es" ? "Pago confirmado" : "Confirmed payment",
     reviewTitle: locale === "es" ? "Revisión final" : "Final review",
     fullName: locale === "es" ? "Nombre completo" : "Full name",
@@ -119,38 +115,26 @@ export function CheckoutFlow() {
     city: locale === "es" ? "Ciudad" : "City",
     street: locale === "es" ? "Calle" : "Street",
     streetNumber: locale === "es" ? "Número" : "Street number",
-    apartment:
-      locale === "es" ? "Dpto / Suite (opcional)" : "Apt / Suite (optional)",
-    reference:
-      locale === "es" ? "Referencia de entrega" : "Delivery reference",
+    apartment: locale === "es" ? "Dpto / Suite (opcional)" : "Apt / Suite (optional)",
+    reference: locale === "es" ? "Referencia de entrega" : "Delivery reference",
     postalCode: locale === "es" ? "Código postal" : "Postal code",
-    chooseCountry:
-      locale === "es" ? "Selecciona un país" : "Select a country",
+    chooseCountry: locale === "es" ? "Selecciona un país" : "Select a country",
     chooseCity: locale === "es" ? "Selecciona una ciudad" : "Select a city",
-    shippingStandard:
-      locale === "es" ? "Envío estándar" : "Standard shipping",
-    shippingPremium:
-      locale === "es" ? "Envío premium" : "Premium shipping",
-    shippingStandardEta:
-      locale === "es" ? "Llega en 5 días" : "Arrives in 5 days",
-    shippingPremiumEta:
-      locale === "es" ? "Llega al día siguiente" : "Arrives next day",
-    orderMerchandise:
-      locale === "es" ? "Productos" : "Merchandise",
-    shippingFee:
-      locale === "es" ? "Costo de envío" : "Shipping",
+    shippingStandard: locale === "es" ? "Envío estándar" : "Standard shipping",
+    shippingPremium: locale === "es" ? "Envío premium" : "Premium shipping",
+    shippingStandardEta: locale === "es" ? "Llega en 5 días" : "Arrives in 5 days",
+    shippingPremiumEta: locale === "es" ? "Llega al día siguiente" : "Arrives next day",
+    orderMerchandise: locale === "es" ? "Productos" : "Merchandise",
+    shippingFee: locale === "es" ? "Costo de envío" : "Shipping",
     orderTotal: locale === "es" ? "Total" : "Total",
-    payAndContinue:
-      locale === "es" ? "Pagar y continuar" : "Pay and continue",
-    completeOrder:
-      locale === "es" ? "Completar pedido" : "Complete order",
+    payAndContinue: locale === "es" ? "Pagar y continuar" : "Pay and continue",
+    completeOrder: locale === "es" ? "Completar pedido" : "Complete order",
     billingToggle:
       locale === "es" ? "La facturación es diferente al envío" : "Billing address is different",
     billingName: locale === "es" ? "Nombre de facturación" : "Billing full name",
     billingAddress: locale === "es" ? "Dirección de facturación" : "Billing address",
     billingCity: locale === "es" ? "Ciudad de facturación" : "Billing city",
-    billingPostalCode:
-      locale === "es" ? "Código postal de facturación" : "Billing postal code",
+    billingPostalCode: locale === "es" ? "Código postal de facturación" : "Billing postal code",
     shippingIntro:
       locale === "es"
         ? "Confirma envío y contacto antes de crear el PaymentIntent."
@@ -169,32 +153,22 @@ export function CheckoutFlow() {
         : "The order is confirmed and the flow is ready to scale with webhooks later.",
     shippingRequired:
       locale === "es" ? "El nombre completo es obligatorio." : "Full name is required.",
-    emailRequired:
-      locale === "es" ? "Ingresa un correo válido." : "A valid email is required.",
-    countryRequired:
-      locale === "es" ? "Selecciona un país válido." : "Select a supported country.",
-    cityRequired:
-      locale === "es" ? "Selecciona una ciudad válida." : "Select a valid city.",
-    streetRequired:
-      locale === "es" ? "La calle es obligatoria." : "Street is required.",
+    emailRequired: locale === "es" ? "Ingresa un correo válido." : "A valid email is required.",
+    countryRequired: locale === "es" ? "Selecciona un país válido." : "Select a supported country.",
+    cityRequired: locale === "es" ? "Selecciona una ciudad válida." : "Select a valid city.",
+    streetRequired: locale === "es" ? "La calle es obligatoria." : "Street is required.",
     streetNumberRequired:
       locale === "es" ? "El número es obligatorio." : "Street number is required.",
     apartmentInvalid:
-      locale === "es"
-        ? "El dpto o suite es demasiado corto."
-        : "Apartment or suite is too short.",
+      locale === "es" ? "El dpto o suite es demasiado corto." : "Apartment or suite is too short.",
     referenceRequired:
-      locale === "es"
-        ? "Agrega una referencia de entrega."
-        : "Add a delivery reference.",
+      locale === "es" ? "Agrega una referencia de entrega." : "Add a delivery reference.",
     postalRequired:
       locale === "es"
         ? "El código postal no coincide con el país seleccionado."
         : "Postal code is invalid for the selected country.",
     shippingMethodRequired:
-      locale === "es"
-        ? "Selecciona un tipo de envío."
-        : "Select a shipping method.",
+      locale === "es" ? "Selecciona un tipo de envío." : "Select a shipping method.",
     paymentMethodRequired:
       locale === "es" ? "Selecciona un método de pago." : "Select a payment method.",
     billingNameRequired:
@@ -206,9 +180,7 @@ export function CheckoutFlow() {
         ? "La dirección de facturación es obligatoria."
         : "Billing address is required.",
     billingCityRequired:
-      locale === "es"
-        ? "La ciudad de facturación es obligatoria."
-        : "Billing city is required.",
+      locale === "es" ? "La ciudad de facturación es obligatoria." : "Billing city is required.",
     billingPostalRequired:
       locale === "es"
         ? "El código postal de facturación es obligatorio."
@@ -221,8 +193,7 @@ export function CheckoutFlow() {
       locale === "es"
         ? "El checkout ya separa creación del intent, confirmación y finalización."
         : "Checkout already separates intent creation, confirmation and final completion.",
-    returnToStore:
-      locale === "es" ? "Volver a la colección" : "Return to the collection",
+    returnToStore: locale === "es" ? "Volver a la colección" : "Return to the collection",
   } as const;
   const primaryActionButtonClassName =
     "h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200";
@@ -520,11 +491,7 @@ export function CheckoutFlow() {
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.checkoutEmpty}
         </p>
-        <Button
-          asChild
-          variant="outline"
-          className={`mt-8 ${secondaryActionButtonClassName}`}
-        >
+        <Button asChild variant="outline" className={`mt-8 ${secondaryActionButtonClassName}`}>
           <Link href="/">{labels.returnToStore}</Link>
         </Button>
       </div>
@@ -562,283 +529,281 @@ export function CheckoutFlow() {
         {state.step === "shipping" ? (
           <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <label htmlFor="shipping-full-name" className="text-sm font-medium">
-                {labels.fullName}
-              </label>
-              <Input
-                id="shipping-full-name"
-                ref={registerInputRef("shipping.fullName")}
-                value={state.shipping.fullName}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.fullName",
-                    value: event.target.value,
-                  })
-                }
-                placeholder={labels.fullName}
-                aria-invalid={state.errors["shipping.fullName"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.fullName"] ? "shipping-full-name-error" : undefined
-                }
-              />
-              {state.errors["shipping.fullName"] ? (
-                <p id="shipping-full-name-error" className="text-sm text-destructive">
-                  {state.errors["shipping.fullName"]}
-                </p>
-              ) : null}
-            </div>
+              <div className="space-y-2">
+                <label htmlFor="shipping-full-name" className="text-sm font-medium">
+                  {labels.fullName}
+                </label>
+                <Input
+                  id="shipping-full-name"
+                  ref={registerInputRef("shipping.fullName")}
+                  value={state.shipping.fullName}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.fullName",
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={labels.fullName}
+                  aria-invalid={state.errors["shipping.fullName"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.fullName"] ? "shipping-full-name-error" : undefined
+                  }
+                />
+                {state.errors["shipping.fullName"] ? (
+                  <p id="shipping-full-name-error" className="text-sm text-destructive">
+                    {state.errors["shipping.fullName"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2">
-              <label htmlFor="shipping-email" className="text-sm font-medium">
-                {labels.email}
-              </label>
-              <Input
-                id="shipping-email"
-                ref={registerInputRef("shipping.email")}
-                type="email"
-                value={state.shipping.email}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.email",
-                    value: event.target.value,
-                  })
-                }
-                placeholder={labels.email}
-                aria-invalid={state.errors["shipping.email"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.email"] ? "shipping-email-error" : undefined
-                }
-              />
-              {state.errors["shipping.email"] ? (
-                <p id="shipping-email-error" className="text-sm text-destructive">
-                  {state.errors["shipping.email"]}
-                </p>
-              ) : null}
-            </div>
+              <div className="space-y-2">
+                <label htmlFor="shipping-email" className="text-sm font-medium">
+                  {labels.email}
+                </label>
+                <Input
+                  id="shipping-email"
+                  ref={registerInputRef("shipping.email")}
+                  type="email"
+                  value={state.shipping.email}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.email",
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={labels.email}
+                  aria-invalid={state.errors["shipping.email"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.email"] ? "shipping-email-error" : undefined
+                  }
+                />
+                {state.errors["shipping.email"] ? (
+                  <p id="shipping-email-error" className="text-sm text-destructive">
+                    {state.errors["shipping.email"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2">
-              <label htmlFor="shipping-country" className="text-sm font-medium">
-                {labels.country}
-              </label>
-              <select
-                id="shipping-country"
-                ref={registerInputRef("shipping.country")}
-                value={state.shipping.country}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.country",
-                    value: event.target.value,
-                  })
-                }
-                aria-invalid={state.errors["shipping.country"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.country"] ? "shipping-country-error" : undefined
-                }
-                className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
-              >
-                <option value="" disabled>
-                  {labels.chooseCountry}
-                </option>
-                {SHIPPING_COUNTRIES.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name}
+              <div className="space-y-2">
+                <label htmlFor="shipping-country" className="text-sm font-medium">
+                  {labels.country}
+                </label>
+                <select
+                  id="shipping-country"
+                  ref={registerInputRef("shipping.country")}
+                  value={state.shipping.country}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.country",
+                      value: event.target.value,
+                    })
+                  }
+                  aria-invalid={state.errors["shipping.country"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.country"] ? "shipping-country-error" : undefined
+                  }
+                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+                >
+                  <option value="" disabled>
+                    {labels.chooseCountry}
                   </option>
-                ))}
-              </select>
-              {state.errors["shipping.country"] ? (
-                <p id="shipping-country-error" className="text-sm text-destructive">
-                  {state.errors["shipping.country"]}
-                </p>
-              ) : null}
-            </div>
+                  {SHIPPING_COUNTRIES.map((country) => (
+                    <option key={country.code} value={country.code}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+                {state.errors["shipping.country"] ? (
+                  <p id="shipping-country-error" className="text-sm text-destructive">
+                    {state.errors["shipping.country"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2">
-              <label htmlFor="shipping-city" className="text-sm font-medium">
-                {labels.city}
-              </label>
-              <select
-                id="shipping-city"
-                ref={registerInputRef("shipping.city")}
-                value={state.shipping.city}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.city",
-                    value: event.target.value,
-                  })
-                }
-                aria-invalid={state.errors["shipping.city"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.city"] ? "shipping-city-error" : undefined
-                }
-                className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
-              >
-                <option value="" disabled>
-                  {labels.chooseCity}
-                </option>
-                {cityOptions.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
+              <div className="space-y-2">
+                <label htmlFor="shipping-city" className="text-sm font-medium">
+                  {labels.city}
+                </label>
+                <select
+                  id="shipping-city"
+                  ref={registerInputRef("shipping.city")}
+                  value={state.shipping.city}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.city",
+                      value: event.target.value,
+                    })
+                  }
+                  aria-invalid={state.errors["shipping.city"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.city"] ? "shipping-city-error" : undefined
+                  }
+                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+                >
+                  <option value="" disabled>
+                    {labels.chooseCity}
                   </option>
-                ))}
-              </select>
-              {state.errors["shipping.city"] ? (
-                <p id="shipping-city-error" className="text-sm text-destructive">
-                  {state.errors["shipping.city"]}
-                </p>
-              ) : null}
-            </div>
+                  {cityOptions.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+                {state.errors["shipping.city"] ? (
+                  <p id="shipping-city-error" className="text-sm text-destructive">
+                    {state.errors["shipping.city"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2 sm:col-span-2">
-              <label htmlFor="shipping-street" className="text-sm font-medium">
-                {labels.street}
-              </label>
-              <Input
-                id="shipping-street"
-                ref={registerInputRef("shipping.street")}
-                value={state.shipping.street}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.street",
-                    value: event.target.value,
-                  })
-                }
-                placeholder={labels.street}
-                aria-invalid={state.errors["shipping.street"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.street"] ? "shipping-street-error" : undefined
-                }
-              />
-              {state.errors["shipping.street"] ? (
-                <p id="shipping-street-error" className="text-sm text-destructive">
-                  {state.errors["shipping.street"]}
-                </p>
-              ) : null}
-            </div>
+              <div className="space-y-2 sm:col-span-2">
+                <label htmlFor="shipping-street" className="text-sm font-medium">
+                  {labels.street}
+                </label>
+                <Input
+                  id="shipping-street"
+                  ref={registerInputRef("shipping.street")}
+                  value={state.shipping.street}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.street",
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={labels.street}
+                  aria-invalid={state.errors["shipping.street"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.street"] ? "shipping-street-error" : undefined
+                  }
+                />
+                {state.errors["shipping.street"] ? (
+                  <p id="shipping-street-error" className="text-sm text-destructive">
+                    {state.errors["shipping.street"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2">
-              <label htmlFor="shipping-street-number" className="text-sm font-medium">
-                {labels.streetNumber}
-              </label>
-              <Input
-                id="shipping-street-number"
-                ref={registerInputRef("shipping.streetNumber")}
-                value={state.shipping.streetNumber}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.streetNumber",
-                    value: event.target.value,
-                  })
-                }
-                placeholder={labels.streetNumber}
-                aria-invalid={state.errors["shipping.streetNumber"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.streetNumber"]
-                    ? "shipping-street-number-error"
-                    : undefined
-                }
-              />
-              {state.errors["shipping.streetNumber"] ? (
-                <p id="shipping-street-number-error" className="text-sm text-destructive">
-                  {state.errors["shipping.streetNumber"]}
-                </p>
-              ) : null}
-            </div>
+              <div className="space-y-2">
+                <label htmlFor="shipping-street-number" className="text-sm font-medium">
+                  {labels.streetNumber}
+                </label>
+                <Input
+                  id="shipping-street-number"
+                  ref={registerInputRef("shipping.streetNumber")}
+                  value={state.shipping.streetNumber}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.streetNumber",
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={labels.streetNumber}
+                  aria-invalid={state.errors["shipping.streetNumber"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.streetNumber"]
+                      ? "shipping-street-number-error"
+                      : undefined
+                  }
+                />
+                {state.errors["shipping.streetNumber"] ? (
+                  <p id="shipping-street-number-error" className="text-sm text-destructive">
+                    {state.errors["shipping.streetNumber"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2">
-              <label htmlFor="shipping-apartment" className="text-sm font-medium">
-                {labels.apartment}
-              </label>
-              <Input
-                id="shipping-apartment"
-                ref={registerInputRef("shipping.apartment")}
-                value={state.shipping.apartment}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.apartment",
-                    value: event.target.value,
-                  })
-                }
-                placeholder={labels.apartment}
-                aria-invalid={state.errors["shipping.apartment"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.apartment"] ? "shipping-apartment-error" : undefined
-                }
-              />
-              {state.errors["shipping.apartment"] ? (
-                <p id="shipping-apartment-error" className="text-sm text-destructive">
-                  {state.errors["shipping.apartment"]}
-                </p>
-              ) : null}
-            </div>
+              <div className="space-y-2">
+                <label htmlFor="shipping-apartment" className="text-sm font-medium">
+                  {labels.apartment}
+                </label>
+                <Input
+                  id="shipping-apartment"
+                  ref={registerInputRef("shipping.apartment")}
+                  value={state.shipping.apartment}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.apartment",
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={labels.apartment}
+                  aria-invalid={state.errors["shipping.apartment"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.apartment"] ? "shipping-apartment-error" : undefined
+                  }
+                />
+                {state.errors["shipping.apartment"] ? (
+                  <p id="shipping-apartment-error" className="text-sm text-destructive">
+                    {state.errors["shipping.apartment"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2">
-              <label htmlFor="shipping-postal-code" className="text-sm font-medium">
-                {labels.postalCode}
-              </label>
-              <Input
-                id="shipping-postal-code"
-                ref={registerInputRef("shipping.postalCode")}
-                value={state.shipping.postalCode}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.postalCode",
-                    value: event.target.value,
-                  })
-                }
-                placeholder={postalCodeHint}
-                inputMode="text"
-                aria-invalid={state.errors["shipping.postalCode"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.postalCode"]
-                    ? "shipping-postal-code-error"
-                    : undefined
-                }
-              />
-              {state.errors["shipping.postalCode"] ? (
-                <p id="shipping-postal-code-error" className="text-sm text-destructive">
-                  {state.errors["shipping.postalCode"]}
-                </p>
-              ) : null}
-            </div>
+              <div className="space-y-2">
+                <label htmlFor="shipping-postal-code" className="text-sm font-medium">
+                  {labels.postalCode}
+                </label>
+                <Input
+                  id="shipping-postal-code"
+                  ref={registerInputRef("shipping.postalCode")}
+                  value={state.shipping.postalCode}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.postalCode",
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={postalCodeHint}
+                  inputMode="text"
+                  aria-invalid={state.errors["shipping.postalCode"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.postalCode"] ? "shipping-postal-code-error" : undefined
+                  }
+                />
+                {state.errors["shipping.postalCode"] ? (
+                  <p id="shipping-postal-code-error" className="text-sm text-destructive">
+                    {state.errors["shipping.postalCode"]}
+                  </p>
+                ) : null}
+              </div>
 
-            <div className="space-y-2 sm:col-span-2">
-              <label htmlFor="shipping-reference" className="text-sm font-medium">
-                {labels.reference}
-              </label>
-              <textarea
-                id="shipping-reference"
-                ref={registerInputRef("shipping.reference")}
-                value={state.shipping.reference}
-                onChange={(event) =>
-                  dispatch({
-                    type: "SET_FIELD",
-                    field: "shipping.reference",
-                    value: event.target.value,
-                  })
-                }
-                placeholder={labels.reference}
-                rows={3}
-                aria-invalid={state.errors["shipping.reference"] ? "true" : "false"}
-                aria-describedby={
-                  state.errors["shipping.reference"] ? "shipping-reference-error" : undefined
-                }
-                className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
-              />
-              {state.errors["shipping.reference"] ? (
-                <p id="shipping-reference-error" className="text-sm text-destructive">
-                  {state.errors["shipping.reference"]}
-                </p>
-              ) : null}
-            </div>
+              <div className="space-y-2 sm:col-span-2">
+                <label htmlFor="shipping-reference" className="text-sm font-medium">
+                  {labels.reference}
+                </label>
+                <textarea
+                  id="shipping-reference"
+                  ref={registerInputRef("shipping.reference")}
+                  value={state.shipping.reference}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "shipping.reference",
+                      value: event.target.value,
+                    })
+                  }
+                  placeholder={labels.reference}
+                  rows={3}
+                  aria-invalid={state.errors["shipping.reference"] ? "true" : "false"}
+                  aria-describedby={
+                    state.errors["shipping.reference"] ? "shipping-reference-error" : undefined
+                  }
+                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+                />
+                {state.errors["shipping.reference"] ? (
+                  <p id="shipping-reference-error" className="text-sm text-destructive">
+                    {state.errors["shipping.reference"]}
+                  </p>
+                ) : null}
+              </div>
             </div>
 
             <div className="space-y-3">
@@ -851,7 +816,11 @@ export function CheckoutFlow() {
                 </p>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2" role="radiogroup" aria-label={labels.shippingMethodTitle}>
+              <div
+                className="grid gap-3 md:grid-cols-2"
+                role="radiogroup"
+                aria-label={labels.shippingMethodTitle}
+              >
                 {SHIPPING_METHODS.map((method) => {
                   const selected = state.shipping.shippingMethod === method.code;
                   const title =
@@ -982,7 +951,7 @@ export function CheckoutFlow() {
                       ? locale === "es"
                         ? "Pagado"
                         : "Paid"
-                      : state.paymentIntentStatus ?? "Pending"}
+                      : (state.paymentIntentStatus ?? "Pending")}
                   </div>
 
                   <p className="text-sm leading-6 text-muted-foreground">
@@ -1063,10 +1032,7 @@ export function CheckoutFlow() {
                 </span>
               </div>
             </div>
-            <Button
-              asChild
-              className={`mt-6 w-full ${primaryActionButtonClassName}`}
-            >
+            <Button asChild className={`mt-6 w-full ${primaryActionButtonClassName}`}>
               <Link href="/">
                 {copy.cartReturn}
                 <ArrowRight className="size-4" />
@@ -1075,7 +1041,9 @@ export function CheckoutFlow() {
           </div>
         ) : null}
 
-        <div className={state.step === "review" ? "grid gap-3 sm:grid-cols-2" : "flex flex-wrap gap-3"}>
+        <div
+          className={state.step === "review" ? "grid gap-3 sm:grid-cols-2" : "flex flex-wrap gap-3"}
+        >
           {state.step !== "shipping" && state.step !== "complete" ? (
             <Button
               type="button"
@@ -1111,7 +1079,11 @@ export function CheckoutFlow() {
               disabled={state.isSubmitting}
               className={`w-full ${primaryActionButtonClassName}`}
             >
-              {state.isSubmitting ? <ArrowRight className="size-4 animate-pulse" /> : <CheckCircle2 className="size-4" />}
+              {state.isSubmitting ? (
+                <ArrowRight className="size-4 animate-pulse" />
+              ) : (
+                <CheckCircle2 className="size-4" />
+              )}
               {labels.completeOrder}
             </Button>
           ) : null}

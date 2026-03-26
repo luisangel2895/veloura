@@ -77,7 +77,9 @@ export function CartPage() {
             </span>
             <span className="inline-flex items-center gap-2 sm:justify-end">
               <ShieldCheck className="size-4" />
-              {locale === "es" ? "Estado persistente en localStorage" : "State persisted in local storage"}
+              {locale === "es"
+                ? "Estado persistente en localStorage"
+                : "State persisted in local storage"}
             </span>
           </div>
         </div>
@@ -89,12 +91,7 @@ export function CartPage() {
               className="grid gap-5 rounded-[2rem] border border-border bg-card/80 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/5 dark:border-amber-500/10 dark:bg-card/75 dark:hover:shadow-black/20 sm:grid-cols-[8.5rem_1fr_auto]"
             >
               <div className="h-36 overflow-hidden rounded-3xl">
-                <ProductImage
-                  src={item.imageUrl}
-                  alt={item.name}
-                  seed={item.slug}
-                  sizes="128px"
-                />
+                <ProductImage src={item.imageUrl} alt={item.name} seed={item.slug} sizes="128px" />
               </div>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -118,7 +115,9 @@ export function CartPage() {
                     >
                       <Minus className="size-4" />
                     </Button>
-                    <span className="min-w-10 text-center text-sm font-medium">{item.quantity}</span>
+                    <span className="min-w-10 text-center text-sm font-medium">
+                      {item.quantity}
+                    </span>
                     <Button
                       type="button"
                       variant="ghost"
@@ -146,7 +145,10 @@ export function CartPage() {
                 </div>
               </div>
               <div className="flex flex-col justify-between gap-3 justify-self-start sm:items-end sm:justify-self-end">
-                <Price amountCents={item.priceCents * item.quantity} className="text-lg font-semibold" />
+                <Price
+                  amountCents={item.priceCents * item.quantity}
+                  className="text-lg font-semibold"
+                />
                 <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
                   <Price amountCents={item.priceCents} className="text-xs font-medium" />{" "}
                   {locale === "es" ? "por unidad" : "per unit"}

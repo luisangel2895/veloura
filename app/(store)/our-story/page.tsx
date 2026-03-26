@@ -20,9 +20,9 @@ export default function OurStoryPage() {
           A quieter kind of luxury, designed to stay.
         </h1>
         <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-          Veloura was imagined as a modern lingerie house for women who want softness,
-          structure and elegance without excess. Every silhouette is guided by restraint,
-          intimacy and long-wear comfort.
+          Veloura was imagined as a modern lingerie house for women who want softness, structure and
+          elegance without excess. Every silhouette is guided by restraint, intimacy and long-wear
+          comfort.
         </p>
       </section>
 
@@ -33,10 +33,9 @@ export default function OurStoryPage() {
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-tight">Design with intention.</h2>
           <p className="mt-4 text-sm leading-8 text-muted-foreground sm:text-base">
-            Our mission is to build intimate essentials that feel precise, calming and
-            distinctly elevated. We focus on silhouettes that support the body, fabrics that
-            soften the daily routine and a visual language rooted in subtle confidence rather
-            than spectacle.
+            Our mission is to build intimate essentials that feel precise, calming and distinctly
+            elevated. We focus on silhouettes that support the body, fabrics that soften the daily
+            routine and a visual language rooted in subtle confidence rather than spectacle.
           </p>
         </article>
 
@@ -44,11 +43,13 @@ export default function OurStoryPage() {
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-amber-700 dark:text-amber-200">
             Vision
           </p>
-          <h2 className="mt-4 text-4xl font-semibold tracking-tight">Elevate the everyday ritual.</h2>
+          <h2 className="mt-4 text-4xl font-semibold tracking-tight">
+            Elevate the everyday ritual.
+          </h2>
           <p className="mt-4 text-sm leading-8 text-muted-foreground sm:text-base">
             Our vision is a category where luxury lingerie feels intelligent, wearable and
-            emotionally grounded. Veloura aims to become a reference for understated design,
-            where craftsmanship, comfort and editorial clarity can coexist in every layer.
+            emotionally grounded. Veloura aims to become a reference for understated design, where
+            craftsmanship, comfort and editorial clarity can coexist in every layer.
           </p>
         </article>
       </section>

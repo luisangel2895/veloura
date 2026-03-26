@@ -205,12 +205,7 @@ export function CheckoutPaymentStep({
         inflightIntentRequestKeyRef.current = null;
       }
     };
-  }, [
-    clientSecret,
-    intentRequestKey,
-    items,
-    shipping,
-  ]);
+  }, [clientSecret, intentRequestKey, items, shipping]);
 
   useEffect(() => {
     if (
@@ -276,9 +271,7 @@ export function CheckoutPaymentStep({
     if (!stripe) {
       const message =
         stripeRuntimeError ??
-        (locale === "es"
-          ? "Stripe.js todavía no está listo."
-          : "Stripe.js is not ready yet.");
+        (locale === "es" ? "Stripe.js todavía no está listo." : "Stripe.js is not ready yet.");
       setRequestError(message);
       onPaymentFailed(message);
       return;
@@ -360,9 +353,9 @@ export function CheckoutPaymentStep({
                     ? locale === "es"
                       ? "Montando formulario de pago..."
                       : "Mounting payment form..."
-                  : locale === "es"
-                    ? "Cargando Stripe Elements..."
-                    : "Loading Stripe Elements..."}
+                    : locale === "es"
+                      ? "Cargando Stripe Elements..."
+                      : "Loading Stripe Elements..."}
               </span>
             </div>
           ) : null}
@@ -382,7 +375,11 @@ export function CheckoutPaymentStep({
             disabled={!clientSecret || !isReady || isCreatingIntent || isConfirmingPayment}
             className="h-14 rounded-none bg-amber-700 px-8 text-xs font-semibold uppercase tracking-[0.18em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
           >
-            {isConfirmingPayment ? <Loader2 className="size-3.5 animate-spin" /> : <CreditCard className="size-3.5" />}
+            {isConfirmingPayment ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <CreditCard className="size-3.5" />
+            )}
             {payLabel}
           </Button>
         </div>
