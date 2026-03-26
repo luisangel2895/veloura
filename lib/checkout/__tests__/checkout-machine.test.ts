@@ -571,7 +571,7 @@ describe("checkoutReducer submit actions", () => {
   });
 
   it("SUBMIT_SUCCESS moves to complete", () => {
-    let state: CheckoutState = {
+    const state: CheckoutState = {
       ...createInitialCheckoutState(),
       step: "review",
       isSubmitting: true,
@@ -584,7 +584,7 @@ describe("checkoutReducer submit actions", () => {
   });
 
   it("SUBMIT_ERROR stores the error and stops submitting", () => {
-    let state: CheckoutState = {
+    const state: CheckoutState = {
       ...createInitialCheckoutState(),
       isSubmitting: true,
     };
