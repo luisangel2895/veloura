@@ -19,14 +19,17 @@ export function SiteHeader() {
   const lp = useLocalePath();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
-  const [cartAnnouncement, setCartAnnouncement] = useState("");
+  const announcementRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (lastAddedAt > 0 && totalItems > 0) {
-      setCartAnnouncement(
-        `${copy.productAddedToCart}. ${totalItems} ${totalItems === 1 ? "item" : "items"} in cart.`,
-      );
-      const timer = setTimeout(() => setCartAnnouncement(""), 3000);
+    if (lastAddedAt > 0 && totalItems > 0 && announcementRef.current) {
+      const text = `${copy.productAddedToCart}. ${totalItems} ${totalItems === 1 ? "item" : "items"} in cart.`;
+      announcementRef.current.textContent = text;
+      const timer = setTimeout(() => {
+        if (announcementRef.current) {
+          announcementRef.current.textContent = "";
+        }
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [lastAddedAt, totalItems, copy.productAddedToCart]);
@@ -184,9 +187,7 @@ export function SiteHeader() {
           </Link>
         </div>
       </div>
-      <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {cartAnnouncement}
-      </div>
+      <div ref={announcementRef} aria-live="polite" aria-atomic="true" className="sr-only" />
     </header>
   );
 }
