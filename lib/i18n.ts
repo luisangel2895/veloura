@@ -14,6 +14,23 @@ export function resolveLocale(input?: string | null): Locale {
   return "es";
 }
 
+type MessageKeys = keyof (typeof messages)["es"];
+
+export function getMessages(locale: Locale): Record<MessageKeys, string> {
+  const primary = messages[locale];
+  const fallback = messages[locale === "es" ? "en" : "es"];
+
+  return new Proxy(primary as Record<string, string>, {
+    get(target, prop: string) {
+      const value = target[prop];
+      if (value !== undefined) {
+        return value;
+      }
+      return (fallback as Record<string, string>)[prop] ?? prop;
+    },
+  }) as Record<MessageKeys, string>;
+}
+
 export const messages = {
   es: {
     languageLabel: "Idioma",
@@ -83,8 +100,7 @@ export const messages = {
     cartRemove: "Eliminar",
     cartRestore: "Restaurando tu carrito guardado desde localStorage.",
     checkoutTitle: "Checkout",
-    checkoutLoading:
-      "Cargando el carrito mas reciente antes de entrar al flujo de checkout.",
+    checkoutLoading: "Cargando el carrito mas reciente antes de entrar al flujo de checkout.",
     checkoutEmpty:
       "Agrega al menos un producto antes de entrar al flujo de checkout controlado por reducer.",
     checkoutBrowse: "Ver productos",
@@ -180,8 +196,7 @@ export const messages = {
     cartRestore: "Restoring your saved cart from local storage.",
     checkoutTitle: "Checkout",
     checkoutLoading: "Loading the latest cart snapshot before entering checkout.",
-    checkoutEmpty:
-      "Add at least one item before entering the reducer-driven checkout flow.",
+    checkoutEmpty: "Add at least one item before entering the reducer-driven checkout flow.",
     checkoutBrowse: "Browse products",
     checkoutStateMachine: "Reducer state machine",
     checkoutShipping: "shipping",

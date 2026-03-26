@@ -2,13 +2,13 @@
 
 import { createContext, startTransition, useContext, useMemo, useRef, useState } from "react";
 
-import { messages, type Locale } from "@/lib/i18n";
+import { getMessages, type Locale } from "@/lib/i18n";
 
 interface LanguageContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   isTransitioning: boolean;
-  copy: (typeof messages)[Locale];
+  copy: ReturnType<typeof getMessages>;
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
@@ -49,7 +49,7 @@ export function LanguageProvider({
         }, 260);
       },
       isTransitioning,
-      copy: messages[locale],
+      copy: getMessages(locale),
     }),
     [isTransitioning, locale],
   );
