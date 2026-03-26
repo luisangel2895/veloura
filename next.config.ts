@@ -1,5 +1,6 @@
 import { createRequire } from "node:module";
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const require = createRequire(import.meta.url);
 
@@ -37,7 +38,7 @@ const securityHeaders: Array<{ key: string; value: string }> = [
       "img-src 'self' data: blob: https://picsum.photos https://placeholdpicsum.dev",
       "media-src 'self' blob:",
       "font-src 'self' data:",
-      "connect-src 'self' https://api.stripe.com https://r.stripe.com https://m.stripe.network",
+      "connect-src 'self' https://api.stripe.com https://r.stripe.com https://m.stripe.network https://*.ingest.us.sentry.io",
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
       "object-src 'none'",
       "base-uri 'self'",
@@ -113,4 +114,13 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBundleAnalyzer(nextConfig);
+export default withSentryConfig(withBundleAnalyzer(nextConfig), {
+  org: "veloura-qx",
+  project: "veloura-store",
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  tunnelRoute: "/monitoring",
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
+});

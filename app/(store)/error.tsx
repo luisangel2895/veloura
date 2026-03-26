@@ -1,5 +1,7 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
 import Link from "next/link";
 
 export default function StoreError({
@@ -9,6 +11,10 @@ export default function StoreError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-5 text-center">
       <h1 className="text-3xl font-bold tracking-tight text-foreground">Something went wrong</h1>
