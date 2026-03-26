@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { brand } from "@/lib/brand";
 import type { Category, Product } from "@/types/catalog";
 
-const socialImagePath = "/brand/veloura-logo.png";
+const socialImagePath = "/opengraph-image";
 const defaultKeywords = [
   brand.name,
   "luxury lingerie",
@@ -77,8 +77,8 @@ function buildPageMetadata({
       images: [
         {
           url: socialImagePath,
-          width: 512,
-          height: 512,
+          width: 1200,
+          height: 630,
           alt: `${brand.name} logo`,
         },
       ],
@@ -136,8 +136,8 @@ export function createBaseMetadata(): Metadata {
       images: [
         {
           url: socialImagePath,
-          width: 512,
-          height: 512,
+          width: 1200,
+          height: 630,
           alt: `${brand.name} logo`,
         },
       ],
