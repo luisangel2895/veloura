@@ -1,0 +1,9 @@
+# Default owner for everything
+* @angel
+
+# Security-sensitive files require explicit review
+middleware.ts @angel
+next.config.ts @angel
+app/api/stripe/** @angel
+.env* @angel
+.github/workflows/** @angel
