@@ -17,9 +17,16 @@ export default defineConfig({
     include: ["lib/**/__tests__/**/*.test.ts", "store/**/__tests__/**/*.test.ts"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "html"],
+      reporter: ["text", "html", "json-summary"],
       reportsDirectory: "./coverage",
-      include: ["lib/checkout/**/*.ts", "store/**/*.ts"],
+      include: ["lib/**/*.ts", "store/**/*.ts"],
+      exclude: ["**/__tests__/**", "**/data/**"],
+      thresholds: {
+        statements: 60,
+        branches: 34,
+        functions: 70,
+        lines: 58,
+      },
     },
   },
 });
