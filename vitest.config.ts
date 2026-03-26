@@ -14,7 +14,12 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: false,
-    include: ["lib/**/__tests__/**/*.test.ts", "store/**/__tests__/**/*.test.ts"],
+    include: [
+      "lib/**/__tests__/**/*.test.ts",
+      "store/**/__tests__/**/*.test.ts",
+      "components/**/__tests__/**/*.test.tsx",
+    ],
+    setupFiles: ["./vitest.setup.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "json-summary"],
