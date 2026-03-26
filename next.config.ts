@@ -4,6 +4,8 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 const require = createRequire(import.meta.url);
 
+const isDev = process.env.NODE_ENV === "development";
+
 const securityHeaders: Array<{ key: string; value: string }> = [
   {
     key: "X-Frame-Options",
@@ -33,7 +35,7 @@ const securityHeaders: Array<{ key: string; value: string }> = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://js.stripe.com`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://picsum.photos https://placeholdpicsum.dev",
       "media-src 'self' blob:",
