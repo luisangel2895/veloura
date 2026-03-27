@@ -15,6 +15,15 @@ interface ProductImageProps {
   showBrandSkeleton?: boolean;
 }
 
+function toPicsum(url: string | undefined, seed: string): string {
+  if (!url) return `https://picsum.photos/seed/${seed}/1200/1600`;
+  if (url.includes("placeholdpicsum.dev")) {
+    const s = new URL(url).searchParams.get("seed") || seed;
+    return `https://picsum.photos/seed/${s}/1200/1600`;
+  }
+  return url;
+}
+
 export function ProductImage({
   src,
   alt,
@@ -25,7 +34,7 @@ export function ProductImage({
   showBrandSkeleton = false,
 }: ProductImageProps) {
   const fallbackSrc = `https://picsum.photos/seed/${seed}/1200/1600`;
-  const [currentSrc, setCurrentSrc] = useState(src || fallbackSrc);
+  const [currentSrc, setCurrentSrc] = useState(toPicsum(src, seed));
   const [isLoaded, setIsLoaded] = useState(false);
   const fallbackAppliedRef = useRef(!src);
 

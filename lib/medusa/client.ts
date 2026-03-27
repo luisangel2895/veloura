@@ -23,7 +23,9 @@ async function medusaFetch<T>(options: MedusaRequestOptions): Promise<T> {
       "Content-Type": "application/json",
       ...(MEDUSA_API_KEY ? { "x-publishable-api-key": MEDUSA_API_KEY } : {}),
     },
-    next: options.next ?? { revalidate: 300 },
+    next: options.next ?? {
+      revalidate: process.env.NODE_ENV === "development" ? 5 : 300,
+    },
   });
 
   if (!res.ok) {
@@ -75,6 +77,19 @@ interface MedusaCategory {
   rank: number;
 }
 
+function normalizeImageUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname === "placeholdpicsum.dev") {
+      const seed = parsed.searchParams.get("seed") || "default";
+      return `https://picsum.photos/seed/${seed}/600/800`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+
 function mapMedusaProduct(p: MedusaProduct): Product {
   const meta = p.metadata ?? {};
   const sizes = extractSizes(p);
@@ -98,7 +113,7 @@ function mapMedusaProduct(p: MedusaProduct): Product {
     tags: p.tags?.map((t) => t.value) || [],
     description: p.description || "",
     details: parseDetails(meta.details),
-    images: p.images?.map((img) => img.url) || [],
+    images: p.images?.map((img) => normalizeImageUrl(img.url)) || [],
     palette: parsePalette(meta.palette_primary, meta.palette_secondary),
     featured: meta.featured === true || meta.featured === "true",
   };
@@ -195,7 +210,7 @@ export async function getProducts(filters?: {
 }): Promise<Product[]> {
   const params: Record<string, string> = {
     fields:
-      "*variants,*variants.prices,*images,*tags,*categories,*options,*options.values,metadata",
+      "id,handle,title,subtitle,description,status,created_at,updated_at,metadata,*variants,*variants.prices,*images,*tags,*categories,*options,*options.values",
     limit: "100",
   };
 

@@ -37,7 +37,7 @@ const securityHeaders: Array<{ key: string; value: string }> = [
       "default-src 'self'",
       `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://js.stripe.com`,
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://picsum.photos https://placeholdpicsum.dev",
+      "img-src 'self' data: blob: https://picsum.photos http://localhost:9000",
       "media-src 'self' blob:",
       "font-src 'self' data:",
       "connect-src 'self' https://api.stripe.com https://r.stripe.com https://m.stripe.network https://*.ingest.us.sentry.io",
@@ -77,14 +77,17 @@ const nextConfig: NextConfig = {
     tsconfigPath: "./tsconfig.build.json",
   },
   images: {
+    qualities: [75, 84],
+    dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "placeholdpicsum.dev",
+        hostname: "picsum.photos",
       },
       {
-        protocol: "https",
-        hostname: "picsum.photos",
+        protocol: "http",
+        hostname: "localhost",
+        port: "9000",
       },
     ],
   },
