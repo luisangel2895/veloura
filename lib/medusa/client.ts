@@ -208,26 +208,30 @@ export async function getProducts(filters?: {
   categorySlug?: string;
   slug?: string;
 }): Promise<Product[]> {
-  const params: Record<string, string> = {
-    fields:
-      "id,handle,title,subtitle,description,status,created_at,updated_at,metadata,*variants,*variants.prices,*images,*tags,*categories,*options,*options.values",
-    limit: "100",
-  };
+  try {
+    const params: Record<string, string> = {
+      fields:
+        "id,handle,title,subtitle,description,status,created_at,updated_at,metadata,*variants,*variants.prices,*images,*tags,*categories,*options,*options.values",
+      limit: "100",
+    };
 
-  if (filters?.slug) {
-    params.handle = filters.slug;
+    if (filters?.slug) {
+      params.handle = filters.slug;
+    }
+
+    if (filters?.categorySlug) {
+      params["category_id"] = await getCategoryIdByHandle(filters.categorySlug);
+    }
+
+    const data = await medusaFetch<{ products: MedusaProduct[]; count: number }>({
+      path: "/store/products",
+      params,
+    });
+
+    return data.products.map(mapMedusaProduct);
+  } catch {
+    return [];
   }
-
-  if (filters?.categorySlug) {
-    params["category_id"] = await getCategoryIdByHandle(filters.categorySlug);
-  }
-
-  const data = await medusaFetch<{ products: MedusaProduct[]; count: number }>({
-    path: "/store/products",
-    params,
-  });
-
-  return data.products.map(mapMedusaProduct);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
@@ -236,33 +240,66 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const data = await medusaFetch<{ product_categories: MedusaCategory[]; count: number }>({
-    path: "/store/product-categories",
-    params: { limit: "50" },
-  });
+  try {
+    const data = await medusaFetch<{ product_categories: MedusaCategory[]; count: number }>({
+      path: "/store/product-categories",
+      params: { limit: "50" },
+    });
 
-  return data.product_categories.map(mapMedusaCategory);
+    return data.product_categories.map(mapMedusaCategory);
+  } catch {
+    return [];
+  }
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | undefined> {
-  const data = await medusaFetch<{ product_categories: MedusaCategory[]; count: number }>({
-    path: "/store/product-categories",
-    params: { handle: slug, limit: "1" },
-  });
+  try {
+    const data = await medusaFetch<{ product_categories: MedusaCategory[]; count: number }>({
+      path: "/store/product-categories",
+      params: { handle: slug, limit: "1" },
+    });
 
-  const cat = data.product_categories[0];
-  return cat ? mapMedusaCategory(cat) : undefined;
+    const cat = data.product_categories[0];
+    return cat ? mapMedusaCategory(cat) : fallbackCategory(slug);
+  } catch {
+    return fallbackCategory(slug);
+  }
+}
+
+function fallbackCategory(slug: string): Category | undefined {
+  const seo = CATEGORY_SEO[slug];
+  if (!seo) return undefined;
+
+  const names: Record<string, string> = {
+    balconette: "Balconette",
+    bodysuits: "Bodysuits",
+    bridal: "Bridal",
+    lounge: "Lounge",
+  };
+
+  return {
+    id: slug,
+    slug,
+    name: names[slug] || slug,
+    description: "",
+    seoCopy: seo.seoCopy,
+    heroEyebrow: seo.heroEyebrow,
+  };
 }
 
 export async function getProductPriceById(productId: string): Promise<number> {
-  const data = await medusaFetch<{ product: MedusaProduct }>({
-    path: `/store/products/${productId}`,
-    params: {
-      fields: "*variants,*variants.prices",
-    },
-  });
+  try {
+    const data = await medusaFetch<{ product: MedusaProduct }>({
+      path: `/store/products/${productId}`,
+      params: {
+        fields: "*variants,*variants.prices",
+      },
+    });
 
-  return extractPrice(data.product);
+    return extractPrice(data.product);
+  } catch {
+    return 0;
+  }
 }
 
 // ── Internal helpers ─────────────────────────────────────────────
