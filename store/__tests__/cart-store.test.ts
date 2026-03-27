@@ -7,26 +7,41 @@ const mockProduct: Product = {
   id: "vel-001",
   slug: "noir-essence-balconette",
   name: "Noir Essence Balconette",
+  tagline: "Timeless elegance redefined",
   description: "An elegant balconette bra",
+  details: ["Hand-finished lace trim", "Adjustable straps"],
   priceCents: 11200,
   categorySlug: "balconette",
   images: ["/img/product1.jpg"],
-  sizes: ["S", "M", "L"],
+  sizesAvailable: ["S", "M", "L"],
+  variants: [
+    { size: "S", inStock: true, label: "Small" },
+    { size: "M", inStock: true, label: "Medium" },
+    { size: "L", inStock: true, label: "Large" },
+  ],
   tags: ["luxury", "new"],
   palette: ["#1b1a1e", "#7e6843"],
+  featured: false,
 };
 
 const mockProduct2: Product = {
   id: "vel-002",
   slug: "cashmere-hush-bralette",
   name: "Cashmere Hush Bralette",
+  tagline: "Soft beyond compare",
   description: "A soft bralette",
+  details: ["Cashmere blend fabric"],
   priceCents: 8600,
   categorySlug: "lounge",
   images: ["/img/product2.jpg"],
-  sizes: ["S", "M"],
+  sizesAvailable: ["S", "M"],
+  variants: [
+    { size: "S", inStock: true, label: "Small" },
+    { size: "M", inStock: true, label: "Medium" },
+  ],
   tags: ["lounge"],
   palette: ["#2a2a2a", "#d4c5a9"],
+  featured: false,
 };
 
 describe("cart store", () => {
