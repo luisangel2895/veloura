@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { ProductDetail } from "@/components/store/product-detail";
-import { getMockCategoryBySlug } from "@/lib/data/mock-categories";
-import { getMockProductBySlug } from "@/lib/data/mock-products";
+import { getCategoryBySlug, getProductBySlug } from "@/lib/medusa/client";
 import {
   buildBreadcrumbJsonLd,
   buildProductJsonLd,
@@ -19,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getMockProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -27,20 +26,20 @@ export async function generateMetadata({
     };
   }
 
-  const category = getMockCategoryBySlug(product.categorySlug);
+  const category = await getCategoryBySlug(product.categorySlug);
 
   return createProductMetadata(product, category);
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = getMockProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
-  const category = getMockCategoryBySlug(product.categorySlug);
+  const category = await getCategoryBySlug(product.categorySlug);
 
   return (
     <>

@@ -9,7 +9,7 @@ import {
   isValidPostalCode,
 } from "@/lib/checkout/shipping";
 import { isValidEmail } from "@/lib/checkout/validators";
-import { mockProducts } from "@/lib/data/mock-products";
+import { getProducts } from "@/lib/medusa/client";
 
 export const runtime = "nodejs";
 
@@ -42,12 +42,15 @@ const requestSchema = z.object({
   shipping: shippingSchema,
 });
 
-function computeTrustedAmount(
+async function computeTrustedAmount(
   items: Array<z.infer<typeof itemSchema>>,
   shippingMethod: z.infer<typeof shippingSchema>["shippingMethod"],
 ) {
+  const allProducts = await getProducts();
+  const productMap = new Map(allProducts.map((p) => [p.id, p]));
+
   return items.reduce((sum, item) => {
-    const product = mockProducts.find((candidate) => candidate.id === item.id);
+    const product = productMap.get(item.id);
 
     if (!product) {
       throw new Error(`Unknown product id: ${item.id}`);
@@ -188,7 +191,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const amount = computeTrustedAmount(parsed.data.items, parsed.data.shipping.shippingMethod);
+    const amount = await computeTrustedAmount(
+      parsed.data.items,
+      parsed.data.shipping.shippingMethod,
+    );
 
     console.info("[stripe] creating PaymentIntent", {
       email: parsed.data.shipping.email,

@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getMockCategories } from "@/lib/data/mock-categories";
-import { getMockProducts } from "@/lib/data/mock-products";
+import { getCategories, getProducts } from "@/lib/medusa/client";
 import { toAbsoluteUrl } from "@/lib/seo/metadata";
 
 const LOCALES = ["es", "en"] as const;
@@ -22,20 +21,21 @@ function localizedEntries(
   }));
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const [categories, products] = await Promise.all([getCategories(), getProducts()]);
 
   return [
     ...localizedEntries("/", { changeFrequency: "daily", priority: 1 }, now),
     ...localizedEntries("/grid", { changeFrequency: "daily", priority: 0.9 }, now),
-    ...getMockCategories().flatMap((category) =>
+    ...categories.flatMap((category) =>
       localizedEntries(
         `/category/${category.slug}`,
         { changeFrequency: "weekly", priority: 0.8 },
         now,
       ),
     ),
-    ...getMockProducts().flatMap((product) =>
+    ...products.flatMap((product) =>
       localizedEntries(
         `/product/${product.slug}`,
         { changeFrequency: "weekly", priority: 0.7 },

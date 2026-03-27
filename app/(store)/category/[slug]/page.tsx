@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { CatalogView } from "@/components/store/catalog-view";
-import { getMockCategoryBySlug } from "@/lib/data/mock-categories";
+import { getCategoryBySlug } from "@/lib/medusa/client";
 import { buildBreadcrumbJsonLd, createCategoryMetadata } from "@/lib/seo/metadata";
 
 export const revalidate = 300;
@@ -14,7 +14,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const category = getMockCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
 
   if (!category) {
     return {
@@ -27,7 +27,7 @@ export async function generateMetadata({
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const category = getMockCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
 
   if (!category) {
     notFound();
