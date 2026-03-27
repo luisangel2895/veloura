@@ -23,7 +23,15 @@ function localizedEntries(
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const [categories, products] = await Promise.all([getCategories(), getProducts()]);
+
+  let categories: Awaited<ReturnType<typeof getCategories>> = [];
+  let products: Awaited<ReturnType<typeof getProducts>> = [];
+
+  try {
+    [categories, products] = await Promise.all([getCategories(), getProducts()]);
+  } catch {
+    // Medusa may be unreachable during static build (e.g. Vercel)
+  }
 
   return [
     ...localizedEntries("/", { changeFrequency: "daily", priority: 1 }, now),
