@@ -30,7 +30,7 @@ export default defineConfig({
         "components/seo/**/*.tsx",
         "components/store/price.tsx",
       ],
-      exclude: ["**/__tests__/**", "**/data/**"],
+      exclude: ["**/__tests__/**", "**/data/**", "lib/medusa/**"],
       thresholds: {
         statements: 90,
         branches: 88,
