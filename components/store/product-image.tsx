@@ -60,7 +60,7 @@ export function ProductImage({
 
       <Image
         src={currentSrc}
-        alt={alt}
+        alt={alt || "Product image"}
         width={1200}
         height={1600}
         priority={priority}
