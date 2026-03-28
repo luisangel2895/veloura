@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veloura — System Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f1117;
+    --bg-card: #1a1d27;
+    --bg-card-hover: #222633;
+    --border: #2a2e3d;
+    --border-glow: #3b4058;
+    --text: #e4e7ef;
+    --text-dim: #8b90a5;
+    --text-bright: #ffffff;
+    --accent-amber: #f59e0b;
+    --accent-amber-dim: rgba(245, 158, 11, 0.15);
+    --accent-blue: #3b82f6;
+    --accent-blue-dim: rgba(59, 130, 246, 0.15);
+    --accent-green: #10b981;
+    --accent-green-dim: rgba(16, 185, 129, 0.15);
+    --accent-purple: #8b5cf6;
+    --accent-purple-dim: rgba(139, 92, 246, 0.15);
+    --accent-red: #ef4444;
+    --accent-red-dim: rgba(239, 68, 68, 0.15);
+    --accent-pink: #ec4899;
+    --accent-pink-dim: rgba(236, 72, 153, 0.15);
+    --accent-cyan: #06b6d4;
+    --accent-cyan-dim: rgba(6, 182, 212, 0.15);
+    --accent-orange: #f97316;
+    --accent-orange-dim: rgba(249, 115, 22, 0.15);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ─── Header ─── */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeInDown 0.8s ease;
+  }
+
+  .header .brand {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent-amber);
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+
+  .header .subtitle {
+    font-size: 16px;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .header .tech-badges {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .tech-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-dim);
+    transition: all 0.3s;
+  }
+
+  .tech-badge:hover {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+  }
+
+  /* ─── Section ─── */
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .section-label .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  /* ─── Main Flow ─── */
+  .flow-container {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .flow-column {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .flow-arrow svg {
+    width: 60px;
+    height: 40px;
+  }
+
+  .flow-arrow .arrow-label {
+    position: absolute;
+    bottom: -4px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .card:hover {
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-amber::before { background: linear-gradient(90deg, var(--accent-amber), var(--accent-orange)); }
+  .card-blue::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan)); }
+  .card-green::before { background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); }
+  .card-purple::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); }
+  .card-red::before { background: linear-gradient(90deg, var(--accent-red), var(--accent-orange)); }
+  .card-pink::before { background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple)); }
+  .card-cyan::before { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue)); }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+    transition: transform 0.3s;
+  }
+
+  .card:hover .card-icon { transform: scale(1.1); }
+
+  .icon-amber { background: var(--accent-amber-dim); color: var(--accent-amber); }
+  .icon-blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
+  .icon-green { background: var(--accent-green-dim); color: var(--accent-green); }
+  .icon-purple { background: var(--accent-purple-dim); color: var(--accent-purple); }
+  .icon-red { background: var(--accent-red-dim); color: var(--accent-red); }
+  .icon-pink { background: var(--accent-pink-dim); color: var(--accent-pink); }
+  .icon-cyan { background: var(--accent-cyan-dim); color: var(--accent-cyan); }
+  .icon-orange { background: var(--accent-orange-dim); color: var(--accent-orange); }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+  }
+
+  .card-tech {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+
+  .card-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .card-list li .bullet {
+    flex-shrink: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-top: 7px;
+  }
+
+  .bullet-amber { background: var(--accent-amber); }
+  .bullet-blue { background: var(--accent-blue); }
+  .bullet-green { background: var(--accent-green); }
+  .bullet-purple { background: var(--accent-purple); }
+  .bullet-red { background: var(--accent-red); }
+  .bullet-pink { background: var(--accent-pink); }
+  .bullet-cyan { background: var(--accent-cyan); }
+  .bullet-orange { background: var(--accent-orange); }
+
+  /* ─── Grid layouts ─── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  /* ─── Data Flow Diagram ─── */
+  .data-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 32px 0;
+    overflow-x: auto;
+  }
+
+  .flow-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+  }
+
+  .flow-node-box {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    transition: all 0.3s;
+    cursor: default;
+    min-width: 130px;
+  }
+
+  .flow-node-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .flow-node-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .flow-connector {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+  }
+
+  .flow-connector svg {
+    width: 48px;
+    height: 24px;
+  }
+
+  .flow-connector .conn-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 2px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── Checkout State Machine ─── */
+  .state-machine {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 24px 0;
+    flex-wrap: wrap;
+  }
+
+  .state-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .state-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid;
+    transition: all 0.3s;
+    cursor: default;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .state-circle:hover {
+    transform: scale(1.1);
+  }
+
+  .state-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-weight: 500;
+    text-align: center;
+    max-width: 100px;
+  }
+
+  .state-arrow {
+    padding: 0 12px;
+  }
+
+  .state-arrow svg {
+    width: 40px;
+    height: 20px;
+  }
+
+  /* ─── Animated connection lines (SVG overlay) ─── */
+  .animated-line {
+    stroke-dasharray: 8 4;
+    animation: dashFlow 1.5s linear infinite;
+  }
+
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -24; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── Big separator ─── */
+  .separator {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0 40px;
+  }
+
+  .separator::before,
+  .separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .separator .sep-text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ─── Legend ─── */
+  .legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* ─── Mini tag ─── */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .tag-amber { background: var(--accent-amber-dim); color: var(--accent-amber); }
+  .tag-blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
+  .tag-green { background: var(--accent-green-dim); color: var(--accent-green); }
+  .tag-purple { background: var(--accent-purple-dim); color: var(--accent-purple); }
+  .tag-red { background: var(--accent-red-dim); color: var(--accent-red); }
+  .tag-cyan { background: var(--accent-cyan-dim); color: var(--accent-cyan); }
+
+  /* ─── Docker diagram ─── */
+  .docker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+  }
+
+  .docker-grid::before {
+    content: 'DOCKER COMPOSE — PRODUCTION';
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent-cyan);
+    background: var(--bg);
+    padding: 0 8px;
+  }
+
+  .docker-service {
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px dashed;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .docker-service:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .docker-service .svc-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .docker-service .svc-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .docker-service .svc-detail {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .flow-container { flex-direction: column; gap: 16px; }
+    .flow-arrow { width: auto; height: 40px; transform: rotate(90deg); }
+    .docker-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .header h1 { font-size: 28px; }
+    .docker-grid { grid-template-columns: 1fr; }
+    .data-flow { flex-direction: column; }
+    .flow-connector { transform: rotate(90deg); }
+    .state-machine { flex-direction: column; }
+    .state-arrow { transform: rotate(90deg); }
+  }
+
+  /* ─── Tooltip ─── */
+  .has-tooltip {
+    position: relative;
+  }
+
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    background: #2a2e3d;
+    border: 1px solid var(--border-glow);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .has-tooltip:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  /* ─── Footer ─── */
+  .footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+
+  .footer a {
+    color: var(--accent-amber);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <div class="header">
+    <div class="brand">Veloura — Intimate Atelier</div>
+    <h1>System Architecture</h1>
+    <p class="subtitle">Full-stack headless e-commerce platform for luxury lingerie</p>
+    <div class="tech-badges">
+      <span class="tech-badge">Next.js 16</span>
+      <span class="tech-badge">Medusa v2</span>
+      <span class="tech-badge">TypeScript</span>
+      <span class="tech-badge">PostgreSQL 16</span>
+      <span class="tech-badge">Redis 7</span>
+      <span class="tech-badge">Stripe</span>
+      <span class="tech-badge">Docker</span>
+      <span class="tech-badge">Caddy</span>
+      <span class="tech-badge">Sentry</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ LEGEND ═══════════════ -->
+  <div class="legend animate-in">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-amber)"></div>Frontend</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue)"></div>Backend API</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green)"></div>Data Layer</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple)"></div>External Services</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan)"></div>Infrastructure</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-pink)"></div>Monitoring</div>
+  </div>
+
+  <!-- ═══════════════ HIGH-LEVEL FLOW ═══════════════ -->
+  <div class="section animate-in">
+    <div class="section-label" style="color:var(--text-dim); background:rgba(255,255,255,0.04);">
+      <span class="dot" style="background:var(--accent-amber)"></span>
+      High-Level Request Flow
+    </div>
+
+    <div class="flow-container">
+      <!-- Client -->
+      <div class="flow-column">
+        <div class="card card-amber">
+          <div class="card-icon icon-amber">👤</div>
+          <div class="card-title">Client Browser</div>
+          <div class="card-tech">Desktop &amp; Mobile</div>
+          <ul class="card-list">
+            <li><span class="bullet bullet-amber"></span>Guest browsing — no auth required</li>
+            <li><span class="bullet bullet-amber"></span>ES / EN locale detection</li>
+            <li><span class="bullet bullet-amber"></span>Cart persisted in localStorage</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flow-arrow">
+        <svg viewBox="0 0 60 40">
+          <line x1="4" y1="20" x2="48" y2="20" stroke="var(--accent-amber)" stroke-width="2" class="animated-line"/>
+          <polygon points="48,14 56,20 48,26" fill="var(--accent-amber)"/>
+        </svg>
+        <span class="arrow-label">HTTPS</span>
+      </div>
+
+      <!-- Frontend -->
+      <div class="flow-column">
+        <div class="card card-amber">
+          <div class="card-icon icon-amber">⚡</div>
+          <div class="card-title">Next.js 16 — Storefront</div>
+          <div class="card-tech">App Router · React Server Components · Vercel</div>
+          <ul class="card-list">
+            <li><span class="bullet bullet-amber"></span>SSR pages with 5s/300s revalidation</li>
+            <li><span class="bullet bullet-amber"></span>Zustand stores (cart, filters)</li>
+            <li><span class="bullet bullet-amber"></span>TanStack Query (60s stale)</li>
+            <li><span class="bullet bullet-amber"></span>API routes → /api/*</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flow-arrow">
+        <svg viewBox="0 0 60 40">
+          <line x1="4" y1="20" x2="48" y2="20" stroke="var(--accent-blue)" stroke-width="2" class="animated-line"/>
+          <polygon points="48,14 56,20 48,26" fill="var(--accent-blue)"/>
+        </svg>
+        <span class="arrow-label">REST API</span>
+      </div>
+
+      <!-- Backend -->
+      <div class="flow-column">
+        <div class="card card-blue">
+          <div class="card-icon icon-blue">🔷</div>
+          <div class="card-title">Medusa v2 — Commerce Engine</div>
+          <div class="card-tech">Node.js · TypeScript · Port 9000</div>
+          <ul class="card-list">
+            <li><span class="bullet bullet-blue"></span>Store API + Admin API</li>
+            <li><span class="bullet bullet-blue"></span>Workflow orchestration engine</li>
+            <li><span class="bullet bullet-blue"></span>Event-driven subscribers</li>
+            <li><span class="bullet bullet-blue"></span>JWT auth (7d expiry)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flow-arrow">
+        <svg viewBox="0 0 60 40">
+          <line x1="4" y1="16" x2="48" y2="16" stroke="var(--accent-green)" stroke-width="2" class="animated-line"/>
+          <polygon points="48,10 56,16 48,22" fill="var(--accent-green)"/>
+          <line x1="48" y1="28" x2="4" y2="28" stroke="var(--accent-green)" stroke-width="2" class="animated-line" style="animation-direction:reverse"/>
+          <polygon points="12,22 4,28 12,34" fill="var(--accent-green)"/>
+        </svg>
+        <span class="arrow-label">TCP</span>
+      </div>
+
+      <!-- Data -->
+      <div class="flow-column">
+        <div class="card card-green">
+          <div class="card-icon icon-green">🗄️</div>
+          <div class="card-title">Data Layer</div>
+          <div class="card-tech">PostgreSQL 16 · Redis 7</div>
+          <ul class="card-list">
+            <li><span class="bullet bullet-green"></span>Products, orders, inventory</li>
+            <li><span class="bullet bullet-green"></span>Redis event bus & cache</li>
+            <li><span class="bullet bullet-green"></span>Workflow state persistence</li>
+            <li><span class="bullet bullet-green"></span>Session storage</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FRONTEND DEEP DIVE ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Frontend Architecture</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="grid-4">
+      <!-- Pages -->
+      <div class="card card-amber">
+        <div class="card-icon icon-amber">📄</div>
+        <div class="card-title">Pages & Routes</div>
+        <div class="card-tech">App Router · SSR</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-amber"></span><code>/</code> — Hero + featured</li>
+          <li><span class="bullet bullet-amber"></span><code>/category/[slug]</code></li>
+          <li><span class="bullet bullet-amber"></span><code>/product/[slug]</code></li>
+          <li><span class="bullet bullet-amber"></span><code>/cart</code></li>
+          <li><span class="bullet bullet-amber"></span><code>/checkout</code></li>
+        </ul>
+      </div>
+
+      <!-- State -->
+      <div class="card card-orange" style="--card-color: var(--accent-orange);">
+        <div class="card-icon icon-orange">🧠</div>
+        <div class="card-title">State Management</div>
+        <div class="card-tech">Zustand · React Query</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-orange"></span>Cart store → localStorage</li>
+          <li><span class="bullet bullet-orange"></span>Filter store → URL sync</li>
+          <li><span class="bullet bullet-orange"></span>Checkout → sessionStorage</li>
+          <li><span class="bullet bullet-orange"></span>Server state → React Query</li>
+        </ul>
+      </div>
+
+      <!-- UI -->
+      <div class="card card-pink">
+        <div class="card-icon icon-pink">🎨</div>
+        <div class="card-title">UI System</div>
+        <div class="card-tech">shadcn/ui · Tailwind v4</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-pink"></span>Dark theme by default</li>
+          <li><span class="bullet bullet-pink"></span>Amber accent palette</li>
+          <li><span class="bullet bullet-pink"></span>Lucide icons</li>
+          <li><span class="bullet bullet-pink"></span>Responsive (mobile-first)</li>
+        </ul>
+      </div>
+
+      <!-- API Layer -->
+      <div class="card card-cyan">
+        <div class="card-icon icon-cyan">🔗</div>
+        <div class="card-title">API Layer</div>
+        <div class="card-tech">Axios · Medusa Client</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-cyan"></span>Client: Axios → <code>/api/*</code></li>
+          <li><span class="bullet bullet-cyan"></span>Server: fetch → Medusa</li>
+          <li><span class="bullet bullet-cyan"></span>Publishable API key auth</li>
+          <li><span class="bullet bullet-cyan"></span>4s timeout · 1 retry</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ CHECKOUT STATE MACHINE ═══════════════ -->
+  <div class="section animate-in">
+    <div class="section-label" style="color:var(--accent-purple); background:var(--accent-purple-dim);">
+      <span class="dot" style="background:var(--accent-purple)"></span>
+      Checkout State Machine
+    </div>
+
+    <div class="state-machine">
+      <div class="state-node">
+        <div class="state-circle" style="border-color:var(--accent-amber); color:var(--accent-amber); background:var(--accent-amber-dim);">
+          Shipping
+        </div>
+        <div class="state-sub">Address & contact info</div>
+      </div>
+
+      <div class="state-arrow">
+        <svg viewBox="0 0 40 20">
+          <line x1="2" y1="10" x2="32" y2="10" stroke="var(--accent-purple)" stroke-width="2" class="animated-line"/>
+          <polygon points="32,6 38,10 32,14" fill="var(--accent-purple)"/>
+        </svg>
+      </div>
+
+      <div class="state-node">
+        <div class="state-circle" style="border-color:var(--accent-blue); color:var(--accent-blue); background:var(--accent-blue-dim);">
+          Payment
+        </div>
+        <div class="state-sub">Stripe Elements</div>
+      </div>
+
+      <div class="state-arrow">
+        <svg viewBox="0 0 40 20">
+          <line x1="2" y1="10" x2="32" y2="10" stroke="var(--accent-purple)" stroke-width="2" class="animated-line"/>
+          <polygon points="32,6 38,10 32,14" fill="var(--accent-purple)"/>
+        </svg>
+      </div>
+
+      <div class="state-node">
+        <div class="state-circle" style="border-color:var(--accent-cyan); color:var(--accent-cyan); background:var(--accent-cyan-dim);">
+          Review
+        </div>
+        <div class="state-sub">Order summary</div>
+      </div>
+
+      <div class="state-arrow">
+        <svg viewBox="0 0 40 20">
+          <line x1="2" y1="10" x2="32" y2="10" stroke="var(--accent-purple)" stroke-width="2" class="animated-line"/>
+          <polygon points="32,6 38,10 32,14" fill="var(--accent-purple)"/>
+        </svg>
+      </div>
+
+      <div class="state-node">
+        <div class="state-circle" style="border-color:var(--accent-green); color:var(--accent-green); background:var(--accent-green-dim);">
+          Complete
+        </div>
+        <div class="state-sub">Confirmation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ BACKEND DEEP DIVE ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Backend Architecture</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="grid-3">
+      <!-- API Layer -->
+      <div class="card card-blue">
+        <div class="card-icon icon-blue">🌐</div>
+        <div class="card-title">API Layer</div>
+        <div class="card-tech">REST · Middleware · CORS</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-blue"></span><strong>Store API</strong> — public storefront</li>
+          <li><span class="bullet bullet-blue"></span><strong>Admin API</strong> — dashboard CRUD</li>
+          <li><span class="bullet bullet-blue"></span>Request ID tracking</li>
+          <li><span class="bullet bullet-blue"></span>CORS per origin type</li>
+          <li><span class="bullet bullet-blue"></span>Custom admin widgets &amp; routes</li>
+        </ul>
+      </div>
+
+      <!-- Commerce Modules -->
+      <div class="card card-purple">
+        <div class="card-icon icon-purple">📦</div>
+        <div class="card-title">Commerce Modules</div>
+        <div class="card-tech">Medusa Core Modules</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-purple"></span>Products &amp; Categories</li>
+          <li><span class="bullet bullet-purple"></span>Orders &amp; Cart / Checkout</li>
+          <li><span class="bullet bullet-purple"></span>Inventory &amp; Stock Locations</li>
+          <li><span class="bullet bullet-purple"></span>Fulfillment (3 shipping tiers)</li>
+          <li><span class="bullet bullet-purple"></span>Multi-currency (USD/EUR/GBP/MXN)</li>
+        </ul>
+      </div>
+
+      <!-- Event System -->
+      <div class="card card-green">
+        <div class="card-icon icon-green">⚡</div>
+        <div class="card-title">Event & Workflow Engine</div>
+        <div class="card-tech">Redis Pub/Sub · Subscribers</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-green"></span>Event bus (Redis-backed)</li>
+          <li><span class="bullet bullet-green"></span><code>order.placed</code> subscriber</li>
+          <li><span class="bullet bullet-green"></span>Workflow orchestration engine</li>
+          <li><span class="bullet bullet-green"></span>Background jobs (scheduled)</li>
+          <li><span class="bullet bullet-green"></span>Distributed cache layer</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DATA FLOW ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Data Flow — Product Request</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="data-flow">
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-amber); background:var(--accent-amber-dim); color:var(--accent-amber);">
+          Browser
+        </div>
+        <div class="flow-node-sub">User visits /category/bridal</div>
+        <div class="tooltip">React Server Component renders on server</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-amber)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-amber)"/>
+          </svg>
+          <div class="conn-label">SSR</div>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-amber); background:var(--accent-amber-dim); color:var(--accent-amber);">
+          Next.js Server
+        </div>
+        <div class="flow-node-sub">Server Component</div>
+        <div class="tooltip">Calls Medusa client with publishable key</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-blue)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-blue)"/>
+          </svg>
+          <div class="conn-label">FETCH</div>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-blue); background:var(--accent-blue-dim); color:var(--accent-blue);">
+          Medusa API
+        </div>
+        <div class="flow-node-sub">/store/products</div>
+        <div class="tooltip">Validates API key, resolves region & currency</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-green)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-green)"/>
+          </svg>
+          <div class="conn-label">SQL</div>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-green); background:var(--accent-green-dim); color:var(--accent-green);">
+          PostgreSQL
+        </div>
+        <div class="flow-node-sub">Products + variants</div>
+        <div class="tooltip">Returns products with pricing, inventory & images</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-green)" stroke-width="2" class="animated-line" style="animation-direction:reverse"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-green)" transform="rotate(180, 24, 12)"/>
+          </svg>
+          <div class="conn-label">CACHED</div>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-red); background:var(--accent-red-dim); color:var(--accent-red);">
+          Redis
+        </div>
+        <div class="flow-node-sub">Cache layer</div>
+        <div class="tooltip">Caches query results, events queued here too</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PAYMENT FLOW ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Payment Flow</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="data-flow">
+      <div class="flow-node">
+        <div class="flow-node-box" style="border-color:var(--accent-amber); background:var(--accent-amber-dim); color:var(--accent-amber);">
+          Checkout UI
+        </div>
+        <div class="flow-node-sub">Stripe Elements</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-purple)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-purple)"/>
+          </svg>
+          <div class="conn-label">POST</div>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-amber); background:var(--accent-amber-dim); color:var(--accent-amber);">
+          /api/stripe
+        </div>
+        <div class="flow-node-sub">Next.js Route Handler</div>
+        <div class="tooltip">Zod validates payload, computes trusted totals server-side</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-purple)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-purple)"/>
+          </svg>
+          <div class="conn-label">SDK</div>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-purple); background:var(--accent-purple-dim); color:var(--accent-purple);">
+          Stripe API
+        </div>
+        <div class="flow-node-sub">PaymentIntent</div>
+        <div class="tooltip">Creates PaymentIntent, returns clientSecret</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-purple)" stroke-width="2" class="animated-line" style="animation-direction:reverse"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-purple)" transform="rotate(180, 24, 12)"/>
+          </svg>
+          <div class="conn-label">SECRET</div>
+        </div>
+      </div>
+
+      <div class="flow-node">
+        <div class="flow-node-box" style="border-color:var(--accent-amber); background:var(--accent-amber-dim); color:var(--accent-amber);">
+          Confirm Payment
+        </div>
+        <div class="flow-node-sub">stripe.confirmPayment()</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--accent-green)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--accent-green)"/>
+          </svg>
+          <div class="conn-label">WEBHOOK</div>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-blue); background:var(--accent-blue-dim); color:var(--accent-blue);">
+          Medusa
+        </div>
+        <div class="flow-node-sub">order.placed event</div>
+        <div class="tooltip">Stripe webhook triggers order creation in Medusa</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ EXTERNAL SERVICES ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">External Services & Integrations</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="grid-4">
+      <div class="card card-purple">
+        <div class="card-icon icon-purple">💳</div>
+        <div class="card-title">Stripe</div>
+        <div class="card-tech">Payment Processing</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-purple"></span>PaymentIntent API</li>
+          <li><span class="bullet bullet-purple"></span>Card, Link, Bank Transfer</li>
+          <li><span class="bullet bullet-purple"></span>Webhook validation</li>
+          <li><span class="bullet bullet-purple"></span>Rate limited (10/60s)</li>
+        </ul>
+      </div>
+
+      <div class="card card-pink">
+        <div class="card-icon icon-pink">🐛</div>
+        <div class="card-title">Sentry</div>
+        <div class="card-tech">Error Monitoring</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-pink"></span>Server + Client + Edge</li>
+          <li><span class="bullet bullet-pink"></span>Tunnel route (/monitoring)</li>
+          <li><span class="bullet bullet-pink"></span>Source maps upload</li>
+          <li><span class="bullet bullet-pink"></span>Production only</li>
+        </ul>
+      </div>
+
+      <div class="card card-cyan">
+        <div class="card-icon icon-cyan">🌍</div>
+        <div class="card-title">Vercel</div>
+        <div class="card-tech">Frontend Hosting</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-cyan"></span>Edge functions</li>
+          <li><span class="bullet bullet-cyan"></span>Automatic HTTPS</li>
+          <li><span class="bullet bullet-cyan"></span>Image optimization CDN</li>
+          <li><span class="bullet bullet-cyan"></span>Preview deployments</li>
+        </ul>
+      </div>
+
+      <div class="card card-green">
+        <div class="card-icon icon-green">🔒</div>
+        <div class="card-title">Caddy</div>
+        <div class="card-tech">Reverse Proxy</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-green"></span>Auto TLS certificates</li>
+          <li><span class="bullet bullet-green"></span>api.veloura.com routing</li>
+          <li><span class="bullet bullet-green"></span>Security headers (HSTS, CSP)</li>
+          <li><span class="bullet bullet-green"></span>Gzip compression</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ INFRASTRUCTURE ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Production Infrastructure</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="docker-grid">
+      <div class="docker-service" style="border-color:var(--accent-green); background:var(--accent-green-dim);">
+        <div class="svc-icon">🔀</div>
+        <div class="svc-name" style="color:var(--accent-green);">Caddy</div>
+        <div class="svc-detail">Reverse proxy<br>Ports 80 / 443<br>Auto TLS</div>
+      </div>
+
+      <div class="docker-service" style="border-color:var(--accent-blue); background:var(--accent-blue-dim);">
+        <div class="svc-icon">🔷</div>
+        <div class="svc-name" style="color:var(--accent-blue);">Medusa</div>
+        <div class="svc-detail">Commerce API<br>Port 9000<br>CPU & mem limits</div>
+      </div>
+
+      <div class="docker-service" style="border-color:var(--accent-cyan); background:var(--accent-cyan-dim);">
+        <div class="svc-icon">🐘</div>
+        <div class="svc-name" style="color:var(--accent-cyan);">PostgreSQL 16</div>
+        <div class="svc-detail">Primary database<br>Health checks<br>Persistent volume</div>
+      </div>
+
+      <div class="docker-service" style="border-color:var(--accent-red); background:var(--accent-red-dim);">
+        <div class="svc-icon">⚡</div>
+        <div class="svc-name" style="color:var(--accent-red);">Redis 7</div>
+        <div class="svc-detail">Cache + Events<br>Workflow engine<br>Health checks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PRODUCT CATALOG ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Commerce Domain Model</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="grid-2">
+      <div class="card card-amber">
+        <div class="card-icon icon-amber">👗</div>
+        <div class="card-title">Product Catalog</div>
+        <div class="card-tech">12 SKUs · 4 Categories</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-amber"></span><strong>Balconette</strong> — Signature bras</li>
+          <li><span class="bullet bullet-amber"></span><strong>Bodysuits</strong> — Full-body pieces</li>
+          <li><span class="bullet bullet-amber"></span><strong>Bridal</strong> — Wedding collection</li>
+          <li><span class="bullet bullet-amber"></span><strong>Lounge</strong> — Comfort wear</li>
+          <li><span class="bullet bullet-amber"></span>Sizes: XS → XL per variant</li>
+          <li><span class="bullet bullet-amber"></span>Multi-currency: USD / EUR / GBP / MXN</li>
+        </ul>
+      </div>
+
+      <div class="card card-blue">
+        <div class="card-icon icon-blue">🚚</div>
+        <div class="card-title">Fulfillment & Regions</div>
+        <div class="card-tech">3 Regions · Miami Warehouse</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-blue"></span><strong>North America</strong> — USD</li>
+          <li><span class="bullet bullet-blue"></span><strong>Europe</strong> — EUR</li>
+          <li><span class="bullet bullet-blue"></span><strong>United Kingdom</strong> — GBP</li>
+          <li><span class="bullet bullet-blue"></span>Standard shipping (5-7 days)</li>
+          <li><span class="bullet bullet-blue"></span>Express shipping (2-3 days)</li>
+          <li><span class="bullet bullet-blue"></span>Complimentary (orders $150+)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TESTING & CI ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Testing & CI/CD Pipeline</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="grid-3">
+      <div class="card card-green">
+        <div class="card-icon icon-green">✅</div>
+        <div class="card-title">Testing</div>
+        <div class="card-tech">Vitest · Playwright · Testing Library</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-green"></span>Unit tests (Vitest) — 80% threshold</li>
+          <li><span class="bullet bullet-green"></span>E2E tests (Playwright)</li>
+          <li><span class="bullet bullet-green"></span>Accessibility (@axe-core)</li>
+          <li><span class="bullet bullet-green"></span>Component testing (RTL)</li>
+        </ul>
+      </div>
+
+      <div class="card card-cyan">
+        <div class="card-icon icon-cyan">🔄</div>
+        <div class="card-title">CI/CD</div>
+        <div class="card-tech">GitHub Actions · Husky</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-cyan"></span>Pre-commit hooks (lint-staged)</li>
+          <li><span class="bullet bullet-cyan"></span>GitHub Actions workflows</li>
+          <li><span class="bullet bullet-cyan"></span>Semantic versioning</li>
+          <li><span class="bullet bullet-cyan"></span>CHANGELOG generation</li>
+        </ul>
+      </div>
+
+      <div class="card card-purple">
+        <div class="card-icon icon-purple">🛡️</div>
+        <div class="card-title">Security</div>
+        <div class="card-tech">Headers · Validation · Rate Limiting</div>
+        <ul class="card-list">
+          <li><span class="bullet bullet-purple"></span>CSP + HSTS + X-Frame-Options</li>
+          <li><span class="bullet bullet-purple"></span>Zod payload validation</li>
+          <li><span class="bullet bullet-purple"></span>Server-side price calculation</li>
+          <li><span class="bullet bullet-purple"></span>Stripe rate limiting (10/60s)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ I18N ═══════════════ -->
+  <div class="separator">
+    <span class="sep-text">Internationalization</span>
+  </div>
+
+  <div class="section animate-in">
+    <div class="data-flow">
+      <div class="flow-node">
+        <div class="flow-node-box" style="border-color:var(--accent-amber); background:var(--accent-amber-dim); color:var(--accent-amber);">
+          Request
+        </div>
+        <div class="flow-node-sub">Incoming URL</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--text-dim)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--text-dim)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-purple); background:var(--accent-purple-dim); color:var(--accent-purple);">
+          Middleware
+        </div>
+        <div class="flow-node-sub">Locale detection</div>
+        <div class="tooltip">Cookie → Accept-Language → default (ES)</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--text-dim)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--text-dim)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="flow-node">
+        <div class="flow-node-box" style="border-color:var(--accent-cyan); background:var(--accent-cyan-dim); color:var(--accent-cyan);">
+          /es/* or /en/*
+        </div>
+        <div class="flow-node-sub">URL rewrite</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--text-dim)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--text-dim)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="flow-node has-tooltip">
+        <div class="flow-node-box" style="border-color:var(--accent-green); background:var(--accent-green-dim); color:var(--accent-green);">
+          LanguageProvider
+        </div>
+        <div class="flow-node-sub">React Context</div>
+        <div class="tooltip">Broadcasts locale to all components via context</div>
+      </div>
+
+      <div class="flow-connector">
+        <div>
+          <svg viewBox="0 0 48 24">
+            <line x1="2" y1="12" x2="38" y2="12" stroke="var(--text-dim)" stroke-width="2" class="animated-line"/>
+            <polygon points="38,8 46,12 38,16" fill="var(--text-dim)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="flow-node">
+        <div class="flow-node-box" style="border-color:var(--accent-amber); background:var(--accent-amber-dim); color:var(--accent-amber);">
+          🇪🇸 ES / 🇺🇸 EN
+        </div>
+        <div class="flow-node-sub">Rendered page</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <div class="footer">
+    <p>Veloura System Architecture — Generated March 2026</p>
+  </div>
+
+</div>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
