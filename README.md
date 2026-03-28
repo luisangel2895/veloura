@@ -70,6 +70,8 @@ The result is a frontend that is visually polished, operationally safe, and stru
 
 ## Architecture
 
+> **[View the full interactive architecture diagram →](https://luisangel2895.github.io/veloura/)**
+
 ![Architecture](docs/architecture.png)
 
 Veloura is structured around a frontend architecture that keeps UI, domain logic, and platform concerns clearly separated:
