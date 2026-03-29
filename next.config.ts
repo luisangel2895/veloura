@@ -89,6 +89,10 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
         port: "9000",
       },
+      {
+        protocol: "http",
+        hostname: "161.132.40.176",
+      },
     ],
   },
   async headers() {
