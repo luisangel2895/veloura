@@ -373,7 +373,7 @@ export function CheckoutPaymentStep({
             type="button"
             onClick={handleConfirmPayment}
             disabled={!clientSecret || !isReady || isCreatingIntent || isConfirmingPayment}
-            className="h-14 rounded-none bg-amber-700 px-8 text-xs font-semibold uppercase tracking-[0.18em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+            className="h-12 w-full rounded-none bg-amber-700 px-6 text-xs font-semibold uppercase tracking-[0.18em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 sm:h-14 sm:w-auto sm:px-8 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
           >
             {isConfirmingPayment ? (
               <Loader2 className="size-3.5 animate-spin" />

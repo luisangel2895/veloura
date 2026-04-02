@@ -59,7 +59,7 @@ function StepMarker({
       type="button"
       onClick={() => onSelect(target)}
       disabled={target === "complete" || current === "complete"}
-      className={`flex min-w-0 items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors disabled:cursor-default disabled:opacity-100 ${
+      className={`flex min-w-0 shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-colors disabled:cursor-default disabled:opacity-100 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3 ${
         isCurrent
           ? "border-amber-700 bg-amber-700/8 dark:border-amber-300 dark:bg-amber-300/10"
           : "border-border bg-background/60 hover:bg-accent dark:border-amber-500/10 dark:bg-background/30 dark:hover:bg-amber-500/8"
@@ -196,9 +196,9 @@ export function CheckoutFlow() {
     returnToStore: locale === "es" ? "Volver a la colección" : "Return to the collection",
   } as const;
   const primaryActionButtonClassName =
-    "h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200";
+    "h-12 rounded-none bg-amber-700 px-6 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 sm:h-14 sm:px-8 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200";
   const secondaryActionButtonClassName =
-    "h-14 rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10";
+    "h-12 rounded-none border-border bg-transparent px-6 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent sm:h-14 sm:px-8 dark:border-amber-500/20 dark:hover:bg-amber-500/10";
   const cityOptions = getCityOptions(state.shipping.country);
   const postalCodeHint = getPostalCodeHint(state.shipping.country);
 
@@ -500,12 +500,12 @@ export function CheckoutFlow() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.18fr_0.82fr]">
-      <section className="space-y-6 rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8 xl:px-9">
+      <section className="space-y-5 rounded-2xl border border-border bg-card/80 p-4 dark:border-amber-500/10 dark:bg-card/75 sm:space-y-6 sm:rounded-[2rem] sm:p-8 xl:px-9">
         <div className="space-y-2">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
             {copy.checkoutStateMachine}
           </p>
-          <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
+          <h1 className="text-3xl font-semibold sm:text-5xl">{copy.checkoutTitle}</h1>
           <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
             {state.step === "shipping" && labels.shippingIntro}
             {state.step === "payment" && labels.paymentIntro}
@@ -514,7 +514,7 @@ export function CheckoutFlow() {
           </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:pb-0 xl:grid-cols-4">
           {steps.map((step) => (
             <StepMarker
               key={step}
@@ -528,7 +528,7 @@ export function CheckoutFlow() {
 
         {state.step === "shipping" ? (
           <div className="space-y-6">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-5 sm:grid-cols-2 sm:gap-4">
               <div className="space-y-2">
                 <label htmlFor="shipping-full-name" className="text-sm font-medium">
                   {labels.fullName}
@@ -605,7 +605,7 @@ export function CheckoutFlow() {
                   aria-describedby={
                     state.errors["shipping.country"] ? "shipping-country-error" : undefined
                   }
-                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-11 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs outline-none focus-visible:ring-[3px] sm:h-9 sm:py-1 sm:text-sm"
                 >
                   <option value="" disabled>
                     {labels.chooseCountry}
@@ -642,7 +642,7 @@ export function CheckoutFlow() {
                   aria-describedby={
                     state.errors["shipping.city"] ? "shipping-city-error" : undefined
                   }
-                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive h-11 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs outline-none focus-visible:ring-[3px] sm:h-9 sm:py-1 sm:text-sm"
                 >
                   <option value="" disabled>
                     {labels.chooseCity}
@@ -817,7 +817,7 @@ export function CheckoutFlow() {
               </div>
 
               <div
-                className="grid gap-3 md:grid-cols-2"
+                className="grid gap-3 sm:grid-cols-2"
                 role="radiogroup"
                 aria-label={labels.shippingMethodTitle}
               >
@@ -897,11 +897,11 @@ export function CheckoutFlow() {
         ) : null}
 
         {state.step === "review" ? (
-          <div className="space-y-5 rounded-3xl border border-border bg-background/60 p-5 dark:border-amber-500/10 dark:bg-background/40">
+          <div className="space-y-4 rounded-2xl border border-border bg-background/60 p-4 sm:space-y-5 sm:rounded-3xl sm:p-5 dark:border-amber-500/10 dark:bg-background/40">
             <p className="text-sm font-medium">{labels.reviewTitle}</p>
 
-            <div className="grid gap-5 md:grid-cols-2">
-              <div className="h-full rounded-2xl border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/70">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+              <div className="h-full rounded-xl border border-border bg-card/80 p-4 sm:rounded-2xl sm:p-5 dark:border-amber-500/10 dark:bg-card/70">
                 <p className="text-sm font-medium">{labels.shippingTitle}</p>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">
                   {state.shipping.fullName}
@@ -928,7 +928,7 @@ export function CheckoutFlow() {
                 </p>
               </div>
 
-              <div className="h-full rounded-2xl border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/70">
+              <div className="h-full rounded-xl border border-border bg-card/80 p-4 sm:rounded-2xl sm:p-5 dark:border-amber-500/10 dark:bg-card/70">
                 <p className="text-sm font-medium">{labels.paymentTitle}</p>
                 <div className="mt-4 space-y-4">
                   <div className="rounded-2xl border border-amber-700/20 bg-amber-700/8 px-4 py-3 dark:border-amber-300/20 dark:bg-amber-300/10">
@@ -963,7 +963,7 @@ export function CheckoutFlow() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card/80 p-5 dark:border-amber-500/10 dark:bg-card/70">
+            <div className="rounded-xl border border-border bg-card/80 p-4 sm:rounded-2xl sm:p-5 dark:border-amber-500/10 dark:bg-card/70">
               <p className="text-sm font-medium">{copy.checkoutOrderSummary}</p>
               <div className="mt-4 space-y-3">
                 {summaryItems.map((item) => (
@@ -991,7 +991,7 @@ export function CheckoutFlow() {
         ) : null}
 
         {state.step === "complete" ? (
-          <div className="rounded-3xl border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-amber-500/8">
+          <div className="rounded-2xl border border-border bg-card/80 p-4 sm:rounded-3xl sm:p-6 dark:border-amber-500/10 dark:bg-amber-500/8">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
               {labels.complete}
             </p>
@@ -1092,7 +1092,7 @@ export function CheckoutFlow() {
         {state.submitError ? <p className="text-sm text-destructive">{state.submitError}</p> : null}
       </section>
 
-      <aside className="h-fit rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8 lg:sticky lg:top-28">
+      <aside className="h-fit rounded-2xl border border-border bg-card/80 p-4 sm:rounded-[2rem] sm:p-8 dark:border-amber-500/10 dark:bg-card/75 lg:sticky lg:top-28">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
           {copy.checkoutOrderSummary}
         </p>

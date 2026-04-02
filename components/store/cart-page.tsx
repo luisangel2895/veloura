@@ -26,8 +26,8 @@ export function CartPage() {
 
   if (!hasHydrated) {
     return (
-      <div className="rounded-[2.25rem] border border-border bg-card/80 px-6 py-16 text-center dark:border-amber-500/10 dark:bg-card/70">
-        <h1 className="text-5xl font-semibold">{copy.cartTitle}</h1>
+      <div className="rounded-2xl border border-border bg-card/80 px-4 py-12 text-center sm:rounded-[2.25rem] sm:px-6 sm:py-16 dark:border-amber-500/10 dark:bg-card/70">
+        <h1 className="text-3xl font-semibold sm:text-5xl">{copy.cartTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.cartRestore}
         </p>
@@ -37,17 +37,17 @@ export function CartPage() {
 
   if (!items.length) {
     return (
-      <div className="rounded-[2.25rem] border border-dashed border-border bg-card/80 px-6 py-18 text-center dark:border-amber-500/20 dark:bg-card/70">
+      <div className="rounded-2xl border border-dashed border-border bg-card/80 px-4 py-12 text-center sm:rounded-[2.25rem] sm:px-6 sm:py-18 dark:border-amber-500/20 dark:bg-card/70">
         <div className="mx-auto inline-flex size-16 items-center justify-center rounded-full border border-border bg-background/80 text-amber-700 dark:border-amber-500/10 dark:bg-background/30 dark:text-amber-200">
           <ShoppingBag className="size-6" />
         </div>
-        <h1 className="mt-6 text-5xl font-semibold">{copy.cartEmptyTitle}</h1>
+        <h1 className="mt-6 text-3xl font-semibold sm:text-5xl">{copy.cartEmptyTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.cartEmptyDescription}
         </p>
         <Button
           asChild
-          className="mt-8 h-14 rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+          className="mt-8 h-12 rounded-none bg-amber-700 px-6 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 sm:h-14 sm:px-8 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
         >
           <Link href="/">{collectionCta}</Link>
         </Button>
@@ -58,12 +58,12 @@ export function CartPage() {
   return (
     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
       <section className="space-y-5">
-        <div className="flex flex-col gap-4 rounded-[2.25rem] border border-border bg-card/80 px-6 py-7 dark:border-amber-500/10 dark:bg-card/75 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card/80 px-4 py-5 sm:rounded-[2.25rem] sm:px-6 sm:py-7 dark:border-amber-500/10 dark:bg-card/75 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
               {totalItems} {totalItems === 1 ? "item" : "items"}
             </p>
-            <h1 className="text-5xl font-semibold">{copy.cartTitle}</h1>
+            <h1 className="text-3xl font-semibold sm:text-5xl">{copy.cartTitle}</h1>
             <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
               {locale === "es"
                 ? "Revisa cantidades, tallas y subtotales antes de pasar al checkout con validaciones por estado."
@@ -88,14 +88,14 @@ export function CartPage() {
           {items.map((item) => (
             <article
               key={item.id}
-              className="grid gap-5 rounded-[2rem] border border-border bg-card/80 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/5 dark:border-amber-500/10 dark:bg-card/75 dark:hover:shadow-black/20 sm:grid-cols-[8.5rem_1fr_auto]"
+              className="grid gap-4 rounded-2xl border border-border bg-card/80 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/5 sm:gap-5 sm:rounded-[2rem] sm:p-5 dark:border-amber-500/10 dark:bg-card/75 dark:hover:shadow-black/20 sm:grid-cols-[8.5rem_1fr_auto]"
             >
               <div className="h-36 overflow-hidden rounded-3xl">
                 <ProductImage src={item.imageUrl} alt={item.name} seed={item.slug} sizes="128px" />
               </div>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <p className="font-[family-name:var(--font-display)] text-3xl font-semibold">
+                  <p className="font-[family-name:var(--font-display)] text-xl font-semibold sm:text-3xl">
                     {item.name}
                   </p>
                   <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
@@ -159,7 +159,7 @@ export function CartPage() {
         </div>
       </section>
 
-      <aside className="h-fit rounded-[2rem] border border-border bg-card/80 p-6 dark:border-amber-500/10 dark:bg-card/75 sm:p-8 lg:sticky lg:top-28">
+      <aside className="h-fit rounded-2xl border border-border bg-card/80 p-4 sm:rounded-[2rem] sm:p-8 dark:border-amber-500/10 dark:bg-card/75 lg:sticky lg:top-28">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
           {copy.cartSummary}
         </p>
@@ -199,14 +199,14 @@ export function CartPage() {
         </div>
         <Button
           asChild
-          className="mt-8 h-14 w-full rounded-none bg-amber-700 px-8 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+          className="mt-8 h-12 w-full rounded-none bg-amber-700 px-6 text-sm font-semibold uppercase tracking-[0.2em] text-amber-50 hover:bg-amber-600 sm:h-14 sm:px-8 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
         >
           <Link href="/checkout">{copy.cartProceed}</Link>
         </Button>
         <Button
           asChild
           variant="outline"
-          className="mt-3 h-14 w-full rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
+          className="mt-3 h-12 w-full rounded-none border-border bg-transparent px-6 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent sm:h-14 sm:px-8 dark:border-amber-500/20 dark:hover:bg-amber-500/10"
         >
           <Link href="/">
             {collectionCta}
