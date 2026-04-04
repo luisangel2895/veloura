@@ -59,14 +59,14 @@ function StepMarker({
       type="button"
       onClick={() => onSelect(target)}
       disabled={target === "complete" || current === "complete"}
-      className={`flex min-w-0 shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-colors disabled:cursor-default disabled:opacity-100 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3 ${
+      className={`flex min-w-0 items-center gap-1.5 rounded-xl border px-2 py-2 text-left transition-colors disabled:cursor-default disabled:opacity-100 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3 ${
         isCurrent
           ? "border-amber-700 bg-amber-700/8 dark:border-amber-300 dark:bg-amber-300/10"
           : "border-border bg-background/60 hover:bg-accent dark:border-amber-500/10 dark:bg-background/30 dark:hover:bg-amber-500/8"
       }`}
     >
       <span
-        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-semibold leading-none ${
+        className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold leading-none sm:h-8 sm:w-8 sm:text-xs ${
           active
             ? "border-amber-700 bg-amber-700 text-amber-50 dark:border-amber-300 dark:bg-amber-300 dark:text-zinc-950"
             : "border-border text-muted-foreground dark:border-amber-500/20"
@@ -75,7 +75,7 @@ function StepMarker({
         {targetIndex + 1}
       </span>
       <span
-        className={`min-w-0 text-sm leading-none ${active ? "text-foreground" : "text-muted-foreground"}`}
+        className={`min-w-0 truncate text-xs leading-none sm:text-sm ${active ? "text-foreground" : "text-muted-foreground"}`}
       >
         {label}
       </span>
@@ -475,8 +475,8 @@ export function CheckoutFlow() {
 
   if (!hasHydrated) {
     return (
-      <div className="rounded-[2rem] border border-border bg-card/80 px-6 py-16 text-center dark:border-amber-500/10 dark:bg-card/70">
-        <h1 className="text-5xl font-semibold">{copy.checkoutTitle}</h1>
+      <div className="rounded-2xl border border-border bg-card/80 px-4 py-16 text-center sm:rounded-[2rem] sm:px-6 dark:border-amber-500/10 dark:bg-card/70">
+        <h1 className="text-2xl font-semibold sm:text-5xl">{copy.checkoutTitle}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
           {copy.checkoutLoading}
         </p>
@@ -499,13 +499,13 @@ export function CheckoutFlow() {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.18fr_0.82fr]">
-      <section className="space-y-5 rounded-2xl border border-border bg-card/80 p-4 dark:border-amber-500/10 dark:bg-card/75 sm:space-y-6 sm:rounded-[2rem] sm:p-8 xl:px-9">
+    <div className="grid min-w-0 gap-8 lg:grid-cols-[1.18fr_0.82fr]">
+      <section className="min-w-0 space-y-5 rounded-2xl border border-border bg-card/80 p-3 dark:border-amber-500/10 dark:bg-card/75 sm:space-y-6 sm:rounded-[2rem] sm:p-8 xl:px-9">
         <div className="space-y-2">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
             {copy.checkoutStateMachine}
           </p>
-          <h1 className="text-3xl font-semibold sm:text-5xl">{copy.checkoutTitle}</h1>
+          <h1 className="text-2xl font-semibold sm:text-5xl">{copy.checkoutTitle}</h1>
           <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
             {state.step === "shipping" && labels.shippingIntro}
             {state.step === "payment" && labels.paymentIntro}
@@ -514,7 +514,7 @@ export function CheckoutFlow() {
           </p>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:pb-0 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-4">
           {steps.map((step) => (
             <StepMarker
               key={step}
@@ -897,7 +897,7 @@ export function CheckoutFlow() {
         ) : null}
 
         {state.step === "review" ? (
-          <div className="space-y-4 rounded-2xl border border-border bg-background/60 p-4 sm:space-y-5 sm:rounded-3xl sm:p-5 dark:border-amber-500/10 dark:bg-background/40">
+          <div className="space-y-4 rounded-xl border border-border bg-background/60 p-3 sm:space-y-5 sm:rounded-3xl sm:p-5 dark:border-amber-500/10 dark:bg-background/40">
             <p className="text-sm font-medium">{labels.reviewTitle}</p>
 
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
@@ -935,7 +935,7 @@ export function CheckoutFlow() {
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-amber-700 dark:text-amber-200">
                       {locale === "es" ? "Código de compra" : "Purchase code"}
                     </p>
-                    <p className="mt-2 break-all font-mono text-sm font-medium text-foreground">
+                    <p className="mt-2 break-all font-mono text-xs font-medium text-foreground sm:text-sm">
                       {paymentReference}
                     </p>
                   </div>
@@ -998,7 +998,7 @@ export function CheckoutFlow() {
             <div className="mt-5 inline-flex size-14 items-center justify-center rounded-full border border-amber-700/20 bg-amber-700/8 text-amber-700 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-200">
               <CheckCircle2 className="size-6" />
             </div>
-            <p className="mt-5 font-[family-name:var(--font-display)] text-4xl font-semibold">
+            <p className="mt-5 font-[family-name:var(--font-display)] text-2xl font-semibold sm:text-4xl">
               {copy.checkoutOrderConfirmed}
             </p>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{labels.completeIntro}</p>
@@ -1016,7 +1016,7 @@ export function CheckoutFlow() {
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-amber-700 dark:text-amber-200">
                   {locale === "es" ? "Código de compra" : "Purchase code"}
                 </p>
-                <p className="mt-2 break-all font-mono text-sm font-medium text-foreground">
+                <p className="mt-2 break-all font-mono text-xs font-medium text-foreground sm:text-sm">
                   {paymentReference}
                 </p>
               </div>
@@ -1092,12 +1092,12 @@ export function CheckoutFlow() {
         {state.submitError ? <p className="text-sm text-destructive">{state.submitError}</p> : null}
       </section>
 
-      <aside className="h-fit rounded-2xl border border-border bg-card/80 p-4 sm:rounded-[2rem] sm:p-8 dark:border-amber-500/10 dark:bg-card/75 lg:sticky lg:top-28">
+      <aside className="min-w-0 h-fit rounded-2xl border border-border bg-card/80 p-3 sm:rounded-[2rem] sm:p-8 dark:border-amber-500/10 dark:bg-card/75 lg:sticky lg:top-28">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-amber-700 dark:text-amber-200">
           {copy.checkoutOrderSummary}
         </p>
 
-        <div className="mt-4 rounded-3xl border border-border bg-background/60 px-4 py-4 dark:border-amber-500/10 dark:bg-background/30">
+        <div className="mt-4 rounded-2xl border border-border bg-background/60 px-3 py-3 sm:rounded-3xl sm:px-4 sm:py-4 dark:border-amber-500/10 dark:bg-background/30">
           <p className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
             <MapPin className="size-4" />
             {labels[state.step]}
@@ -1130,11 +1130,11 @@ export function CheckoutFlow() {
           </div>
           <div className="flex items-center justify-between pt-1">
             <span className="text-foreground">{labels.orderTotal}</span>
-            <Price amountCents={orderTotalCents} className="text-2xl font-semibold" />
+            <Price amountCents={orderTotalCents} className="text-xl font-semibold sm:text-2xl" />
           </div>
         </div>
 
-        <div className="mt-6 rounded-3xl border border-border bg-background/60 px-4 py-4 text-sm text-muted-foreground dark:border-amber-500/10 dark:bg-background/30">
+        <div className="mt-6 rounded-2xl border border-border bg-background/60 px-3 py-3 text-sm text-muted-foreground sm:rounded-3xl sm:px-4 sm:py-4 dark:border-amber-500/10 dark:bg-background/30">
           <p className="inline-flex items-center gap-2 font-medium text-foreground">
             <ShieldCheck className="size-4" />
             Stripe-ready

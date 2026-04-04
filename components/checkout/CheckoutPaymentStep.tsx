@@ -318,7 +318,7 @@ export function CheckoutPaymentStep({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-3xl border border-border bg-background/60 p-5 dark:border-amber-500/10 dark:bg-background/30">
+      <div className="rounded-2xl border border-border bg-background/60 p-3 sm:rounded-3xl sm:p-5 dark:border-amber-500/10 dark:bg-background/30">
         <div className="flex items-center gap-3">
           <span className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card/80 text-amber-700 dark:border-amber-500/10 dark:bg-card/70 dark:text-amber-200">
             <CreditCard className="size-4" />
@@ -335,7 +335,7 @@ export function CheckoutPaymentStep({
           </div>
         </div>
 
-        <div className="relative mt-5 min-h-40 rounded-2xl border border-border bg-card/70 p-4 dark:border-amber-500/10 dark:bg-card/60">
+        <div className="relative mt-5 min-h-40 rounded-xl border border-border bg-card/70 p-2 sm:rounded-2xl sm:p-4 dark:border-amber-500/10 dark:bg-card/60">
           <div
             ref={hostRef}
             className={`min-h-32 ${!isElementMounted ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
@@ -373,7 +373,7 @@ export function CheckoutPaymentStep({
             type="button"
             onClick={handleConfirmPayment}
             disabled={!clientSecret || !isReady || isCreatingIntent || isConfirmingPayment}
-            className="h-12 w-full rounded-none bg-amber-700 px-6 text-xs font-semibold uppercase tracking-[0.18em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 sm:h-14 sm:w-auto sm:px-8 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
+            className="h-12 w-full rounded-none bg-amber-700 px-4 text-xs font-semibold uppercase tracking-[0.18em] text-amber-50 hover:bg-amber-600 disabled:opacity-70 sm:h-14 sm:w-auto sm:px-8 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200"
           >
             {isConfirmingPayment ? (
               <Loader2 className="size-3.5 animate-spin" />
@@ -404,7 +404,7 @@ export function CheckoutPaymentStep({
           variant="outline"
           onClick={() => setRetryCount((current) => current + 1)}
           disabled={isCreatingIntent}
-          className="h-14 rounded-none border-border bg-transparent px-8 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent dark:border-amber-500/20 dark:hover:bg-amber-500/10"
+          className="h-12 w-full rounded-none border-border bg-transparent px-4 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-accent sm:h-14 sm:w-auto sm:px-8 dark:border-amber-500/20 dark:hover:bg-amber-500/10"
         >
           {locale === "es" ? "Reintentar pago" : "Retry payment setup"}
         </Button>
