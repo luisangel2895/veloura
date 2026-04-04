@@ -796,7 +796,7 @@ export function CheckoutFlow() {
                   aria-describedby={
                     state.errors["shipping.reference"] ? "shipping-reference-error" : undefined
                   }
-                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+                  className="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs outline-none focus-visible:ring-[3px] sm:text-sm"
                 />
                 {state.errors["shipping.reference"] ? (
                   <p id="shipping-reference-error" className="text-sm text-destructive">
