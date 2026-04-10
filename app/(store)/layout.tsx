@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden pt-16 sm:pt-[72px]">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-background focus:px-6 focus:py-3 focus:text-sm focus:font-medium focus:text-foreground focus:shadow-lg focus:ring-2 focus:ring-ring"
