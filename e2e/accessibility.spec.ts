@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+import { PRODUCT_SLUGS } from "./support/helpers";
+
 test.describe("accessibility", () => {
   test("home page has no critical a11y violations", async ({ page }) => {
     await page.goto("/");
@@ -15,7 +17,7 @@ test.describe("accessibility", () => {
   });
 
   test("product page has no critical a11y violations", async ({ page }) => {
-    await page.goto("/product/noir-essence-balconette");
+    await page.goto(`/product/${PRODUCT_SLUGS.noirEssenceBalconette}`);
     await page.waitForLoadState("networkidle");
 
     const results = await new AxeBuilder({ page })

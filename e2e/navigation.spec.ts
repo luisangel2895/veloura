@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+import { CATEGORY_SLUGS, PRODUCT_SLUGS } from "./support/helpers";
+
 test.describe("navigation and pages", () => {
   test("navigates to category page and displays products", async ({ page }) => {
-    await page.goto("/category/balconette");
+    await page.goto(`/category/${CATEGORY_SLUGS.balconette}`);
     await expect(page.getByText("Balconette Collection")).toBeVisible();
   });
 
@@ -28,7 +30,10 @@ test.describe("navigation and pages", () => {
 
   test("navigates from home to product detail", async ({ page }) => {
     await page.goto("/");
-    await page.locator('a[href*="/product/noir-essence-balconette"]').first().click();
+    await page
+      .locator(`a[href*="/product/${PRODUCT_SLUGS.noirEssenceBalconette}"]`)
+      .first()
+      .click();
     await expect(page.getByText("Noir Essence Balconette", { exact: true })).toBeVisible();
   });
 

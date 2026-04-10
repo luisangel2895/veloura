@@ -6,11 +6,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      run_e2e:
-        description: "Run E2E tests (requires Medusa backend)"
-        type: boolean
-        default: false
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -72,7 +67,6 @@ jobs:
 
   e2e:
     name: e2e
-    if: github.event_name == 'workflow_dispatch' && inputs.run_e2e
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: quality
@@ -104,10 +98,10 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      - name: Build application
-        run: npm run build
-
       - name: Run E2E suite
+        # Playwright's webServer boots the mock Medusa and rebuilds Next.js
+        # with MEDUSA_BACKEND_URL pointed at 127.0.0.1:9999, so no real
+        # backend is required.
         run: npm run e2e
 
       - name: Upload Playwright HTML report
